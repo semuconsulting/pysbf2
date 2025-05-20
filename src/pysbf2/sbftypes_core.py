@@ -5,9 +5,11 @@ SBF Protocol core globals, constants, datatypes and message identifiers.
 
 Created on 19 May 2025
 
-Information sourced from public domain u-blox Interface Specifications © 2013-2021, u-blox AG
+Info sourced from mosaic-X5 Reference Guide v4.14.10 © 2000-2024 Septentrio NV/SA
 
 :author: semuadmin
+:copyright: SEMU Consulting © 2020
+:license: BSD 3-Clause
 """
 
 SBF_HDR = b"\x24\x40"  # "$@'
@@ -45,9 +47,11 @@ SCALROUND = 12  # number of dp to round scaled attributes to
 # **************************************************
 # THESE ARE THE SBF PROTOCOL PAYLOAD ATTRIBUTE TYPES
 # **************************************************
+C1 = "C001"  # ASCII / ISO 8859.1 Encoding 1 bytes
 C2 = "C002"  # ASCII / ISO 8859.1 Encoding 2 bytes
 C6 = "C006"  # ASCII / ISO 8859.1 Encoding 6 bytes
-C10 = "C010"  # ASCII / ISO 8859.1 Encoding 10 bytes
+C10 = "C010"  # ASCII / ISO 8859.1 Encoding 20 bytes
+C20 = "C020"  # ASCII / ISO 8859.1 Encoding 10 bytes
 C30 = "C030"  # ASCII / ISO 8859.1 Encoding 30 bytes
 C32 = "C032"  # ASCII / ISO 8859.1 Encoding 32 bytes
 CH = "CH"  # ASCII / ISO 8859.1 Encoding Variable Length
@@ -57,8 +61,10 @@ I4 = "I004"  # Signed Int 2's complement 4 bytes
 I8 = "I008"  # Signed Int 2's complement 8 bytes
 U1 = "U001"  # Unsigned Int 1 byte
 U2 = "U002"  # Unsigned Int 2 bytes
+U3 = "U003"  # Unsigned Int 3 bytes
 U4 = "U004"  # Unsigned Int 4 bytes
 U8 = "U008"  # Unsigned Int 8 bytes
+U20 = "U020"  # Unsigned Int 20 bytes
 F4 = "F004"  # Float (IEEE 754) Single Precision 4 bytes
 F8 = "F008"  # Float (IEEE 754) Double Precision 8 bytes
 X1 = "X001"  # Bitfield 1 byte
@@ -76,10 +82,10 @@ ATTTYPE = {
 }
 """Permissible attribute types"""
 
-# ***************************************************************************
+# ********************************************************************
 # THESE ARE THE SBF PROTOCOL CORE MESSAGE IDENTITIES
-# Payloads for each of these identities are defined in the sbftypes_* modules
-# ***************************************************************************
+# Payloads for each of these identities are defined in sbftypes_blocks
+# ********************************************************************
 SBF_MSGIDS = {
     4075: ("ASCIIIn", "ASCII input from external sensor"),
     5939: ("AttCovEuler", "Covariance matrix of attitude"),

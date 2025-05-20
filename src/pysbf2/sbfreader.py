@@ -90,7 +90,8 @@ class SBFReader:
         :param int msgmode: 0=GET, 1=SET, 2=POLL, 3=SETPOLL (0)
         :param int validate: VALCKSUM (1) = Validate checksum,
             VALNONE (0) = ignore invalid checksum (1)
-        :param int protfilter: NMEA_PROTOCOL (1), SBF_PROTOCOL (2), RTCM3_PROTOCOL (4), Can be OR'd (7)
+        :param int protfilter: NMEA_PROTOCOL (1), SBF_PROTOCOL (2),
+            RTCM3_PROTOCOL (4), Can be OR'd (7)
         :param int quitonerror: ERR_IGNORE (0) = ignore errors,  ERR_LOG (1) = log continue,
             ERR_RAISE (2) = (re)raise (1)
         :param int bufsize: socket recv buffer size (4096)

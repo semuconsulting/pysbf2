@@ -3,7 +3,7 @@ name: pysbf2
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -36,8 +36,9 @@ jobs:
       - name: Generate test coverage report
         run: |
           pytest
-      - name: "Upload coverage to Codecov"
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }} # supposedly not required for public repos
-          fail_ci_if_error: true
+      # - name: "Upload coverage to Codecov"
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }} # supposedly not required for public repos
+      #     fail_ci_if_error: true
+ 

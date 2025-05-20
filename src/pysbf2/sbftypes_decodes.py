@@ -5,9 +5,11 @@ SBF Protocol attribute value decode constants.
 
 Created on 19 May 2025
 
-Information sourced from mosaic-X5 Reference Guide v4.14.10
+Info sourced from mosaic-X5 Reference Guide v4.14.10 © 2000-2024 Septentrio NV/SA
 
 :author: semuadmin
+:copyright: SEMU Consulting © 2020
+:license: BSD 3-Clause
 """
 
 # bits 0-3

@@ -36,6 +36,14 @@ pysbf2.sbfreader module
    :show-inheritance:
    :undoc-members:
 
+pysbf2.sbftypes\_blocks module
+------------------------------
+
+.. automodule:: pysbf2.sbftypes_blocks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 pysbf2.sbftypes\_core module
 ----------------------------
 
@@ -48,14 +56,6 @@ pysbf2.sbftypes\_decodes module
 -------------------------------
 
 .. automodule:: pysbf2.sbftypes_decodes
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
-pysbf2.sbftypes\_get module
----------------------------
-
-.. automodule:: pysbf2.sbftypes_get
    :members:
    :show-inheritance:
    :undoc-members:

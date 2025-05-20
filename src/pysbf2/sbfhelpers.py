@@ -27,14 +27,14 @@ def bytes2id(msgid: bytes) -> tuple:
     Get message id and revision number from block ID.
 
     :param bytes msgid: ID as bytes
-    :return: tuple of (msgid, revid)
+    :return: tuple of (msgid, revno)
     :rtype: tuple
     """
 
-    id = int.from_bytes(msgid, "little")
-    msgid = id & 0b0001111111111111
-    revid = (id & 0b1110000000000000) >> 13
-    return msgid, revid
+    mid = int.from_bytes(msgid, "little")
+    msgid = mid & 0b0001111111111111
+    revno = (mid & 0b1110000000000000) >> 13
+    return msgid, revno
 
 
 def calc_crc(message: bytes) -> int:

@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
     "Operating System :: OS Independent",
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 2 - Pre-Alpha",
     "Environment :: MacOS X",
     "Environment :: Win32 (MS Windows)",
     "Environment :: X11 Applications",
@@ -87,11 +87,12 @@ disable = """
     useless-suppression,
     deprecated-pragma,
     use-symbolic-message-instead,
+    fixme,
 """
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "--cov --cov-report html --cov-fail-under 50"
+addopts = "--cov --cov-report html --cov-fail-under 70"
 pythonpath = ["src"]
 testpaths = ["tests"]
 

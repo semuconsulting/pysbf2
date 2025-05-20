@@ -25,6 +25,7 @@ from pysbf2.sbfhelpers import (
     nomval,
     val2bytes,
 )
+from pysbf2.sbftypes_blocks import SBF_BLOCKS
 from pysbf2.sbftypes_core import (
     CH,
     SBF_HDR,
@@ -38,7 +39,6 @@ from pysbf2.sbftypes_core import (
     X8,
     X24,
 )
-from pysbf2.sbftypes_get import SBF_PAYLOADS_GET
 
 
 class SBFMessage:
@@ -47,7 +47,7 @@ class SBFMessage:
     def __init__(
         self,
         msgid: object,
-        revid: int = 0,
+        revno: int = 0,
         parsebitfield: bool = True,
         **kwargs,
     ):
@@ -75,6 +75,7 @@ class SBFMessage:
         self._crc = b""
         self._payload = None
         self._parsebf = parsebitfield  # parsing bitfields Y/N?
+        self._nyi = False  # not yet implemented flag
 
         # convert msgid to string
         if isinstance(msgid, bytes):
@@ -82,12 +83,12 @@ class SBFMessage:
         if isinstance(msgid, int):
             try:
                 msgid = msgid & 0b0001111111111111
-                revid = (msgid & 0b1110000000000000) >> 13
+                revno = (msgid & 0b1110000000000000) >> 13
                 msgid = SBF_MSGIDS[msgid][0]
             except KeyError as err:
                 raise SBFMessageError(f"Unknown SBF Message ID {msgid}") from err
         self._msgid = msgid
-        self._revid = revid
+        self._revno = revno
 
         self._do_attributes(**kwargs)
 
@@ -109,9 +110,12 @@ class SBFMessage:
         try:
             if len(kwargs) == 0:  # if no kwargs, assume null payload
                 self._payload = None
+                self._nyi = True
             else:
                 self._payload = kwargs.get("payload", b"")
                 pdict = self._get_dict(**kwargs)  # get appropriate payload dict
+                if pdict == {}:
+                    self._nyi = True
                 for anam in pdict:  # process each attribute in dict
                     (offset, index) = self._set_attribute(
                         anam, pdict, offset, index, **kwargs
@@ -198,6 +202,12 @@ class SBFMessage:
         if isinstance(anam, int):  # fixed number of repeats
             gsiz = anam
         else:  # number of repeats is defined in named attribute
+            # "+n" suffix signifies that one or more nested group indices
+            # must be appended to name e.g. "NSubBlock2_01", "NSubBlock2_02"
+            if "+" in anam:
+                anam, nestlevel = anam.split("+")
+                for i in range(int(nestlevel)):
+                    anam += f"_{index[i]:02d}"
             gsiz = getattr(self, anam)
         # recursively process each group attribute,
         # incrementing the payload offset and index as we go
@@ -380,7 +390,7 @@ class SBFMessage:
         """
 
         try:
-            pdict = SBF_PAYLOADS_GET[self._msgid]
+            pdict = SBF_BLOCKS[self._msgid]
             return pdict
         except KeyError as err:
             raise SBFMessageError(
@@ -396,11 +406,9 @@ class SBFMessage:
 
         """
 
-        umsg_name = self.identity
-        if self.payload is None:
-            return f"<SBF({umsg_name})>"
-
-        stg = f"<SBF({umsg_name}, "
+        stg = f"<SBF({self.identity}, "
+        if self._nyi:
+            stg += "NOT YET IMPLEMENTED"
         for i, att in enumerate(self.__dict__):
             if att[0] != "_":  # only show public attributes
                 val = self.__dict__[att]

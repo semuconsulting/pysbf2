@@ -18,8 +18,8 @@ from pysbf2.exceptions import (
 from pysbf2.sbfhelpers import *
 from pysbf2.sbfmessage import SBFMessage
 from pysbf2.sbfreader import SBFReader
+from pysbf2.sbftypes_blocks import *
 from pysbf2.sbftypes_core import *
 from pysbf2.sbftypes_decodes import *
-from pysbf2.sbftypes_get import *
 
 version = __version__  # pylint: disable=invalid-name

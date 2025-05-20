@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=75.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysbf2"
+dynamic = ["version"]
+authors = [{ name = "semuadmin", email = "semuadmin@semuconsulting.com" }]
+maintainers = [{ name = "semuadmin", email = "semuadmin@semuconsulting.com" }]
+description = "SBF protocol parser and generator"
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Operating System :: OS Independent",
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: MacOS X",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Utilities",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+dependencies = ["pynmeagps >= 1.0.50", "pyrtcm >= 1.1.6"]
+
+[project.urls]
+homepage = "https://github.com/semuconsulting/pysbf2"
+documentation = "https://www.semuconsulting.com/pysbf2/"
+repository = "https://github.com/semuconsulting/pysbf2"
+changelog = "https://github.com/semuconsulting/pysbf2/blob/master/RELEASE_NOTES.md"
+
+[project.optional-dependencies]
+deploy = ["build", "pip", "setuptools >= 75.0", "wheel"]
+test = [
+    "bandit",
+    "black",
+    "isort",
+    "pylint",
+    "pytest",
+    "pytest-cov",
+    "Sphinx",
+    "sphinx-rtd-theme",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "pysbf2._version.__version__" }
+
+[tool.black]
+target-version = ['py39']
+
+[tool.isort]
+py_version = 39
+profile = "black"
+
+[tool.bandit]
+exclude_dirs = ["docs", "examples", "references", "tests"]
+skips = []
+
+[tool.pylint]
+jobs = 0
+reports = "y"
+recursive = "y"
+py-version = "3.9"
+fail-under = "9.8"
+fail-on = "E,F"
+clear-cache-post-run = "y"
+good-names = "i,j,x,y"
+disable = """
+    unused-import,
+    unused-variable,
+    raw-checker-failed,
+    bad-inline-option,
+    locally-disabled,
+    file-ignored,
+    suppressed-message,
+    useless-suppression,
+    deprecated-pragma,
+    use-symbolic-message-instead,
+    fixme,
+"""
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "--cov --cov-report html --cov-fail-under 70"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]

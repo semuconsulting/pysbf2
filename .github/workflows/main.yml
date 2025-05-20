@@ -1,0 +1,44 @@
+name: pysbf2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install deploy dependencies
+        run: |
+          pip install .[deploy]
+      - name: Install test dependencies
+        run: |
+          pip install .[test]
+      - name: Install code dependencies
+        run: |
+          pip install .
+      - name: Lint with pylint
+        run: |
+          pylint -E src
+      - name: Security vulnerability analysis with bandit
+        run: |
+          bandit -c pyproject.toml -r .
+      - name: Generate test coverage report
+        run: |
+          pytest
+      # - name: "Upload coverage to Codecov"
+      #   uses: codecov/codecov-action@v4
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }} # supposedly not required for public repos
+      #     fail_ci_if_error: true
+ 

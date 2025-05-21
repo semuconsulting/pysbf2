@@ -10,7 +10,10 @@ pysbf2
 [Serializing](#serializing) |
 [Examples](#examples) |
 [Extensibility](#extensibility) |
+[Known Issues](#knownissues) |
 [Author & License](#author)
+
+# WORK IN PROGRESS
 
 `pysbf2` is an original Python 3 parser for the SBF &copy; protocol. SBF is a proprietary binary protocol implemented on Septentrio &trade; GNSS receiver modules. `pysbf2` can also parse NMEA 0183 &copy; and RTCM3 &copy; protocols via the underlying [`pynmeagps`](https://github.com/semuconsulting/pynmeagps) and [`pyrtcm`](https://github.com/semuconsulting/pyrtcm) packages from the same author - hence it covers all the common protocols that Septentrio SBF receivers are capable of outputting.
 
@@ -133,11 +136,11 @@ The `parse()` method accepts the following optional keyword arguments:
 Example - output (GET) message:
 ```python
 from pysbf2 import SBFReader
-msg = SBFReader.parse(b'$@\xaf\xfb\xa6O`\x00X\x9bs\x0c?\t\x01\x00\xdc\xf0\xf5\xf7\xfa\x04MA\xe2\xef\xf1w\x05*\x02\xc1\x98\x85\x91\xb0\x17uSA\xb6\xddAB<\xee\xfe:][8\xb9G\rP\xbb\xf9\x02\x95\xd0ZJ\\\x97SA\xc0\xbfo-L>\x00\x00\x10\x00\xff\xff\xff\xff\r\t2P\x01\x00\x00\x00+\x00\x92\x033\x06`\x00')
+msg = SBFReader.parse(b"$@^b\xa6\x0f`\x00X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10\x00\x8f\x02\x8f\x02\r\t2P\x01\x00\x00\x00+\x00z\x00\x88\x00`\x01")
 print(msg)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803637.9371930193, Y=-148800.68356692704, Z=5100638.758881949, Undulation=48.466514587402344, Vx=0.001944966148585081, Vy=-0.00017581642896402627, Vz=-0.0031746195163577795, COG=-20000000000.0, RxClkBias=-0.12699360743188742, RxClkDrift=0.19939206540584564, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=655.35, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=0.0, HAccuracy=0.0, VAccuracy=0.0, Misc=0)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=122, VAccuracy=136, Misc=96)>
 ```
 
 The `SBFMessage` object exposes different public attributes depending on its message type or 'identity',
@@ -149,20 +152,20 @@ print(msg.identity)
 print(msg.X, msg.Y, msg.Z)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803637.9371930193, Y=-148800.68356692704, Z=5100638.758881949, Undulation=48.466514587402344, Vx=0.001944966148585081, Vy=-0.00017581642896402627, Vz=-0.0031746195163577795, COG=-20000000000.0, RxClkBias=-0.12699360743188742, RxClkDrift=0.19939206540584564, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=655.35, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=0.0, HAccuracy=0.0, VAccuracy=0.0, Misc=0)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=122, VAccuracy=136, Misc=96)>
 PVTCartesian
-3803637.9371930193 -148800.68356692704 5100638.758881949
+3803640.1823747293, -148797.3625715144, 5100642.783697508
 ```
 
-The `payload` attribute always contains the raw payload as bytes. Attributes within repeating groups are parsed with a two-digit suffix (svid_01, svid_02, etc.).
+The `payload` attribute always contains the raw payload as bytes. Attributes within repeating groups are parsed with a two-digit suffix (PRNMaskNo_01, PRNMaskNo_02, etc.).
 
-**Tip:** To iterate through a repeating group of attributes (*e.g. svid*), the following construct can be used:
+**Tip:** To iterate through a repeating group of attributes (*e.g. PRNMaskNo*), the following construct can be used:
 
 ```python
-vals = [] # list of svid values from repeating group
-for i in range(msg.numSV): # numSV = size of repeating group
-    svid = getattr(msg, f"svid_{i+1:02d}")
-    vals.append(svid)
+vals = [] # list of PRNMaskNo values from repeating group
+for i in range(msg.N): # N = size of repeating group
+    PRNMaskNo = getattr(msg, f"PRNMaskNo_{i+1:02d}")
+    vals.append(PRNMaskNo)
 print(vals)
 ```
 
@@ -170,12 +173,12 @@ print(vals)
 ## <a name="generating">Generating</a>
 
 ```
-class pysbf2.SBFmessage.SBFMessage(SBFClass, msgid: int, revid: int, **kwargs)
+class pysbf2.SBFmessage.SBFMessage(SBFClass, msgid: int, revno: int, **kwargs)
 ```
 
 You can create a `SBFMessage` object by calling the constructor with the following parameters:
 1. message id
-2. revision number
+2. revision number (optional, defaults to 0)
 3. (optional) a series of keyword parameters representing the message payload
 
 The 'message class' and 'message id' parameters may be passed as lookup strings, integers or bytes.
@@ -190,20 +193,20 @@ Example - to generate a CFG-MSG command (*msgClass 0x06, msgID 0x01*) which sets
 A. Pass entire payload as bytes:
 ```python
 from pysbf2 import SBFMessage
-msg1 = SBFMessage(PVTCartesian, payload=b'X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10\x00\xff\xff\xff\xff\r\t2P\x01\x00\x00\x00+\x00\xc4\x04V\x05`')
+msg1 = SBFMessage("PVTCartesian", payload=b'X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10\x00\xff\xff\xff\xff\r\t2P\x01\x00\x00\x00+\x00\xc4\x04V\x05`')
 print(msg1)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=655.35, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=0.0043, HAccuracy=12.2, VAccuracy=13.66, Misc=96)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=65535, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=1220, VAccuracy=1366, Misc=96)>
 ```
 B. Pass individual attributes as keyword arguments:
 ```python
 from pysbf2 import SBFMessage
-msg2 = SBFMessage("PVTCartesian",TOW=208903000,WNc=2367,Mode=1,Error=0,X=3803640.1823747293,Y=-148797.3625715144,Z=5100642.783697508,Undulation=48.466453552246094,Vx=3.0890401831129566e-05,Vy=0.000921349273994565,Vz=-0.004076451063156128,COG=-20000000000.0,RxClkBias=0.47535978155315045,RxClkDrift=0.20983891189098358,TimeSystem=0,Datum=0,NrSV=16,WACorrInfo=0,ReferenceID=65535,MeanCorrAge=655.35,SignalInfo=1345456397,AlertFlag=1,NrBases=0,PPPInfo=0,Latency=0.0043,HAccuracy=12.2,VAccuracy=13.66,Misc=96)
+msg2 = SBFMessage("PVTCartesian",TOW=208903000,WNc=2367,Mode=1,Error=0,X=3803640.1823747293,Y=-148797.3625715144,Z=5100642.783697508,Undulation=48.466453552246094,Vx=3.0890401831129566e-05,Vy=0.000921349273994565,Vz=-0.004076451063156128,COG=-20000000000.0,RxClkBias=0.47535978155315045,RxClkDrift=0.20983891189098358,TimeSystem=0,Datum=0,NrSV=16,WACorrInfo=0,ReferenceID=65535,MeanCorrAge=65535,SignalInfo=1345456397,AlertFlag=1,NrBases=0,PPPInfo=0,Latency=43,HAccuracy=1220,VAccuracy=1366,Misc=96)
 print(msg2)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=655.35, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=0.0043, HAccuracy=12.2, VAccuracy=13.66, Misc=96)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=65535, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=1220, VAccuracy=1366, Misc=96)>
 ```
 C. Pass selected attribute as keyword argument; the rest will be set to nominal values (in this case 0):
 ```python
@@ -235,7 +238,7 @@ serialOut.write(output)
 ```
 ```
 <SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=0.0, Vx=0.0, Vy=0.0, Vz=0.0, COG=0.0, RxClkBias=0.0, RxClkDrift=0.0, TimeSystem=0, Datum=0, NrSV=0, WACorrInfo=0, ReferenceID=0, MeanCorrAge=0, SignalInfo=0, AlertFlag=0, NrBases=0, PPPInfo=0, Latency=0, HAccuracy=0, VAccuracy=0, Misc=0)>
-b'$@\x87\x1f\xa6\x0fW\x00X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+b'$@\x81u\xa6\x0f`\x00X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01'
 ```
 
 ---
@@ -262,9 +265,23 @@ The SBF protocol is principally defined in the modules `sbftypes_*.py` as a seri
    {dict} is the nested dictionary of repeating items or bitfield group
 ```
 
-Repeating attribute names are parsed with a two-digit suffix (svid_01, svid_02, etc.). Nested repeating groups are supported. See CFG-VALGET, MON-SPAN, NAV-PVT, NAV-SAT and RXM-RLM by way of examples.
+Repeating attribute names are parsed with a two-digit suffix (PRNMaskNo_01, PRNMaskNo_02, etc.). Nested repeating groups are supported. See "MeasEpoch" way of example.
 
-In most cases, a SBF message's content (payload) is uniquely defined by its ID (message ID and revision number); accommodating the message simply requires the addition of an appropriate dictionary entry to the `sbftypes_get.py` module.
+An SBF message's content (payload) is uniquely defined by its ID (message ID and revision number); accommodating the message simply requires the addition of an appropriate dictionary entry to the `sbftypes_blocks.py` module.
+
+---
+## <a name="knownissues">Known Issues</a>
+
+1. The following SBF message types are not yet implemented (mainly because definitions are not currently in the public domain or are unresolved):
+    1. DiffCorrIn
+    1. Meas3CN0HiRes
+    1. Meas3Doppler
+    1. Meas3MP
+    1. Meas3PP
+    1. Meas3Ranges
+    1. PVTSupport
+    1. PVTSupportA
+    1. FugroDDS
 
 ---
 ## <a name="author">Author & License Information</a>

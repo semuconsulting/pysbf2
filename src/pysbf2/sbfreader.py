@@ -152,8 +152,8 @@ class SBFReader:
                 raw_data = None
                 parsed_data = None
                 byte1 = self._read_bytes(1)  # read the first byte
-                # if not SBF, discard and continue
-                if byte1 not in (b"\x24"):
+                # if not SBF, NMEA or RTCM3, discard and continue
+                if byte1 not in (b"\x24", b"\xd3"):
                     continue
                 byte2 = self._read_bytes(1)
                 bytehdr = byte1 + byte2
@@ -380,7 +380,7 @@ class SBFReader:
             raise SBFMessageError(
                 f"Invalid CRC {escapeall(crc)} - should be {escapeall(crccheck)}"
             )
-        msgid, revid = bytes2id(message[4:6])
+        msgid, revno = bytes2id(message[4:6])
         plb = message[8:]
 
-        return SBFMessage(msgid, revid, payload=plb)
+        return SBFMessage(msgid, revno, payload=plb)

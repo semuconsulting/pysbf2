@@ -87,12 +87,11 @@ disable = """
     useless-suppression,
     deprecated-pragma,
     use-symbolic-message-instead,
-    fixme,
 """
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "--cov --cov-report html --cov-fail-under 70"
+addopts = "--cov --cov-report html --cov-fail-under 75"
 pythonpath = ["src"]
 testpaths = ["tests"]
 

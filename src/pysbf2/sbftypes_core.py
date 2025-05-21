@@ -44,16 +44,28 @@ SCAL2 = 1e-2  # 0.01
 SCAL1 = 1e-1  # 0.1
 SCALROUND = 12  # number of dp to round scaled attributes to
 
+# derived group numerations
+RTCM2N = "_RTCM2N"
+CMRN = "_CMRN"
+RTCM3N = "_RTCM3N"
+RTCMVN = "_RTCMVN"
+PAD = "_Padding"
+
 # **************************************************
 # THESE ARE THE SBF PROTOCOL PAYLOAD ATTRIBUTE TYPES
 # **************************************************
 C1 = "C001"  # ASCII / ISO 8859.1 Encoding 1 bytes
 C2 = "C002"  # ASCII / ISO 8859.1 Encoding 2 bytes
+C3 = "C003"  # ASCII / ISO 8859.1 Encoding 3 bytes
 C6 = "C006"  # ASCII / ISO 8859.1 Encoding 6 bytes
-C10 = "C010"  # ASCII / ISO 8859.1 Encoding 20 bytes
-C20 = "C020"  # ASCII / ISO 8859.1 Encoding 10 bytes
+C9 = "C009"  # ASCII / ISO 8859.1 Encoding 9 bytes
+C10 = "C010"  # ASCII / ISO 8859.1 Encoding 10 bytes
+C20 = "C020"  # ASCII / ISO 8859.1 Encoding 20 bytes
+C21 = "C021"  # ASCII / ISO 8859.1 Encoding 21 bytes
 C30 = "C030"  # ASCII / ISO 8859.1 Encoding 30 bytes
 C32 = "C032"  # ASCII / ISO 8859.1 Encoding 32 bytes
+C40 = "C040"  # ASCII / ISO 8859.1 Encoding 40 bytes
+C60 = "C060"  # ASCII / ISO 8859.1 Encoding 60 bytes
 CH = "CH"  # ASCII / ISO 8859.1 Encoding Variable Length
 I1 = "I001"  # Signed Int 2's complement 1 byte
 I2 = "I002"  # Signed Int 2's complement 2 bytes
@@ -73,12 +85,16 @@ X4 = "X004"  # Bitfield 4 bytes
 X6 = "X006"  # Bitfield 6 bytes
 X8 = "X008"  # Bitfield 8 bytes
 X24 = "X024"  # Bitfield 24 bytes
+PD = "SBLength"  # Sub-block padding marker single level
+PD1 = "SB1Length"  # Sub-block padding marker level 1
+PD2 = "SB2Length"  # Sub-block padding marker level 2
 
 ATTTYPE = {
     "C": (type(b"0"), type("0")),
     "I": type(-1),
     "U": type(0),
     "F": (type(0), type(0.1)),
+    "X": type(b"0"),
 }
 """Permissible attribute types"""
 

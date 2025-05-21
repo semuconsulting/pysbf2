@@ -15,18 +15,31 @@ Info sourced from mosaic-X5 Reference Guide v4.14.10 © 2000-2024 Septentrio NV/
 :license: BSD 3-Clause
 """
 
-# pylint: disable = too-many-lines
+# pylint: disable=too-many-lines, fixme
 
 from pysbf2.sbftypes_core import (
     C1,
+    C3,
+    C9,
+    C10,
     C20,
-    CH,
+    C21,
+    C32,
+    C40,
+    C60,
+    CMRN,
     F4,
     F8,
     I1,
     I2,
     I4,
-    I8,
+    PAD,
+    PD,
+    PD1,
+    PD2,
+    RTCM2N,
+    RTCM3N,
+    RTCMVN,
     U1,
     U2,
     U3,
@@ -34,13 +47,6 @@ from pysbf2.sbftypes_core import (
     U8,
     U20,
 )
-
-# derived group numerations
-RLMN = "RLMN"
-RTCM2N = "RTCM2N"
-CMRN = ("CMRN",)
-RTCM3N = "RTCM3N"
-RTCMVN = "RTCMVN"
 
 SBF_MEASUREMENT_BLOCKS = {
     "Meas3CN0HiRes": {},  # definition not in public domain
@@ -72,6 +78,7 @@ SBF_MEASUREMENT_BLOCKS = {
                 "LockTime": U2,
                 "ObsInfo": U1,
                 "N2": U1,
+                PAD: PD1,
                 "group2": (
                     "N2+1",
                     {
@@ -84,6 +91,7 @@ SBF_MEASUREMENT_BLOCKS = {
                         "CodeOffsetLSB": U2,
                         "CarrierLSB": U2,
                         "DopplerOffsetLSB": U2,
+                        PAD: PD2,
                     },
                 ),
             },
@@ -109,6 +117,7 @@ SBF_MEASUREMENT_BLOCKS = {
                 "CarMPCorr": I1,
                 "Info": U1,
                 "Misc": U1,
+                PAD: PD,
             },
         ),
     },
@@ -630,7 +639,7 @@ SBF_GALILEO_DECODED_MESSAGE_BLOCKS = {
         "BGD_L1AE6A": F4,
         "CNAVenc": U1,
     },
-    "GEOAlm": {
+    "GALAlm": {
         "TOW": U4,
         "WNc": U2,
         "SVID": U1,
@@ -689,10 +698,10 @@ SBF_GALILEO_DECODED_MESSAGE_BLOCKS = {
         "WNc": U2,
         "SVID": U1,
         "Source": U1,
-        "RLMLength": U1,  # if 80, RLMN=5, if 160, RLMN=8
+        "RLMLength": U1,
         "Reserved": U3,
         "group": (
-            RLMN,
+            "RLMLength",  # if 80, N=3, if 160, N=5
             {
                 "RLMBits": U4,
             },
@@ -880,6 +889,7 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
                 "UDREI": U1,
                 "Reserved": U2,
                 "PRC": F4,
+                PAD: PD,
             },
         ),
     },
@@ -975,7 +985,7 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
         "GPS_TOW": U4,
         "GlonassID": U1,
     },
-    "GALAlm": {
+    "GEOAlm": {
         "TOW": U4,
         "WNc": U2,
         "PRN": U1,
@@ -1029,6 +1039,7 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
                 "da_f0": F4,
                 "da_f1": F4,
                 "t_oe": U4,
+                PAD: PD,
             },
         ),
     },
@@ -1048,6 +1059,7 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
                 "GIVEI": U1,
                 "Reserved1": U2,
                 "VerticalDelay": F4,
+                PAD: PD,
             },
         ),
     },
@@ -1072,6 +1084,7 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
                 "Longitude1": I2,
                 "Longitude2": I2,
                 "RegionShape": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1099,6 +1112,7 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
                 "E23": I2,
                 "E24": I2,
                 "E34": I2,
+                PAD: PD,
             },
         ),
     },
@@ -1125,14 +1139,14 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "NrSV": U1,
         "WACorrInfo": U1,
         "ReferenceID": U2,
-        "MeanCorrAge": [U2, 0.01],
+        "MeanCorrAge": U2,
         "SignalInfo": U4,
         "AlertFlag": U1,
         "NrBases": U1,
         "PPPInfo": U2,
-        "Latency": [U2, 0.0001],
-        "HAccuracy": [U2, 0.01],
-        "VAccuracy": [U2, 0.01],
+        "Latency": U2,
+        "HAccuracy": U2,
+        "VAccuracy": U2,
         "Misc": U1,
     },
     "PVTGeodetic": {
@@ -1297,7 +1311,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "SBLength": U1,
         "group": (
             "NSubBlock",
-            {  # repeating group * NSubBlock
+            {
                 "nrSv": U1,
                 "Error": U1,
                 "Mode": U1,
@@ -1313,6 +1327,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "ReferenceID": U2,
                 "CorrAge": U2,
                 "SignalInfo": U4,
+                PAD: PD,
             },
         ),
     },
@@ -1339,6 +1354,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "ReferenceID": U2,
                 "CorrAge": U2,
                 "SignalInfo": U4,
+                PAD: PD,
             },
         ),
     },
@@ -1497,6 +1513,7 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
                 "ReferenceID": U2,
                 "CorrAge": U2,
                 "SignalInfo": U4,
+                PAD: PD,
             },
         ),
     },
@@ -1518,34 +1535,54 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
 
 SBF_DIFFERENTIAL_CORRECTION_BLOCKS = {
     "DiffCorrIn": {
-        "TOW": U4,
-        "WNc": U2,
-        "Mode": U1,
-        "Source": U1,
-        "option1": (  # TODO if mode = 0
-            RTCM2N,  # N = 2 + ((RTCM2Words[1]»9) & 0x1f);
-            {
-                "RTCM2Words": U4,
-            },
-        ),
-        "option2": (  # TODO if mode = 1
-            CMRN,  # depends on CMR message type
-            {
-                "CMRMessage": U1,
-            },
-        ),
-        "option3": (  # TODO if mode = 2
-            RTCM3N,  # depends on RTCM3 message type
-            {
-                "RTCM3Message": U1,
-            },
-        ),
-        "option4": (  # TODO if mode = 3
-            RTCMVN,  # depends on RTCMV message type
-            {
-                "RTCMVMessage": U1,
-            },
-        ),
+        # "TOW": U4,
+        # "WNc": U2,
+        # "Mode": U1,
+        # "Source": U1,
+        # "optionmode0": (  # present if Mode = 0
+        #     ("Mode", 0),
+        #     {
+        #         "group1": (
+        #             RTCM2N,  # TODO N = 2 + ((RTCM2Words[1]»9) & 0x1f);
+        #             {
+        #                 "RTCM2Words": U4,
+        #             },
+        #         ),
+        #     },
+        # ),
+        # "optionmode1": (  # present if Mode = 1
+        #     ("Mode", 1),
+        #     {
+        #         "group2": (
+        #             CMRN,  # TODO depends on CMR message type
+        #             {
+        #                 "CMRMessage": U1,
+        #             },
+        #         ),
+        #     },
+        # ),
+        # "optionmode2": (  # present if Mode = 2
+        #     ("Mode", 2),
+        #     {
+        #         "group3": (
+        #             RTCM3N,  # TODO depends on RTCM3 message type
+        #             {
+        #                 "RTCM3Message": U1,
+        #             },
+        #         ),
+        #     },
+        # ),
+        # "optionmode4": (  # present if Mode = 3
+        #     ("Mode", 3),
+        #     {
+        #         "group4": (
+        #             RTCMVN,  # TODO depends on RTCMV message type
+        #             {
+        #                 "RTCMVMessage": U1,
+        #             },
+        #         ),
+        #     },
+        # ),
     },
     "BaseStation": {
         "TOW": U4,
@@ -1562,18 +1599,8 @@ SBF_DIFFERENTIAL_CORRECTION_BLOCKS = {
     "RTCMDatum": {
         "TOW": U4,
         "WNc": U2,
-        "group1": (  # TODO parse as single string e.g. C32?
-            32,
-            {
-                "SourceCRS": C1,
-            },
-        ),
-        "group2": (  # TODO parse as single string e.g. C32?
-            32,
-            {
-                "TargetCRS": C1,
-            },
-        ),
+        "SourceCRS": C32,
+        "TargetCRS": C32,
         "Datum": U1,
         "HeightType": U1,
         "QualityInd": U1,
@@ -1602,6 +1629,7 @@ SBF_LBAND_DEMODULATOR_BLOCKS = {
                 "SVID": U1,  # Rev 2
                 "LockTime": U2,  # Rev 1
                 "Source": U1,  # Rev 3
+                PAD: PD,
             },
         ),
     },
@@ -1614,14 +1642,10 @@ SBF_LBAND_DEMODULATOR_BLOCKS = {
             "N",
             {
                 "SVID": U1,
-                "group": (  # TODO parse as single string e.g. C9?
-                    9,
-                    {
-                        "SatName": C1,
-                    },
-                ),
+                "SatName": C9,
                 "SatLongitude": I2,
                 "BeamFreq": U4,
+                PAD: PD,
             },
         ),
     },
@@ -1680,6 +1704,7 @@ SBF_STATUS_BLOCKS = {
                 "TrackingStatus": U2,
                 "PVTStatus": U2,
                 "PVTInfo": U2,
+                PAD: PD1,
                 "group1": (
                     "N2+1",
                     {
@@ -1688,6 +1713,7 @@ SBF_STATUS_BLOCKS = {
                         "TrackingStatus": U2,
                         "PVTStatus": U2,
                         "PVTInfo": U2,
+                        PAD: PD2,
                     },
                 ),
             },
@@ -1712,6 +1738,7 @@ SBF_STATUS_BLOCKS = {
                 "Gain": I1,
                 "SampleVar": U1,
                 "BlankingStat": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1729,6 +1756,7 @@ SBF_STATUS_BLOCKS = {
                 "Elevation": I2,
                 "RiseSet": U1,
                 "SatelliteInfo": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1747,6 +1775,7 @@ SBF_STATUS_BLOCKS = {
                 "NrBytesAccepted": U4,
                 "NrMsgReceived": U4,
                 "NrMsgAccepted": U4,
+                PAD: PD,
             },
         ),
     },
@@ -1767,11 +1796,13 @@ SBF_STATUS_BLOCKS = {
                 "NrBytesSent": U4,
                 "NrClients": U1,  # Rev 1
                 "Reserved2": U3,
+                PAD: PD1,
                 "group": (
                     "N2+1",
                     {
                         "Type": U1,
                         "Percentage": U1,
+                        PAD: PD2,
                     },
                 ),
             },
@@ -1789,6 +1820,7 @@ SBF_STATUS_BLOCKS = {
                 "Status": U1,
                 "ErrorCode": U1,
                 "Info": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1804,6 +1836,7 @@ SBF_STATUS_BLOCKS = {
                 "Status": U1,
                 "ErrorCode": U1,
                 "Info": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1830,12 +1863,7 @@ SBF_STATUS_BLOCKS = {
         ),
         "Netmask": U1,
         "Reserved": U3,
-        "group4": (  # Rev 1
-            32,
-            {
-                "HostName": C1,  # TODO parse as single string e.g. C32?
-            },
-        ),
+        "HostName": C32,  # Rev 1
     },
     "DynDNSStatus": {
         "TOW": U4,
@@ -1877,6 +1905,7 @@ SBF_STATUS_BLOCKS = {
                 "DiskSize": U4,
                 "CreateDeleteCount": U1,
                 "Error": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1893,6 +1922,7 @@ SBF_STATUS_BLOCKS = {
                 "Frequency": U4,
                 "Bandwidth": U2,
                 "Info": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1908,6 +1938,7 @@ SBF_STATUS_BLOCKS = {
                 "Port": U1,
                 "Status": U1,
                 "ErrorCode": U1,
+                PAD: PD,
             },
         ),
     },
@@ -1928,104 +1959,28 @@ SBF_MISCELLANEOUS_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "Reserved": U2,
-        "group1": (
-            60,
-            {
-                "MarkerName": C1,  # TODO parse as single string e.g. C60?
-            },
-        ),
-        "group2": (
-            20,
-            {
-                "MarkerNumber": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
-        "group3": (
-            20,
-            {
-                "Observer": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
-        "group4": (
-            40,
-            {
-                "Agency": C1,  # TODO parse as single string e.g. C40?
-            },
-        ),
-        "group5": (
-            20,
-            {
-                "RxSerialNumber": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
-        "group6": (
-            20,
-            {
-                "RxName": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
-        "group7": (
-            20,
-            {
-                "RxVersion": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
-        "group8": (
-            20,
-            {
-                "AntSerialNbr": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
-        "group9": (
-            20,
-            {
-                "AntType": C1,  # TODO parse as single string e.g. C20?
-            },
-        ),
+        "MarkerName": C60,
+        "MarkerNumber": C20,
+        "Observer": C20,
+        "Agency": C40,
+        "RxName": C20,
+        "RxVersion": C20,
+        "AntSerialNbr": C20,
+        "AntType": C20,
         "deltaH": F4,
         "deltaE": F4,
         "deltaN": F4,
-        "group10": (
-            20,
-            {
-                "MarkerType": C1,  # TODO parse as single string e.g. C40?
-            },
-        ),
-        "group11": (
-            40,
-            {
-                "GNSSFWVersion": C1,  # TODO parse as single string e.g. C40?
-            },
-        ),
-        "group12": (
-            40,
-            {
-                "ProductName": C1,  # TODO parse as single string e.g. C40?
-            },
-        ),
+        "MarkerType": C20,
+        "GNSSFWVersion": C40,
+        "ProductName": C40,
         "Latitude": F8,
         "Longitude": F8,
         "Height": F4,
-        "group13": (
-            10,
-            {
-                "StationCode": C1,  # TODO parse as single string e.g. C10?
-            },
-        ),
+        "StationCode": C10,
         "MonumentIdx": U1,
         "ReceiverIdx": U1,
-        "group14": (
-            3,
-            {
-                "CountryCode": C1,  # TODO parse as single string e.g. C3?
-            },
-        ),
-        "group15": (
-            21,
-            {
-                "Reserved1": C1,  # TODO parse as single string e.g. C21?
-            },
-        ),
+        "CountryCode": C3,
+        "Reserved1": C21,
     },
     "RxMessage": {
         "TOW": U4,

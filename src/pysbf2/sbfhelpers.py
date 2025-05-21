@@ -15,11 +15,26 @@ import struct
 from datetime import datetime, timedelta
 
 from pysbf2.exceptions import SBFMessageError, SBFTypeError
-from pysbf2.sbftypes_core import ATTTYPE, CH, SBF_MSGIDS
+from pysbf2.sbftypes_core import ATTTYPE, CH, PAD, SBF_MSGIDS
 
 EPOCH0 = datetime(1980, 1, 6)  # EPOCH start date
 LEAPOFFSET = 18  # leap year offset in seconds, valid as from 1/1/2017
 SIW = 604800  # seconds in week = 3600*24*7
+
+
+def getpadding(length: int) -> bytes:
+    """
+    Generate specified number of padding bytes.
+
+    :param length: length in bytes
+    :return: bytes
+    :rtype: bytes
+    """
+
+    pad = b""
+    for i in range(length):
+        pad += int.to_bytes(i + 1, 1, "little")
+    return pad
 
 
 def bytes2id(msgid: bytes) -> tuple:
@@ -153,7 +168,7 @@ def attsiz(att: str) -> int:
 
 def val2bytes(val, att: str) -> bytes:
     """
-    Convert value to bytes for given UBX attribute type.
+    Convert value to bytes for given SBF attribute type.
 
     :param object val: attribute value e.g. 25
     :param str att: attribute type e.g. 'U004'
@@ -171,7 +186,7 @@ def val2bytes(val, att: str) -> bytes:
     except KeyError as err:
         raise SBFTypeError(f"Unknown attribute type {att}") from err
 
-    if atttyp(att) == "X":  # byte
+    if atttyp(att) in ("X", "P"):  # byte
         valb = val
     elif atttyp(att) == "C":  # char
         valb = val.encode("utf-8", "backslashreplace") if isinstance(val, str) else val
@@ -188,7 +203,7 @@ def val2bytes(val, att: str) -> bytes:
 
 def bytes2val(valb: bytes, att: str) -> object:
     """
-    Convert bytes to value for given UBX attribute type.
+    Convert bytes to value for given SBF attribute type.
 
     :param bytes valb: attribute value in byte format e.g. b'\\\\x19\\\\x00\\\\x00\\\\x00'
     :param str att: attribute type e.g. 'U004'
@@ -200,7 +215,7 @@ def bytes2val(valb: bytes, att: str) -> object:
 
     if att == CH:  # single variable-length string (e.g. INF-NOTICE)
         val = valb.decode("utf-8", "backslashreplace")
-    elif atttyp(att) in ("X", "C"):
+    elif atttyp(att) in ("X", "C", "P"):
         val = valb
     elif atttyp(att) in ("E", "I", "L", "U"):  # integer
         val = int.from_bytes(valb, byteorder="little", signed=atttyp(att) == "I")
@@ -217,7 +232,7 @@ def bytes2val(valb: bytes, att: str) -> object:
 
 def nomval(att: str) -> object:
     """
-    Get nominal value for given UBX attribute type.
+    Get nominal value for given SBF attribute type.
 
     :param str att: attribute type e.g. 'U004'
     :return: attribute value as int, float, str or bytes
@@ -228,7 +243,7 @@ def nomval(att: str) -> object:
 
     if att == CH:
         val = ""
-    elif atttyp(att) in ("X", "C"):
+    elif atttyp(att) in ("X", "C", "P"):
         val = b"\x00" * attsiz(att)
     elif atttyp(att) == "F":
         val = 0.0

@@ -87,7 +87,6 @@ class SBFReader:
         """Constructor.
 
         :param datastream stream: input data stream
-        :param int msgmode: 0=GET, 1=SET, 2=POLL, 3=SETPOLL (0)
         :param int validate: VALCKSUM (1) = Validate checksum,
             VALNONE (0) = ignore invalid checksum (1)
         :param int protfilter: NMEA_PROTOCOL (1), SBF_PROTOCOL (2),

@@ -4,7 +4,7 @@
 
 The following versions are currently being supported with security updates.
 
-![Release](https://img.shields.io/github/v/release/semuconsulting/pysbf2)
+![Release](https://img.shields.io/github/v/release/semuconsulting/pysbf2?include_prereleases)
 
 ## Reporting a Vulnerability
 

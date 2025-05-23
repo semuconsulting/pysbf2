@@ -50,6 +50,7 @@ CMRN = "_CMRN"
 RTCM3N = "_RTCM3N"
 RTCMVN = "_RTCMVN"
 PAD = "_Padding"
+VAR = "_VarLen"
 
 # **************************************************
 # THESE ARE THE SBF PROTOCOL PAYLOAD ATTRIBUTE TYPES
@@ -66,7 +67,6 @@ C30 = "C030"  # ASCII / ISO 8859.1 Encoding 30 bytes
 C32 = "C032"  # ASCII / ISO 8859.1 Encoding 32 bytes
 C40 = "C040"  # ASCII / ISO 8859.1 Encoding 40 bytes
 C60 = "C060"  # ASCII / ISO 8859.1 Encoding 60 bytes
-CH = "CH"  # ASCII / ISO 8859.1 Encoding Variable Length
 I1 = "I001"  # Signed Int 2's complement 1 byte
 I2 = "I002"  # Signed Int 2's complement 2 bytes
 I4 = "I004"  # Signed Int 2's complement 4 bytes
@@ -75,7 +75,9 @@ U1 = "U001"  # Unsigned Int 1 byte
 U2 = "U002"  # Unsigned Int 2 bytes
 U3 = "U003"  # Unsigned Int 3 bytes
 U4 = "U004"  # Unsigned Int 4 bytes
+U6 = "U006"  # Unsigned Int 6 bytes
 U8 = "U008"  # Unsigned Int 8 bytes
+U16 = "U016"  # Unsigned Int 16 bytes
 U20 = "U020"  # Unsigned Int 20 bytes
 F4 = "F004"  # Float (IEEE 754) Single Precision 4 bytes
 F8 = "F008"  # Float (IEEE 754) Double Precision 8 bytes
@@ -85,15 +87,19 @@ X4 = "X004"  # Bitfield 4 bytes
 X6 = "X006"  # Bitfield 6 bytes
 X8 = "X008"  # Bitfield 8 bytes
 X24 = "X024"  # Bitfield 24 bytes
+V2 = "V002"  # variable number of U2
+V4 = "V004"  #  variable number of U4
 PD = "SBLength"  # Sub-block padding marker single level
 PD1 = "SB1Length"  # Sub-block padding marker level 1
 PD2 = "SB2Length"  # Sub-block padding marker level 2
 
 ATTTYPE = {
     "C": (type(b"0"), type("0")),
-    "I": type(-1),
-    "U": type(0),
     "F": (type(0), type(0.1)),
+    "I": type(-1),
+    "P": type(b"0"),
+    "U": type(0),
+    "V": type(b"0"),
     "X": type(b"0"),
 }
 """Permissible attribute types"""
@@ -240,4 +246,7 @@ SBF_MSGIDS = {
     5907: ("VelCovCartesian", "Velocity covariance matrix (X, Y, Z)"),
     5908: ("VelCovGeodetic", "Velocity covariance matrix (North, East, Up)"),
     5911: ("xPPSOffset", "Offset of the xPPS pulse with respect to GNSS time"),
+    # TODO REMOVE AFTER ALPHA...
+    1234: ("TestOnly", "Test Message - Do Not Use"),
+    1235: ("TestVariable", "Variable Length Test Message - Do Not Use"),
 }

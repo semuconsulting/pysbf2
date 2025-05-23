@@ -15,7 +15,7 @@ import struct
 from datetime import datetime, timedelta
 
 from pysbf2.exceptions import SBFMessageError, SBFTypeError
-from pysbf2.sbftypes_core import ATTTYPE, CH, PAD, SBF_MSGIDS
+from pysbf2.sbftypes_core import ATTTYPE, SBF_MSGIDS
 
 EPOCH0 = datetime(1980, 1, 6)  # EPOCH start date
 LEAPOFFSET = 18  # leap year offset in seconds, valid as from 1/1/2017
@@ -101,25 +101,6 @@ def escapeall(val: bytes) -> str:
     return "b'{}'".format("".join(f"\\x{b:02x}" for b in val))
 
 
-def key_from_val(dictionary: dict, value) -> str:
-    """
-    Helper method - get dictionary key corresponding to (unique) value.
-
-    :param dict dictionary: dictionary
-    :param object value: unique dictionary value
-    :return: dictionary key
-    :rtype: str
-    :raises: KeyError: if no key found for value
-
-    """
-
-    val = None
-    for key, val in dictionary.items():
-        if val == value:
-            return key
-    raise KeyError(f"No key found for value {value}")
-
-
 def msgid2bytes(msgid: str) -> int:
     """
     Convert integer SBF message str to bytes.
@@ -156,13 +137,11 @@ def attsiz(att: str) -> int:
     Helper function to return attribute size in bytes.
 
     :param str: attribute type e.g. 'U002'
-    :return: size of attribute in bytes, or -1 if variable length
+    :return: size of attribute in bytes
     :rtype: int
 
     """
 
-    if att == CH:  # variable length
-        return -1
     return int(att[1:4])
 
 
@@ -185,8 +164,8 @@ def val2bytes(val, att: str) -> bytes:
             )
     except KeyError as err:
         raise SBFTypeError(f"Unknown attribute type {att}") from err
-
-    if atttyp(att) in ("X", "P"):  # byte
+    valb = b""
+    if atttyp(att) in ("X", "P", "V"):  # byte
         valb = val
     elif atttyp(att) == "C":  # char
         valb = val.encode("utf-8", "backslashreplace") if isinstance(val, str) else val
@@ -194,10 +173,10 @@ def val2bytes(val, att: str) -> bytes:
         valb = val.to_bytes(attsiz(att), byteorder="little", signed=atttyp(att) == "I")
     elif atttyp(att) == "F":  # floating point
         valb = struct.pack("<f" if attsiz(att) == 4 else "<d", float(val))
-    elif atttyp(att) == "A":  # array of unsigned integers
-        valb = b""
-        for i in range(attsiz(att)):
-            valb += val[i].to_bytes(1, byteorder="little", signed=False)
+    # elif atttyp(att) == "A":  # array of unsigned integers
+    #     valb = b""
+    #     for i in range(attsiz(att)):
+    #         valb += val[i].to_bytes(1, byteorder="little", signed=False)
     return valb
 
 
@@ -213,18 +192,16 @@ def bytes2val(valb: bytes, att: str) -> object:
 
     """
 
-    if att == CH:  # single variable-length string (e.g. INF-NOTICE)
-        val = valb.decode("utf-8", "backslashreplace")
-    elif atttyp(att) in ("X", "C", "P"):
+    if atttyp(att) in ("X", "C", "P", "V"):
         val = valb
-    elif atttyp(att) in ("E", "I", "L", "U"):  # integer
+    elif atttyp(att) in ("I", "U"):  # integer
         val = int.from_bytes(valb, byteorder="little", signed=atttyp(att) == "I")
     elif atttyp(att) == "F":  # floating point
         val = struct.unpack("<f" if attsiz(att) == 4 else "<d", valb)[0]
-    elif atttyp(att) == "A":  # array of unsigned integers
-        val = []
-        for i in range(attsiz(att)):
-            val.append(valb[i])
+    # elif atttyp(att) == "A":  # array of unsigned integers
+    #     val = []
+    #     for i in range(attsiz(att)):
+    #         val.append(valb[i])
     else:
         raise SBFTypeError(f"Unknown attribute type {att}")
     return val
@@ -241,16 +218,14 @@ def nomval(att: str) -> object:
 
     """
 
-    if att == CH:
-        val = ""
-    elif atttyp(att) in ("X", "C", "P"):
+    if atttyp(att) in ("X", "C", "P", "V"):
         val = b"\x00" * attsiz(att)
     elif atttyp(att) == "F":
         val = 0.0
-    elif atttyp(att) in ("E", "I", "L", "U"):
+    elif atttyp(att) in ("I", "U"):
         val = 0
-    elif atttyp(att) == "A":  # array of unsigned integers
-        val = [0] * attsiz(att)
+    # elif atttyp(att) == "A":  # array of unsigned integers
+    #     val = [0] * attsiz(att)
     else:
         raise SBFTypeError(f"Unknown attribute type {att}")
     return val

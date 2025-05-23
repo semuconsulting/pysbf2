@@ -87,7 +87,6 @@ class SBFReader:
         """Constructor.
 
         :param datastream stream: input data stream
-        :param int msgmode: 0=GET, 1=SET, 2=POLL, 3=SETPOLL (0)
         :param int validate: VALCKSUM (1) = Validate checksum,
             VALNONE (0) = ignore invalid checksum (1)
         :param int protfilter: NMEA_PROTOCOL (1), SBF_PROTOCOL (2),
@@ -381,6 +380,7 @@ class SBFReader:
                 f"Invalid CRC {escapeall(crc)} - should be {escapeall(crccheck)}"
             )
         msgid, revno = bytes2id(message[4:6])
+        length = int.from_bytes(message[6:8], "little")
         plb = message[8:]
 
-        return SBFMessage(msgid, revno, payload=plb)
+        return SBFMessage(msgid, revno, crc, length, payload=plb)

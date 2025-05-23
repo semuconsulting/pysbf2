@@ -24,7 +24,7 @@ This is an independent project and we have no affiliation whatsoever with Septen
 ## <a name="currentstatus">Current Status</a>
 
 ![Status](https://img.shields.io/pypi/status/pysbf2)
-![Release](https://img.shields.io/github/v/release/semuconsulting/pysbf2)
+![Release](https://img.shields.io/github/v/release/semuconsulting/pysbf2?include_prereleases)
 ![Build](https://img.shields.io/github/actions/workflow/status/semuconsulting/pysbf2/main.yml?branch=main)
 ![Codecov](https://img.shields.io/codecov/c/github/semuconsulting/pysbf2)
 ![Release Date](https://img.shields.io/github/release-date-pre/semuconsulting/pysbf2)
@@ -273,7 +273,6 @@ An SBF message's content (payload) is uniquely defined by its ID (message ID and
 ## <a name="knownissues">Known Issues</a>
 
 1. The following SBF message types are not yet implemented (mainly because definitions are not currently in the public domain or are unresolved):
-    1. DiffCorrIn
     1. Meas3CN0HiRes
     1. Meas3Doppler
     1. Meas3MP
@@ -288,10 +287,10 @@ An SBF message's content (payload) is uniquely defined by its ID (message ID and
 
 semuadmin@semuconsulting.com
 
-![License](https://img.shields.io/github/license/semuconsulting/pysbf2.svg)
+![GitHub License](https://img.shields.io/github/license/semuconsulting/pysbf2)
 
 `pysbf2` is maintained entirely by unpaid volunteers. It receives no funding from advertising or corporate sponsorship. If you find the utility useful, please consider sponsoring the project with the price of a coffee...
 
-[![Sponsor](https://github.com/semuconsulting/pysbf2/blob/master/images/sponsor.png?raw=true)](https://buymeacoffee.com/semuconsulting)
+[![Sponsor](https://github.com/semuconsulting/pyubx2/blob/master/images/sponsor.png?raw=true)](https://buymeacoffee.com/semuconsulting)
 
 [![Freedom for Ukraine](https://github.com/semuadmin/sandpit/blob/main/src/sandpit/resources/ukraine200.jpg?raw=true)](https://u24.gov.ua/)

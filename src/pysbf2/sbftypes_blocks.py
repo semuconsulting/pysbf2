@@ -1175,8 +1175,8 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "AlertFlag": U1,
         "PPPInfo": U2,
         "Latency": U2,
-        "HAccuracy": U2,
-        "VAccuracy": U2,
+        "HAccuracy": U2,  # cm
+        "VAccuracy": U2,  # cm
         "Misc": U1,
     },
     "PosCovCartesian": {

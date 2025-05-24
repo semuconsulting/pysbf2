@@ -6,16 +6,15 @@ SBFReader class.
 Reads and parses individual NMEA, SBF and RTCM messages from any viable
 data stream which supports a read(n) -> bytes method.
 
-SBF transport layer bit format:
+SBF message bit format (little-endian):
 
-+--------------+---------+---------+---------+---------+-----------------+
-| hdr (0x2440) |   crc   |  msgid  |  revid  | length  |     payload     |
-+==============+=========+=========+=========+=========+=================+
-| 16 bits      | 16 bits | 12 bits |  4 bits | 16 bits |     variable    |
-+--------------+---------+---------+---------+---------+-----------------+
-|                        8 bytes                       |                 |
-+--------------+---------+---------+---------+---------+-----------------+
-
++--------+---------+---------+---------+---------+------------+-----------+
+|  sync  |   crc   |  revno  |  msgid  | length  |  payload   |  padding  |
++========+=========+=========+=========+=========+============+===========+
+| 0x2440 | 16 bits | 3 bits  | 13 bits | 16 bits |  variable  | 0-24 bits |
++--------+---------+---------+---------+---------+------------+-----------+
+|                  8 bytes                       |            |           |
++--------+---------+---------+---------+---------+------------+-----------+
 
 Returns both the raw binary data (as bytes) and the parsed data
 (as an SBFMessage or NMEAMessage object).
@@ -80,6 +79,7 @@ class SBFReader:
         validate: int = VALCKSUM,
         protfilter: int = NMEA_PROTOCOL | SBF_PROTOCOL | RTCM3_PROTOCOL,
         quitonerror: int = ERR_LOG,
+        parsebitfield: bool = True,
         bufsize: int = 4096,
         parsing: bool = True,
         errorhandler: object = None,
@@ -93,6 +93,7 @@ class SBFReader:
             RTCM3_PROTOCOL (4), Can be OR'd (7)
         :param int quitonerror: ERR_IGNORE (0) = ignore errors,  ERR_LOG (1) = log continue,
             ERR_RAISE (2) = (re)raise (1)
+        :param bool parsebitfield: 1 = parse bitfields, 0 = leave as bytes (1)
         :param int bufsize: socket recv buffer size (4096)
         :param bool parsing: True = parse data, False = don't parse data (output raw only) (True)
         :param object errorhandler: error handling object or function (None)
@@ -105,6 +106,7 @@ class SBFReader:
         else:
             self._stream = datastream
         self._quitonerror = quitonerror
+        self._parsebf = parsebitfield
         self._errorhandler = errorhandler
         self._protfilter = protfilter
         self._validate = validate
@@ -234,6 +236,7 @@ class SBFReader:
             parsed_data = self.parse(
                 raw_data,
                 validate=self._validate,
+                parsebitfield=self._parsebf,
             )
         else:
             parsed_data = None
@@ -360,6 +363,7 @@ class SBFReader:
     def parse(
         message: bytes,
         validate: int = VALCKSUM,
+        parsebitfield: bool = True,
     ) -> object:
         """
         Parse SBF byte stream to SBFMessage object.
@@ -367,6 +371,7 @@ class SBFReader:
         :param bytes message: binary message to parse
         :param int validate: VALCKSUM (1) = Validate checksum,
             VALNONE (0) = ignore invalid checksum (1)
+        :param bool parsebitfield: 1 = parse bitfields, 0 = leave as bytes (1)
         :return: SBFMessage object
         :rtype: SBFMessage
         :raises: SBFMessageError (if data stream contains invalid CRC)
@@ -383,4 +388,6 @@ class SBFReader:
         length = int.from_bytes(message[6:8], "little")
         plb = message[8:]
 
-        return SBFMessage(msgid, revno, crc, length, payload=plb)
+        return SBFMessage(
+            msgid, revno, crc, length, payload=plb, parsebitfield=parsebitfield
+        )

@@ -32,7 +32,7 @@ This is an independent project and we have no affiliation whatsoever with Septen
 ![Contributors](https://img.shields.io/github/contributors/semuconsulting/pysbf2.svg)
 ![Open Issues](https://img.shields.io/github/issues-raw/semuconsulting/pysbf2)
 
-The library implements a comprehensive set of messages for Septentrio Mosaic X5 devices, but is readily [extensible](#extensibility). Refer to `SBF_MSGIDS` in [sbftypes_core.py](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_core.py#L83) for the complete dictionary of messages currently supported. SBF protocol information sourced from mosaic-X5 Reference Guide v4.14.10.
+The library implements a comprehensive set of messages for Septentrio Mosaic X5 devices, but is readily [extensible](#extensibility). Refer to `SBF_MSGIDS` in [sbftypes_core.py](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_core.py#L111) for the complete dictionary of messages currently supported. SBF protocol information sourced from mosaic-X5 Reference Guide v4.14.10.
 
 Sphinx API Documentation in HTML format is available at [https://www.semuconsulting.com/pysbf2/](https://www.semuconsulting.com/pysbf2/).
 
@@ -90,6 +90,7 @@ The constructor accepts the following optional keyword arguments:
 * `protfilter`: `NMEA_PROTOCOL` (1), `SBF_PROTOCOL` (2), `RTCM3_PROTOCOL` (4). Can be OR'd; default is `NMEA_PROTOCOL | SBF_PROTOCOL | RTCM3_PROTOCOL` (7)
 * `quitonerror`: `ERR_IGNORE` (0) = ignore errors, `ERR_LOG` (1) = log errors and continue (default), `ERR_RAISE` (2) = (re)raise errors and terminate
 * `validate`: `VALCKSUM` (0x01) = validate checksum (default), `VALNONE` (0x00) = ignore invalid checksum or length
+* `parsebitfield`: 1 = parse bitfields ('X' type properties) as individual bit flags, where defined (default), 0 = leave bitfields as byte sequences
 
 Example -  Serial input. This example will output both SBF and NMEA messages but not RTCM3:
 ```python
@@ -132,6 +133,7 @@ You can parse individual SBF messages using the static `SBFReader.parse(data)` f
 The `parse()` method accepts the following optional keyword arguments:
 
 * `validate`: VALCKSUM (0x01) = validate checksum (default), VALNONE (0x00) = ignore invalid checksum or length
+* `parsebitfield`: 1 = parse bitfields ('X' type properties) as individual bit flags, where defined (default), 0 = leave bitfields as byte sequences
 
 Example - output (GET) message:
 ```python

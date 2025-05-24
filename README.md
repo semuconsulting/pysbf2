@@ -273,7 +273,6 @@ An SBF message's content (payload) is uniquely defined by its ID (message ID and
 ## <a name="knownissues">Known Issues</a>
 
 1. The following SBF message types are not yet implemented (mainly because definitions are not currently in the public domain or are unresolved):
-    1. DiffCorrIn
     1. Meas3CN0HiRes
     1. Meas3Doppler
     1. Meas3MP

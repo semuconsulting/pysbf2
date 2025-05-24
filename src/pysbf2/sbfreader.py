@@ -380,6 +380,7 @@ class SBFReader:
                 f"Invalid CRC {escapeall(crc)} - should be {escapeall(crccheck)}"
             )
         msgid, revno = bytes2id(message[4:6])
+        length = int.from_bytes(message[6:8], "little")
         plb = message[8:]
 
-        return SBFMessage(msgid, revno, payload=plb)
+        return SBFMessage(msgid, revno, crc, length, payload=plb)

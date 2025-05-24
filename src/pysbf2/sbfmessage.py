@@ -18,6 +18,7 @@ from math import ceil
 from pysbf2.exceptions import SBFMessageError, SBFTypeError
 from pysbf2.sbfhelpers import (
     attsiz,
+    atttyp,
     bytes2val,
     crc2bytes,
     escapeall,
@@ -29,7 +30,6 @@ from pysbf2.sbfhelpers import (
 )
 from pysbf2.sbftypes_blocks import SBF_BLOCKS
 from pysbf2.sbftypes_core import (
-    CH,
     PAD,
     PD,
     PD1,
@@ -38,6 +38,7 @@ from pysbf2.sbftypes_core import (
     SBF_MSGIDS,
     SCALROUND,
     U2,
+    VAR,
     X1,
     X2,
     X4,
@@ -54,6 +55,8 @@ class SBFMessage:
         self,
         msgid: object,
         revno: int = 0,
+        crc: bytes = b"\x00\x00",
+        length: int = 0,
         parsebitfield: bool = True,
         **kwargs,
     ):
@@ -69,6 +72,8 @@ class SBFMessage:
 
         :param object msgid: message ID as str, int or bytes
         :param int revid: revision number (0)
+        :param bytes crc: CRC16-CCIT as 2 bytes (if b"\\\\x00\\\\x00", will be derived)
+        :param int length: length (if 0, will be derived)
         :param bool parsebitfield: parse bitfields ('X' type attributes) Y/N
         :param kwargs: optional payload keyword arguments
         :raises: SBFMessageError
@@ -76,12 +81,11 @@ class SBFMessage:
 
         # object is mutable during initialisation only
         super().__setattr__("_immutable", False)
-        self._crc = 0
-        self._length = 0
+        self._crc = crc
+        self._length = length
         self._parsebf = parsebitfield  # parsing bitfields Y/N?
         self._payload = None
         self._nyi = False  # not yet implemented flag
-        self._padsiz = 0  # no of sub group padding bytes
 
         # convert msgid to string
         if isinstance(msgid, bytes):
@@ -129,7 +133,7 @@ class SBFMessage:
 
             # if message is being constructed rather than parsed from stream,
             # pad to nearest multiple of 4 bytes and calculate crc and length
-            if "payload" not in kwargs and not self._nyi:
+            if self._crc == b"\x00\x00" and self._length == 0 and not self._nyi:
                 padlen = (4 * ceil(offset / 4)) - offset
                 self._payload += getpadding(padlen)
                 self._do_len_checksum()
@@ -184,7 +188,9 @@ class SBFMessage:
                         anam, numr, offset, index, **kwargs
                     )
             elif isinstance(numr, tuple):  # conditional group of attributes
-                (offset, index) = self._set_attribute_optional(adef, offset, index)
+                (offset, index) = self._set_attribute_optional(
+                    adef, offset, index, **kwargs
+                )
             else:
                 (offset, index) = self._set_attribute_group(
                     adef, offset, index, **kwargs
@@ -236,8 +242,9 @@ class SBFMessage:
                 if key1 == PAD:  # sub block padding marker
                     # get sub block length from preceding SBLength attribute
                     # and derive length of sub block padding bytes
-                    sblen = int(getattr(self, gdict[key1]))
-                    self._padsiz = sblen - sbcum
+                    if gdict[PAD] in (PD, PD1, PD2):
+                        sblen = getattr(self, gdict[PAD])
+                        gdict[PAD] = f"P{(sblen - sbcum):03d}"
                 (offset, index) = self._set_attribute(
                     key1, gdict, offset, index, **kwargs
                 )
@@ -248,7 +255,9 @@ class SBFMessage:
 
         return (offset, index)
 
-    def _set_attribute_optional(self, adef: tuple, offset: int, index: list) -> tuple:
+    def _set_attribute_optional(
+        self, adef: tuple, offset: int, index: list, **kwargs
+    ) -> tuple:
         """
         Process optional group of attributes, subject to condition being met:
         a) group is present if attribute value = specific value, otherwise absent
@@ -278,7 +287,9 @@ class SBFMessage:
             # recursively process each group attribute,
             # incrementing the payload offset as we go
             for anami in gdict:
-                (offset, index) = self._set_attribute(anami, gdict, offset, index)
+                (offset, index) = self._set_attribute(
+                    anami, gdict, offset, index, **kwargs
+                )
 
         return (offset, index)
 
@@ -315,13 +326,10 @@ class SBFMessage:
                 anami += f"_{i:02d}"
 
         # determine attribute size (bytes)
-        if adef == CH:  # variable length string
-            asiz = len(self._payload)
-        elif adef in (PD, PD1, PD2):  # padding bytes
-            asiz = self._padsiz
-            adef = f"P{self._padsiz:03d}"
-        else:
-            asiz = attsiz(adef)
+        asiz = attsiz(adef)
+        if atttyp(adef) == "V":  # variable by size
+            asiz = len(self._payload) - offset  # assumed to fill remaining payload
+            adef = f"V{asiz:03d}"
 
         # if payload keyword has been provided,
         # use the appropriate offset of the payload
@@ -342,7 +350,8 @@ class SBFMessage:
                 valb = val2bytes(int(val / ares), adef)
             self._payload += valb
 
-        setattr(self, anami, val)
+        if anam != PAD:  # don't bother to create padding attributes
+            setattr(self, anami, val)
 
         return offset + asiz
 

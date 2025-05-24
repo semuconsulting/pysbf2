@@ -27,7 +27,6 @@ from pysbf2.sbftypes_core import (
     C32,
     C40,
     C60,
-    CMRN,
     F4,
     F8,
     I1,
@@ -37,15 +36,16 @@ from pysbf2.sbftypes_core import (
     PD,
     PD1,
     PD2,
-    RTCM2N,
-    RTCM3N,
-    RTCMVN,
     U1,
     U2,
     U3,
     U4,
+    U6,
     U8,
+    U16,
     U20,
+    V2,
+    V4,
 )
 
 SBF_MEASUREMENT_BLOCKS = {
@@ -1154,8 +1154,8 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "WNc": U2,
         "Mode": U1,
         "Error": U1,
-        "Latitude": F8,
-        "Longitude": F8,
+        "Latitude": F8,  # radians
+        "Longitude": F8,  # radians
         "Height": F8,
         "Undulation": F4,
         "Vn": F4,
@@ -1535,54 +1535,34 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
 
 SBF_DIFFERENTIAL_CORRECTION_BLOCKS = {
     "DiffCorrIn": {
-        # "TOW": U4,
-        # "WNc": U2,
-        # "Mode": U1,
-        # "Source": U1,
-        # "optionmode0": (  # present if Mode = 0
-        #     ("Mode", 0),
-        #     {
-        #         "group1": (
-        #             RTCM2N,  # TODO N = 2 + ((RTCM2Words[1]»9) & 0x1f);
-        #             {
-        #                 "RTCM2Words": U4,
-        #             },
-        #         ),
-        #     },
-        # ),
-        # "optionmode1": (  # present if Mode = 1
-        #     ("Mode", 1),
-        #     {
-        #         "group2": (
-        #             CMRN,  # TODO depends on CMR message type
-        #             {
-        #                 "CMRMessage": U1,
-        #             },
-        #         ),
-        #     },
-        # ),
-        # "optionmode2": (  # present if Mode = 2
-        #     ("Mode", 2),
-        #     {
-        #         "group3": (
-        #             RTCM3N,  # TODO depends on RTCM3 message type
-        #             {
-        #                 "RTCM3Message": U1,
-        #             },
-        #         ),
-        #     },
-        # ),
-        # "optionmode4": (  # present if Mode = 3
-        #     ("Mode", 3),
-        #     {
-        #         "group4": (
-        #             RTCMVN,  # TODO depends on RTCMV message type
-        #             {
-        #                 "RTCMVMessage": U1,
-        #             },
-        #         ),
-        #     },
-        # ),
+        "TOW": U4,
+        "WNc": U2,
+        "Mode": U1,
+        "Source": U1,
+        "optionmode0": (  # present if Mode = 0
+            ("Mode", 0),
+            {
+                "RTCM2Words": V4,  # variable by size of RTCM2 message
+            },
+        ),
+        "optionmode1": (  # present if Mode = 1
+            ("Mode", 1),
+            {
+                "CMRMessage": V2,  # variable by size of CMR message
+            },
+        ),
+        "optionmode2": (  # present if Mode = 2
+            ("Mode", 2),
+            {
+                "RTCM3Message": V2,  # variable by size of RTCM3 message
+            },
+        ),
+        "optionmode4": (  # present if Mode = 3
+            ("Mode", 3),
+            {
+                "RTCMVMessage": V2,  # variable by size of RTCMV message
+            },
+        ),
     },
     "BaseStation": {
         "TOW": U4,
@@ -1843,24 +1823,9 @@ SBF_STATUS_BLOCKS = {
     "IPStatus": {
         "TOW": U4,
         "WNc": U2,
-        "group1": (
-            6,
-            {
-                "MACAddress": U1,  # TODO parse as single integer?
-            },
-        ),
-        "group2": (
-            16,
-            {
-                "IPAddress": U1,  # TODO parse as single integer?
-            },
-        ),
-        "group3": (
-            16,
-            {
-                "Gateway": U1,  # TODO parse as single integer?
-            },
-        ),
+        "MACAddress": U6,
+        "IPAddress": U16,
+        "Gateway": U16,
         "Netmask": U1,
         "Reserved": U3,
         "HostName": C32,  # Rev 1
@@ -1870,12 +1835,7 @@ SBF_STATUS_BLOCKS = {
         "WNc": U2,
         "Status": U1,
         "ErrorCode": U1,
-        "group": (  # Rev 1
-            16,
-            {
-                "IPAddress": U1,  # TODO parse as single integer?
-            },
-        ),
+        "IPAddress": U16,
     },
     "QualityInd": {
         "TOW": U4,
@@ -2066,6 +2026,66 @@ SBF_MISCELLANEOUS_BLOCKS = {
     },
 }
 
+# TODO REMOVE AFTER ALPHA
+TESTING = {
+    # Test Message - Do Not Use
+    "TestOnly": {
+        "TOW": U4,
+        "WNc": U2,
+        "Mode": U1,
+        "optionmode0": (  # present if Mode = 0
+            ("Mode", 0),
+            {
+                "ModeZERO": U1,
+            },
+        ),
+        "optionmode1": (  # present if Mode = 1
+            ("Mode", 1),
+            {
+                "ModeONE": U1,
+            },
+        ),
+        "SB1Length": U1,
+        "SB2Length": U1,
+        "N1": U2,
+        "group1": (
+            "N1",
+            {
+                "test1": U1,
+                "test2": U2,
+                "N2": U2,
+                PAD: PD1,
+                "group2": (
+                    "N2+1",
+                    {
+                        "test3": U1,
+                        "test4": U2,
+                        PAD: PD2,
+                    },
+                ),
+            },
+        ),
+    },
+    # Variable Length Test Message - Do Not Use
+    "TestVariable": {
+        "TOW": U4,
+        "WNc": U2,
+        "Mode": U1,
+        "optionmode0": (  # present if Mode = 0
+            ("Mode", 0),
+            {
+                "VariableZERO": V4,
+            },
+        ),
+        "optionmode1": (  # present if Mode = 1
+            ("Mode", 1),
+            {
+                "VariableONE": V2,
+            },
+        ),
+    },
+}
+
 SBF_BLOCKS = {
     **SBF_MEASUREMENT_BLOCKS,
     **SBF_NAVIGATION_PAGE_BLOCKS,
@@ -2083,4 +2103,5 @@ SBF_BLOCKS = {
     **SBF_LBAND_DEMODULATOR_BLOCKS,
     **SBF_STATUS_BLOCKS,
     **SBF_MISCELLANEOUS_BLOCKS,
+    **TESTING,
 }

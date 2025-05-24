@@ -1,5 +1,12 @@
 # pysbf2 Release Notes
 
+### RELEASE 0.1.4
+
+CHANGES:
+
+1. Fix Commands message definition.
+1. Update GitHub PR and Issue templates and other documentation.
+
 ### RELEASE 0.1.3
 
 CHANGES:

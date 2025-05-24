@@ -6,16 +6,15 @@ SBFReader class.
 Reads and parses individual NMEA, SBF and RTCM messages from any viable
 data stream which supports a read(n) -> bytes method.
 
-SBF transport layer bit format:
+SBF message bit format (little-endian):
 
-+--------------+---------+---------+---------+---------+-----------------+
-| hdr (0x2440) |   crc   |  msgid  |  revid  | length  |     payload     |
-+==============+=========+=========+=========+=========+=================+
-| 16 bits      | 16 bits | 12 bits |  4 bits | 16 bits |     variable    |
-+--------------+---------+---------+---------+---------+-----------------+
-|                        8 bytes                       |                 |
-+--------------+---------+---------+---------+---------+-----------------+
-
++--------+---------+---------+---------+---------+------------+-----------+
+|  sync  |   crc   |  revno  |  msgid  | length  |  payload   |  padding  |
++========+=========+=========+=========+=========+============+===========+
+| 0x2440 | 16 bits | 3 bits  | 13 bits | 16 bits |  variable  | 0-24 bits |
++--------+---------+---------+---------+---------+------------+-----------+
+|                  8 bytes                       |            |           |
++--------+---------+---------+---------+---------+------------+-----------+
 
 Returns both the raw binary data (as bytes) and the parsed data
 (as an SBFMessage or NMEAMessage object).

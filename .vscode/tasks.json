@@ -182,7 +182,7 @@
                 "-m",
                 "pip",
                 "install",
-                "--user",
+                //"--user",
                 "--force-reinstall",
                 "*.whl"
             ],

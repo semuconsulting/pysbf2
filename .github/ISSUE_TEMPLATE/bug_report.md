@@ -27,7 +27,7 @@ A clear and concise description of what the bug is. Please include:
 
 Steps to reproduce the behaviour:
 1. Any relevant device configuration (if other than factory defaults).
-2. Any causal SBF command input(s).
+2. Any causal Septentrio command input(s).
 
 **Expected Behaviour**
 
@@ -40,11 +40,9 @@ A clear and concise description of what you expected to happen.
 
 **GNSS/GPS Device (please complete the following information as best you can):**
 
-- Device Model/Generation: [e.g. u-blox NEO-9M].
-- Firmware Version: [e.g. SPG 4.03].
-- Protocol: [e.g. 32.00].
- 
-This information is typically output by the device at startup via a series of NMEA TXT messages. It can also be found by polling the device with a SBF MON-VER message. If you're using the PyGPSClient GUI, a screenshot of the SBFConfig window should suffice.
+- Device Model/Generation: [e.g. MOSAIC-X5].
+- Firmware Version: [e.g. 4.14.10.1].
+
 
 **Additional context**
 

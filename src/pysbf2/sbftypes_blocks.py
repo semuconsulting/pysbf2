@@ -44,6 +44,7 @@ from pysbf2.sbftypes_core import (
     U8,
     U16,
     U20,
+    V1,
     V2,
     V4,
 )
@@ -1174,8 +1175,8 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "AlertFlag": U1,
         "PPPInfo": U2,
         "Latency": U2,
-        "HAccuracy": U2,
-        "VAccuracy": U2,
+        "HAccuracy": U2,  # cm
+        "VAccuracy": U2,  # cm
         "Misc": U1,
     },
     "PosCovCartesian": {
@@ -1972,12 +1973,7 @@ SBF_MISCELLANEOUS_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "Reserved": U2,
-        "group": (
-            "N",
-            {
-                "CmdData": U1,
-            },
-        ),
+        "CmdData": V1,  # variable number of U1
     },
     "BBSamples": {
         "TOW": U4,

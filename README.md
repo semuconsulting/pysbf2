@@ -32,7 +32,7 @@ This is an independent project and we have no affiliation whatsoever with Septen
 ![Contributors](https://img.shields.io/github/contributors/semuconsulting/pysbf2.svg)
 ![Open Issues](https://img.shields.io/github/issues-raw/semuconsulting/pysbf2)
 
-The library implements a comprehensive set of messages for Septentrio Mosaic X5 devices, but is readily [extensible](#extensibility). Refer to `SBF_MSGIDS` in [sbftypes_core.py](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_core.py#L83) for the complete dictionary of messages currently supported. SBF protocol information sourced from mosaic-X5 Reference Guide v4.14.10.
+The library implements a comprehensive set of messages for Septentrio Mosaic X5 devices, but is readily [extensible](#extensibility). Refer to `SBF_MSGIDS` in [sbftypes_core.py](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_core.py#L111) for the complete dictionary of messages currently supported. SBF protocol information sourced from mosaic-X5 Reference Guide v4.14.10.
 
 Sphinx API Documentation in HTML format is available at [https://www.semuconsulting.com/pysbf2/](https://www.semuconsulting.com/pysbf2/).
 

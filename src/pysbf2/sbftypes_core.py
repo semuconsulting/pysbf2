@@ -87,6 +87,7 @@ X4 = "X004"  # Bitfield 4 bytes
 X6 = "X006"  # Bitfield 6 bytes
 X8 = "X008"  # Bitfield 8 bytes
 X24 = "X024"  # Bitfield 24 bytes
+V1 = "V001"  # variable number of U1
 V2 = "V002"  # variable number of U2
 V4 = "V004"  #  variable number of U4
 PD = "SBLength"  # Sub-block padding marker single level

@@ -45,6 +45,7 @@ Contributions welcome - please refer to [CONTRIBUTING.MD](https://github.com/sem
 
 ![Python version](https://img.shields.io/pypi/pyversions/pysbf2.svg?style=flat)
 [![PyPI version](https://img.shields.io/pypi/v/pysbf2.svg?style=flat)](https://pypi.org/project/pysbf2/)
+![PyPI downloads](https://img.shields.io/pypi/dm/pysbf2.svg?style=flat)
 
 `pysbf2` is compatible with Python 3.9 - 3.13. In the following, `python3` & `pip` refer to the Python 3 executables. You may need to substitute `python` for `python3`, depending on your particular environment (*on Windows it's generally `python`*).
 

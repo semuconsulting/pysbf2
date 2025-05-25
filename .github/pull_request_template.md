@@ -2,17 +2,15 @@
 
 ## Description
 
-Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context and, where applicable, any u-blox documentation sources you have used. List any dependencies that are required for this change.
+Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context and, where applicable, any Septentrio documentation sources you have used. List any dependencies that are required for this change.
 
-Please do **NOT** submit PRs containing information (e.g. SBF message definitions) which is subject to a u-blox Non-Disclosure Agreement (NDA).
+Please do **NOT** submit PRs containing information (e.g. SBF message definitions) which is subject to a Septentrio Non-Disclosure Agreement (NDA).
 
 Fixes # (issue)
 
 ## Testing
 
 Please test all changes, however trivial, against the supplied pytest suite `tests/test_*.py`. Please describe any test cases you have amended or added to this suite to maintain >= 99% code coverage.
-
-If you're adding new SBF message definitions for Generation 9+ devices, please check for any corresponding configuration database updates (`SBFtypes_configdb.py`).
 
 - [ ] Test A
 - [ ] Test B
@@ -22,7 +20,7 @@ If you're adding new SBF message definitions for Generation 9+ devices, please c
 - [ ] I agree to abide by the code of conduct (see [CODE_OF_CONDUCT.md](https://github.com/semuconsulting/pysbf2/blob/master/CODE_OF_CONDUCT.md)).
 - [ ] My code follows the style guidelines of this project (see [CONTRIBUTING.MD](https://github.com/semuconsulting/pysbf2/blob/master/CONTRIBUTING.md)).
 - [ ] I have performed a self-review of my own code.
-- [ ] (*if appropriate*) I have cited my u-blox documentation source(s).
+- [ ] (*if appropriate*) I have cited my Septentrio documentation source(s).
 - [ ] I have commented my code, particularly in hard-to-understand areas.
 - [ ] I have made corresponding changes to the documentation.
 - [ ] (*if appropriate*) I have added test cases to the `tests/test_*.py` unittest suite to maintain >= 99% code coverage.

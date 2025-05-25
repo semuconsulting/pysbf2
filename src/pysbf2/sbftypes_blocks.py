@@ -40,12 +40,19 @@ from pysbf2.sbftypes_core import (
     U2,
     U3,
     U4,
+    U5,
     U6,
+    U7,
     U8,
+    U9,
+    U12,
     U16,
     U20,
+    V1,
     V2,
     V4,
+    X1,
+    X2,
 )
 
 SBF_MEASUREMENT_BLOCKS = {
@@ -60,14 +67,29 @@ SBF_MEASUREMENT_BLOCKS = {
         "N1": U1,
         "SB1Length": U1,
         "SB2Length": U1,
-        "CommonFlags": U1,
+        "CommonFlags": (
+            X1,
+            {
+                "MultipathMitigation": U1,
+                "CodeSmoothing": U1,
+                "Reserved": U1,
+                "ClockSteering": U1,
+                "Reserved1": U1,
+                "HighDynamics": U1,
+                "E6BUsed": U1,
+                "Scrambling": U1,
+            },
+        ),
         "CumClkJumps": U1,
         "Reserved": U1,
         "group1": (
             "N1",
             {
                 "RxChannel": U1,
-                "Type": U1,
+                "Type": (
+                    X1,
+                    {"SigIdxLo": U5, "AntennaID": U3},
+                ),
                 "SVID": U1,
                 "Misc": U1,
                 "CodeLSB": U4,
@@ -82,7 +104,10 @@ SBF_MEASUREMENT_BLOCKS = {
                 "group2": (
                     "N2+1",
                     {
-                        "Type": U1,
+                        "Type": (
+                            X1,
+                            {"SigIdxLo": U5, "AntennaID": U3},
+                        ),
                         "LockTime": U1,
                         "CN0": U1,
                         "OffsetsMSB": U1,
@@ -107,16 +132,22 @@ SBF_MEASUREMENT_BLOCKS = {
             "N",
             {
                 "RxChannel": U1,
-                "Type": U1,
+                "Type": (
+                    X1,
+                    {"SigIdxLo": U5, "AntennaID": U3},
+                ),
                 "MPCorrection": I2,
                 "SmoothingCorr": I2,
                 "CodeVar": U2,
                 "CarrierVar": U2,
                 "LockTime": U2,
-                "CumLossCont": U1,
+                "CumLossCont": U1,  # Rev 1
                 "CarMPCorr": I1,
-                "Info": U1,
-                "Misc": U1,
+                "Info": U1,  # Rev 2
+                "Misc": (  # Rev 3
+                    X1,
+                    {"CN0HighRes": U3, "SigIdxHi": U5},
+                ),
                 PAD: PD,
             },
         ),
@@ -192,21 +223,6 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
             },
         ),
     },
-    "GALRawCNAV": {
-        "TOW": U4,
-        "WNc": U2,
-        "SVID": U1,
-        "CRCPassed": U1,
-        "ViterbiCnt": U1,
-        "Source": U1,
-        "FreqNr": U1,
-        "group": (
-            16,
-            {
-                "NavBits": U4,
-            },
-        ),
-    },
     "GALRawFNAV": {
         "TOW": U4,
         "WNc": U2,
@@ -234,6 +250,21 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "RxChannel": U1,
         "group": (
             8,
+            {
+                "NavBits": U4,
+            },
+        ),
+    },
+    "GALRawCNAV": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "CRCPassed": U1,
+        "ViterbiCnt": U1,
+        "Source": U1,
+        "FreqNr": U1,
+        "group": (
+            16,
             {
                 "NavBits": U4,
             },
@@ -493,7 +524,17 @@ SBF_GPS_DECODED_MESSAGE_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "PRN": U1,
-        "Flags": U1,
+        "Flags": (
+            X1,
+            {
+                "Alert": U1,
+                "Integrity": U1,
+                "L2CPhasing": U1,
+                "Reserved": U3,
+                "L2CUsed": U1,
+                "L5Used": U1,
+            },
+        ),
         "WN": U2,
         "Health": U1,
         "URA_ED": I1,
@@ -629,7 +670,21 @@ SBF_GALILEO_DECODED_MESSAGE_BLOCKS = {
         "WNt_oe": U2,
         "WNt_oc": U2,
         "IODnav": U2,
-        "Health_OSSOL": U2,
+        "Health_OSSOL": (
+            X2,
+            {
+                "L1-BHealth": U1,
+                "L1-Bdvs": U1,
+                "L1-Bhs": U2,
+                "E5bHealth": U1,
+                "E5bdvs": U1,
+                "E5bhs": U2,
+                "E5aHealth": U1,
+                "E5advs": U1,
+                "E5ahs": U2,
+                "Reserved": U4,
+            },
+        ),
         "Health_PRS": U1,
         "SISA_L1E5a": U1,
         "SISA_L1E5b": U1,
@@ -656,7 +711,18 @@ SBF_GALILEO_DECODED_MESSAGE_BLOCKS = {
         "a_f0": F4,
         "WN_a": U1,
         "SVID_A": U1,
-        "health": U2,
+        "health": (
+            X2,
+            {
+                "L1-BHealth": U1,
+                "L1-Bhs": U2,
+                "E5bHealth": U1,
+                "E5bhs": U2,
+                "E5aHealth": U1,
+                "E5ahs": U2,
+                "Reserved": U7,
+            },
+        ),
         "IODa": U1,
     },
     "GALIon": {
@@ -667,7 +733,17 @@ SBF_GALILEO_DECODED_MESSAGE_BLOCKS = {
         "a_i0": F4,
         "a_i1": F4,
         "a_i2": F4,
-        "StormFlags": U1,
+        "StormFlags": (
+            X1,
+            {
+                "StormSF5": U1,
+                "StormSF4": U1,
+                "StormSF3": U1,
+                "StormSF2": U1,
+                "StormSF1": U1,
+                "Reserved": U3,
+            },
+        ),
     },
     "GALUtc": {
         "TOW": U4,
@@ -1122,7 +1198,15 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "PVTCartesian": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "X": F8,
         "Y": F8,
@@ -1141,18 +1225,49 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "ReferenceID": U2,
         "MeanCorrAge": U2,
         "SignalInfo": U4,
-        "AlertFlag": U1,
+        "AlertFlag": (
+            X1,
+            {
+                "RAIMIntegrity": U2,
+                "GalHPCAFail": U1,
+                "GalIonStorm": U1,
+                "Reserved2": U4,
+            },
+        ),
         "NrBases": U1,
-        "PPPInfo": U2,
+        "PPPInfo": (
+            X2,
+            {
+                "PPPSeedAge": U12,
+                "Reserved3": U1,
+                "PPPSeedType": U3,
+            },
+        ),
         "Latency": U2,
         "HAccuracy": U2,
         "VAccuracy": U2,
-        "Misc": U1,
+        "Misc": (
+            X1,
+            {
+                "BaseARP": U1,
+                "PhaseCtrOffset": U1,
+                "Reserved4": U4,
+                "ARPOffset": U2,
+            },
+        ),
     },
     "PVTGeodetic": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Latitude": F8,  # radians
         "Longitude": F8,  # radians
@@ -1167,21 +1282,64 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "TimeSystem": U1,
         "Datum": U1,
         "NrSV": U1,
-        "WACorrInfo": U1,
+        "WACorrInfo": (
+            X1,
+            {
+                "Corr_OrbClkUsed": U1,
+                "Corr_RngUsed": U1,
+                "Corr_IonoUsed": U1,
+                "Corr_OrbAccUsed": U1,
+                "Corr_DO229Active": U1,
+                "Corr_RTKType": U2,
+                "Reserved2": U1,
+            },
+        ),
         "ReferenceID": U2,
         "MeanCorrAge": U2,
         "SignalInfo": U4,
-        "AlertFlag": U1,
-        "PPPInfo": U2,
+        "AlertFlag": (
+            X1,
+            {
+                "RAIMIntegrity": U2,
+                "GalHPCAFail": U1,
+                "GalIonStorm": U1,
+                "Reserved2": U4,
+            },
+        ),
+        "NrBases": U1,  # Rev 1
+        "PPPInfo": (
+            X2,
+            {
+                "PPPSeedAge": U12,
+                "Reserved3": U1,
+                "PPPSeedType": U3,
+            },
+        ),
         "Latency": U2,
-        "HAccuracy": U2,
-        "VAccuracy": U2,
-        "Misc": U1,
+        "HAccuracy": U2,  # cm
+        "VAccuracy": U2,  # cm
+        "Misc": (
+            X1,
+            {
+                "BaseARP": U1,
+                "PhaseCtrOffset": U1,
+                "Reserved4": U4,
+                "ARPOffset": U2,
+            },
+        ),
     },
     "PosCovCartesian": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Cov_xx": F4,
         "Cov_yy": F4,
@@ -1197,7 +1355,15 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "PosCovGeodetic": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Cov_latlat": F4,
         "Cov_lonlon": F4,
@@ -1213,7 +1379,15 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "VelCovCartesian": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Cov_VxVx": F4,
         "Cov_VyVy": F4,
@@ -1229,7 +1403,15 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "VelCovGeodetic": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Cov_VnVn": F4,
         "Cov_VeVe": F4,
@@ -1257,7 +1439,15 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "PosCart": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "X": F8,
         "Y": F8,
@@ -1274,12 +1464,31 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "PDOP": U2,
         "HDOP": U2,
         "VDOP": U2,
-        "Misc": U1,
-        "Reserved": U1,
+        "Misc": (
+            X1,
+            {
+                "BaseARP": U1,
+                "PhaseCtrOffset": U1,
+                "Reserved2": U4,
+                "ARPOffset": U2,
+            },
+        ),
+        "Reserved3": U1,
         "AlertFlag": U1,
         "Datum": U1,
         "NrSV": U1,
-        "WACorrInfo": U1,
+        "WACorrInfo": (
+            X1,
+            {
+                "Corr_OrbClkUsed": U1,
+                "Corr_RngUsed": U1,
+                "Corr_IonoUsed": U1,
+                "Corr_OrbAccUsed": U1,
+                "Corr_DO229Active": U1,
+                "Corr_RTKType": U2,
+                "Reserved4": U1,
+            },
+        ),
         "ReferenceId": U2,
         "MeanCorrAge": U2,
         "SignalInfo": U4,
@@ -1287,17 +1496,33 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "PosLocal": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
-        "Lat": F8,
-        "Lon": F8,
+        "Lat": F8,  # radians
+        "Lon": F8,  # radians
         "Alt": F8,
         "Datum": U1,
     },
     "PosProjected": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Northing": F8,
         "Easting": F8,
@@ -1307,15 +1532,31 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "BaseVectorCart": {
         "TOW": U4,
         "WNc": U2,
-        "NSubBlock": U1,
+        "N": U1,
         "SBLength": U1,
         "group": (
-            "NSubBlock",
+            "N",
             {
                 "nrSv": U1,
                 "Error": U1,
-                "Mode": U1,
-                "Misc": U1,
+                "Mode": (
+                    X1,
+                    {
+                        "Type": U4,
+                        "Reserved1": U2,
+                        "AutoSet": U1,
+                        "2D": U1,
+                    },
+                ),
+                "Misc": (
+                    X1,
+                    {
+                        "BaseARP": U1,
+                        "PhaseCtrOffset": U1,
+                        "Reserved2": U4,
+                        "ARPOffset": U2,
+                    },
+                ),
                 "DeltaX": F8,
                 "DeltaY": F8,
                 "DeltaZ": F8,
@@ -1341,8 +1582,24 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             {
                 "NrSV": U1,
                 "Error": U1,
-                "Mode": U1,
-                "Misc": U1,
+                "Mode": (
+                    X1,
+                    {
+                        "Type": U4,
+                        "Reserved1": U2,
+                        "AutoSet": U1,
+                        "2D": U1,
+                    },
+                ),
+                "Misc": (
+                    X1,
+                    {
+                        "BaseARP": U1,
+                        "PhaseCtrOffset": U1,
+                        "Reserved2": U4,
+                        "ARPOffset": U2,
+                    },
+                ),
                 "DeltaEast": F8,
                 "DeltaNorth": F8,
                 "DeltaUp": F8,
@@ -1426,14 +1683,23 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "Source": U1,
+        "Polarity": U1,
         "Offset": F4,
         "RxClkBias": F8,
-        "PVTAge": U2,
+        "PVTAge": U2,  # Rev 1
     },
     "ExtEventPVTCartesian": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "X": F8,
         "Y": F8,
@@ -1448,22 +1714,49 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
         "TimeSystem": U1,
         "Datum": U1,
         "NrSV": U1,
-        "WACorrInfo": U1,
+        "WACorrInfo": (
+            X1,
+            {
+                "Corr_OrbClkUsed": U1,
+                "Corr_RngUsed": U1,
+                "Corr_IonoUsed": U1,
+                "Corr_OrbAccUsed": U1,
+                "Corr_DO229Active": U1,
+                "Corr_RTKType": U2,
+                "Reserved2": U1,
+            },
+        ),
         "ReferenceID": U2,
         "MeanCorrAge": U2,
         "SignalInfo": U4,
         "AlertFlag": U1,
-        "NrBases": U1,
+        "NrBases": U1,  # Rev 1
         "PPPInfo": U2,
-        "Latency": U2,
+        "Latency": U2,  # Rev 2
         "HAccuracy": U2,
         "VAccuracy": U2,
-        "Misc": U1,
+        "Misc": (
+            X1,
+            {
+                "BaseARP": U1,
+                "PhaseCtrOffset": U1,
+                "Reserved3": U4,
+                "ARPOffset": U2,
+            },
+        ),
     },
     "ExtEventPVTGeodetic": {
         "TOW": U4,
         "WNc": U2,
-        "Mode": U1,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
         "Error": U1,
         "Latitude": F8,
         "Longitude": F8,
@@ -1478,17 +1771,36 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
         "TimeSystem": U1,
         "Datum": U1,
         "NrSV": U1,
-        "WACorrInfo": U1,
+        "WACorrInfo": (
+            X1,
+            {
+                "Corr_OrbClkUsed": U1,
+                "Corr_RngUsed": U1,
+                "Corr_IonoUsed": U1,
+                "Corr_OrbAccUsed": U1,
+                "Corr_DO229Active": U1,
+                "Corr_RTKType": U2,
+                "Reserved2": U1,
+            },
+        ),
         "ReferenceID": U2,
         "MeanCorrAge": U2,
         "SignalInfo": U4,
         "AlertFlag": U1,
-        "NrBases": U1,
+        "NrBases": U1,  # Rev 1
         "PPPInfo": U2,
-        "Latency": U2,
+        "Latency": U2,  # Rev 2
         "HAccuracy": U2,
         "VAccuracy": U2,
-        "Misc": U1,
+        "Misc": (
+            X1,
+            {
+                "BaseARP": U1,
+                "PhaseCtrOffset": U1,
+                "Reserved3": U4,
+                "ARPOffset": U2,
+            },
+        ),
     },
     "ExtEventBaseVectGeod": {
         "TOW": U4,
@@ -1500,8 +1812,23 @@ SBF_EXTERNAL_EVENT_BLOCKS = {
             {
                 "NrSV": U1,
                 "Error": U1,
-                "Mode": U1,
-                "Misc": U1,
+                "Mode": (
+                    X1,
+                    {
+                        "Type": U4,
+                        "Reserved1": U2,
+                        "AutoSet": U1,
+                        "2D": U1,
+                    },
+                ),
+                "Misc": (
+                    X1,
+                    {
+                        "BaseARP": U1,
+                        "PhaseCtrOffset": U1,
+                        "Reserved2": U6,
+                    },
+                ),
                 "DeltaEast": F8,
                 "DeltaNorth": F8,
                 "DeltaUp": F8,
@@ -1640,7 +1967,7 @@ SBF_LBAND_DEMODULATOR_BLOCKS = {
                 "UserData": U1,
             },
         ),
-        "Channel": U1,
+        "Channel": U1,  # Rev 1
     },
     "FugroStatus": {
         "TOW": U4,
@@ -1673,17 +2000,19 @@ SBF_STATUS_BLOCKS = {
                 "SVID": U1,
                 "FreqNr": U1,
                 "Reserved1": U2,
-                "Azimuth/RiseSet": U2,
+                "Azimuth/RiseSet": (
+                    X2,
+                    {
+                        "Azimuth": U9,
+                        "Reserved5": U5,
+                        "RiseSet": U2,
+                    },
+                ),
                 "HealthStatus": U2,
                 "Elevation": I1,
                 "N2": U1,
                 "RxChannel": U1,
                 "Reserved2": U1,
-                "Antenna": U1,
-                "Reserved3": U1,
-                "TrackingStatus": U2,
-                "PVTStatus": U2,
-                "PVTInfo": U2,
                 PAD: PD1,
                 "group1": (
                     "N2+1",
@@ -1835,7 +2164,7 @@ SBF_STATUS_BLOCKS = {
         "WNc": U2,
         "Status": U1,
         "ErrorCode": U1,
-        "IPAddress": U16,
+        "IPAddress": U16,  # Rev 1
     },
     "QualityInd": {
         "TOW": U4,
@@ -1845,7 +2174,14 @@ SBF_STATUS_BLOCKS = {
         "group": (
             "N",
             {
-                "Indicators": U2,
+                "Indicators": (
+                    X2,
+                    {
+                        "QualityType": U8,
+                        "QualityValue": U4,
+                        "Reserved1": U4,
+                    },
+                ),
             },
         ),
     },
@@ -1859,12 +2195,23 @@ SBF_STATUS_BLOCKS = {
             "N",
             {
                 "DiskID": U1,
-                "Status": U1,
+                "Status": (
+                    X1,
+                    {
+                        "Mounted": U1,
+                        "Full": U1,
+                        "Activity": U1,
+                        "Logging": U1,
+                        "Mounting": U1,  # Rev 1
+                        "Formatting": U1,
+                        "Reserved1": U2,
+                    },
+                ),
                 "DiskUsageMSB": U2,
                 "DiskUsageLSB": U4,
                 "DiskSize": U4,
                 "CreateDeleteCount": U1,
-                "Error": U1,
+                "Error": U1,  # Rev 1
                 PAD: PD,
             },
         ),
@@ -1874,14 +2221,28 @@ SBF_STATUS_BLOCKS = {
         "WNc": U2,
         "N": U1,
         "SBLength": U1,
-        "Flags": U1,
+        "Flags": (
+            X1,
+            {
+                "Misleading": U1,
+                "Inauthentic": U1,
+                "Reserved2": U6,
+            },
+        ),
         "Reserved": U3,
         "group": (
             "N",
             {
                 "Frequency": U4,
                 "Bandwidth": U2,
-                "Info": U1,
+                "Info": (
+                    X1,
+                    {
+                        "Mode": U4,
+                        "Reserved3": U2,
+                        "AntennaID": U2,
+                    },
+                ),
                 PAD: PD,
             },
         ),
@@ -1896,7 +2257,13 @@ SBF_STATUS_BLOCKS = {
             {
                 "SessionID": U1,
                 "Port": U1,
-                "Status": U1,
+                "Status": (
+                    X1,
+                    {
+                        "Mode": U1,
+                        "P2PPStatus": U7,
+                    },
+                ),
                 "ErrorCode": U1,
                 PAD: PD,
             },
@@ -1905,7 +2272,16 @@ SBF_STATUS_BLOCKS = {
     "GALAuthStatus": {
         "TOW": U4,
         "WNc": U2,
-        "OSNMAStatus": U2,
+        "OSNMAStatus": (
+            X2,
+            {
+                "Status": U3,
+                "OSNMAProgress": U8,
+                "TimeSource": U3,
+                "MerkleInProgress": U1,
+                "Reserved": U1,
+            },
+        ),
         "TrustedTimeDelta": F4,
         "GalActiveMask": U8,
         "GalAuthenticMask": U8,
@@ -1930,11 +2306,11 @@ SBF_MISCELLANEOUS_BLOCKS = {
         "deltaH": F4,
         "deltaE": F4,
         "deltaN": F4,
-        "MarkerType": C20,
-        "GNSSFWVersion": C40,
-        "ProductName": C40,
-        "Latitude": F8,
-        "Longitude": F8,
+        "MarkerType": C20,  # Rev 1
+        "GNSSFWVersion": C40,  # Rev 2
+        "ProductName": C40,  # Rev 3
+        "Latitude": F8,  # radians Rev 4
+        "Longitude": F8,  # radians
         "Height": F4,
         "StationCode": C10,
         "MonumentIdx": U1,
@@ -1972,18 +2348,19 @@ SBF_MISCELLANEOUS_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "Reserved": U2,
-        "group": (
-            "N",
-            {
-                "CmdData": U1,
-            },
-        ),
+        "CmdData": V1,  # variable number of U1
     },
     "BBSamples": {
         "TOW": U4,
         "WNc": U2,
         "N": U2,
-        "Info": U1,
+        "Info": (
+            X1,
+            {
+                "AntennaID": U3,
+                "Reserved": U5,
+            },
+        ),
         "Reserved": U3,
         "SampleFreq": U4,
         "LOFreq": U4,

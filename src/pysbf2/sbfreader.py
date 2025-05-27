@@ -29,6 +29,8 @@ Created on 19 May 2025
 :license: BSD 3-Clause
 """
 
+# pylint: disable=too-many-positional-arguments
+
 from logging import getLogger
 from socket import socket
 

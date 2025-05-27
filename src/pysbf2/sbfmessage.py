@@ -10,7 +10,7 @@ Created on 19 May 2025
 :license: BSD 3-Clause
 """
 
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name,too-many-positional-arguments,too-many-arguments
 
 import struct
 from math import ceil
@@ -38,7 +38,6 @@ from pysbf2.sbftypes_core import (
     SBF_MSGIDS,
     SCALROUND,
     U2,
-    VAR,
     X1,
     X2,
     X4,
@@ -118,7 +117,7 @@ class SBFMessage:
         index = []  # array of (nested) group indices
 
         try:
-            if len(kwargs) == 0:  # if no kwargs, assume null payload
+            if len(kwargs) == 0:  # pragma: no cover
                 self._payload = None
                 self._nyi = True
             else:
@@ -274,7 +273,7 @@ class SBFMessage:
         (anam, con), gdict = adef  # (attribute, condition), group dictionary
         # "+n" suffix signifies that one or more nested group indices
         # must be appended to name e.g. "N_01", "N_03"
-        if "+" in anam:
+        if "+" in anam:  # pragma: no cover
             anam, nestlevel = anam.split("+")
             for i in range(int(nestlevel)):
                 anam += f"_{index[i]:02d}"
@@ -461,7 +460,7 @@ class SBFMessage:
         try:
             pdict = SBF_BLOCKS[self._msgid]
             return pdict
-        except KeyError as err:
+        except KeyError as err:  # pragma: no cover
             raise SBFMessageError(
                 f"Unknown message type {escapeall(self._msgid)}."
             ) from err
@@ -500,9 +499,9 @@ class SBFMessage:
 
         """
 
-        if self._payload is None:
-            return f"SBFMessage({self._msgid})"
-        return f"SBFMessage({self._msgid}, payload={self._payload})"
+        # if self._payload is None:
+        #     return f"SBFMessage({self._msgid})"
+        return f'SBFMessage("{self._msgid}", payload={self._payload})'
 
     def __setattr__(self, name, value):
         """

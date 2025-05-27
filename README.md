@@ -13,8 +13,6 @@ pysbf2
 [Known Issues](#knownissues) |
 [Author & License](#author)
 
-# WORK IN PROGRESS
-
 `pysbf2` is an original Python 3 parser for the SBF &copy; protocol. SBF is a proprietary binary protocol implemented on Septentrio &trade; GNSS receiver modules. `pysbf2` can also parse NMEA 0183 &copy; and RTCM3 &copy; protocols via the underlying [`pynmeagps`](https://github.com/semuconsulting/pynmeagps) and [`pyrtcm`](https://github.com/semuconsulting/pyrtcm) packages from the same author - hence it covers all the common protocols that Septentrio SBF receivers are capable of outputting.
 
 The `psbf2` homepage is located at [https://github.com/semuconsulting/pysbf2](https://github.com/semuconsulting/pysbf2).
@@ -142,7 +140,12 @@ msg = SBFReader.parse(b"$@^b\xa6\x0f`\x00X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\xfc\
 print(msg)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=122, VAccuracy=136, Misc=96)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=1, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved2=0, NrBases=0, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved4=8, ARPOffset=1)>
+```
+
+If `parsebitfield=False`, the message is parsed without individual bit flags, e.g.:
+```
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=b'\x01', Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=b'\x01', NrBases=0, PPPInfo=b'\x00\x00', Latency=43, HAccuracy=122, VAccuracy=136, Misc=b'`')>
 ```
 
 The `SBFMessage` object exposes different public attributes depending on its message type or 'identity',
@@ -154,9 +157,18 @@ print(msg.identity)
 print(msg.X, msg.Y, msg.Z)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=122, VAccuracy=136, Misc=96)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=1, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved2=0, NrBases=0, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved4=8, ARPOffset=1)>
 PVTCartesian
 3803640.1823747293, -148797.3625715144, 5100642.783697508
+```
+
+Decodes for various coded attributes (e.g. PVT `Type`) are provided in [`sbftypes_decodes.py`](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_decodes.py):
+```python
+from pysbf2 import PVT_TYPE
+print(PVT_TYPE[msg.Type]) # msg.Type = 4
+```
+```
+"RTK with fixed ambiguities"
 ```
 
 The `payload` attribute always contains the raw payload as bytes. Attributes within repeating groups are parsed with a two-digit suffix (PRNMaskNo_01, PRNMaskNo_02, etc.).
@@ -199,7 +211,7 @@ msg1 = SBFMessage("PVTCartesian", payload=b'X\x9bs\x0c?\t\x01\x00\x1d\x0eX\x17\x
 print(msg1)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=65535, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=1220, VAccuracy=1366, Misc=96)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=1, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=65535, SignalInfo=1345456397, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved2=0, NrBases=0, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=43, HAccuracy=1220, VAccuracy=1366, BaseARP=0, PhaseCtrOffset=0, Reserved4=8, ARPOffset=1)>
 ```
 B. Pass individual attributes as keyword arguments:
 ```python
@@ -208,7 +220,7 @@ msg2 = SBFMessage("PVTCartesian",TOW=208903000,WNc=2367,Mode=1,Error=0,X=3803640
 print(msg2)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=65535, SignalInfo=1345456397, AlertFlag=1, NrBases=0, PPPInfo=0, Latency=43, HAccuracy=1220, VAccuracy=1366, Misc=96)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=0, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=0, ReferenceID=65535, MeanCorrAge=65535, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved2=0, NrBases=0, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=43, HAccuracy=1220, VAccuracy=1366, BaseARP=0, PhaseCtrOffset=0, Reserved4=0, ARPOffset=0)>
 ```
 C. Pass selected attribute as keyword argument; the rest will be set to nominal values (in this case 0):
 ```python
@@ -217,7 +229,7 @@ msg3 = SBFMessage("PVTCartesian",TOW=208903000,WNc=2367,Mode=1,Error=0,X=3803640
 print(msg3)
 ```
 ```
-<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=1, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=0.0, Vx=0.0, Vy=0.0, Vz=0.0, COG=0.0, RxClkBias=0.0, RxClkDrift=0.0, TimeSystem=0, Datum=0, NrSV=0, WACorrInfo=0, ReferenceID=0, MeanCorrAge=0, SignalInfo=0, AlertFlag=0, NrBases=0, PPPInfo=0, Latency=0, HAccuracy=0, VAccuracy=0, Misc=0)>
+<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=0, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=0.0, Vx=0.0, Vy=0.0, Vz=0.0, COG=0.0, RxClkBias=0.0, RxClkDrift=0.0, TimeSystem=0, Datum=0, NrSV=0, WACorrInfo=0, ReferenceID=0, MeanCorrAge=0, SignalInfo=0, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved2=0, NrBases=0, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=0, HAccuracy=0, VAccuracy=0, BaseARP=0, PhaseCtrOffset=0, Reserved4=0, ARPOffset=0)>
 ```
 
 ---

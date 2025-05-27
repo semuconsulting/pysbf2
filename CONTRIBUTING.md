@@ -12,7 +12,7 @@ Being one of our contributors, you agree and confirm that:
 
 Please help us keep our issue list small by adding fixes: #{$ISSUE_NO} to the commit message of pull requests that resolve open issues. GitHub will use this tag to auto close the issue when the PR is merged.
 
-If you're adding or amending SBF payload definitions or configuration database keys, it would be helpful to quote/hyperlink the documentation source (e.g. specific u-blox Interface Specification).
+If you're adding or amending SBF payload definitions or configuration database keys, it would be helpful to quote/hyperlink the documentation source (e.g. specific Septentrio Interface Specification).
 
 ## Coding conventions
 
@@ -28,8 +28,6 @@ If you're adding or amending SBF payload definitions or configuration database k
 * Commits must be [signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
 
 ## Testing
-
-While we endeavour to test on as wide a variety of u-blox devices as possible, as a volunteer project we only have a limited number of devices available. We particularly welcome testing contributions relating to specialised devices (e.g. high precision HP, real-time kinematics RTK, automotive dead-reckoning ADR, etc.).
 
 We use python's native unittest framework for local unit testing, complemented by the GitHub Actions automated build and testing workflow. We endeavour to have >99% code coverage.
 

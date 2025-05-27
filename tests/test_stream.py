@@ -11,12 +11,22 @@ Created on 19 May 2025
 # pylint: disable=line-too-long, invalid-name, missing-docstring, no-member
 
 import os
+import sys
+import logging
+from io import BufferedReader
 import unittest
 
 from pyrtcm import RTCMReader
 from pysbf2 import (
     ERR_RAISE,
+    ERR_LOG,
+    ERR_IGNORE,
     SBFReader,
+    SBF_PROTOCOL,
+    NMEA_PROTOCOL,
+    RTCM3_PROTOCOL,
+    SBFStreamError,
+    SBFParseError,
 )
 
 DIRNAME = os.path.dirname(__file__)
@@ -25,35 +35,121 @@ DIRNAME = os.path.dirname(__file__)
 class StreamTest(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
+        self.logger = logging.getLogger()
+        self.logger.level = logging.DEBUG
 
     def tearDown(self):
         pass
 
-    def testMIXEDRTCM(
+    def testmixedall(
         self,
-    ):  # test mixed stream of NMEA, UBX & RTCM messages with protfilter = 7
+    ):  # test mixed stream of NMEA, SBF & RTCM messages with protfilter = all
         EXPECTED_RESULTS = (
             "<NMEA(GNGLL, lat=32.0658325, NS=N, lon=34.773819, EW=E, time=08:41:58, status=A, posMode=D)>",
             "<RTCM(1005, DF002=1005, DF003=0, DF021=0, DF022=1, DF023=1, DF024=1, DF141=0, DF025=4444030.802800001, DF142=1, DF001_1=0, DF026=3085671.2349, DF364=0, DF027=3366658.256)>",
-            "<RTCM(4072, DF002=4072, Not_Yet_Implemented)>",
-            "<RTCM(1077, DF002=1077, DF003=0, DF004=204137001, DF393=1, DF409=0, DF001_7=0, DF411=0, DF412=0, DF417=0, DF418=0, DF394=760738918298550272, NSat=10, DF395=1073807360, NSig=2, DF396=1044459, NCell=17, PRN_01=005, PRN_02=007, PRN_03=009, PRN_04=013, PRN_05=014, PRN_06=015, PRN_07=017, PRN_08=019, PRN_09=020, PRN_10=030, DF397_01=75, DF397_02=75, DF397_03=81, DF397_04=72, DF397_05=67, DF397_06=80, DF397_07=75, DF397_08=82, DF397_09=75, DF397_10=71, ExtSatInfo_01=0, ExtSatInfo_02=0, ExtSatInfo_03=0, ExtSatInfo_04=0, ExtSatInfo_05=0, ExtSatInfo_06=0, ExtSatInfo_07=0, ExtSatInfo_08=0, ExtSatInfo_09=0, ExtSatInfo_10=0, DF398_01=0.005859375, DF398_02=0.5341796875, DF398_03=0.7626953125, DF398_04=0.138671875, DF398_05=0.5498046875, DF398_06=0.11328125, DF398_07=0.8037109375, DF398_08=0.1025390625, DF398_09=0.521484375, DF398_10=0.345703125, DF399_01=-178, DF399_02=-304, DF399_03=-643, DF399_04=477, DF399_05=-52, DF399_06=645, DF399_07=529, DF399_08=643, DF399_09=-428, DF399_10=-181, CELLPRN_01=005, CELLSIG_01=1C, CELLPRN_02=005, CELLSIG_02=2L, CELLPRN_03=007, CELLSIG_03=1C, CELLPRN_04=007, CELLSIG_04=2L, CELLPRN_05=009, CELLSIG_05=1C, CELLPRN_06=009, CELLSIG_06=2L, CELLPRN_07=013, CELLSIG_07=1C, CELLPRN_08=014, CELLSIG_08=1C, CELLPRN_09=014, CELLSIG_09=2L, CELLPRN_10=015, CELLSIG_10=1C, CELLPRN_11=015, CELLSIG_11=2L, CELLPRN_12=017, CELLSIG_12=1C, CELLPRN_13=017, CELLSIG_13=2L, CELLPRN_14=019, CELLSIG_14=1C, CELLPRN_15=020, CELLSIG_15=1C, CELLPRN_16=030, CELLSIG_16=1C, CELLPRN_17=030, CELLSIG_17=2L, DF405_01=0.00014309026300907135, DF405_02=0.00014183297753334045, DF405_03=0.0003883279860019684, DF405_04=0.00038741156458854675, DF405_05=-0.0004838351160287857, DF405_06=-0.00046883709728717804, DF405_07=0.0003478657454252243, DF405_08=0.0002196934074163437, DF405_09=0.00021521002054214478, DF405_10=-0.00018852390348911285, DF405_11=-0.00018319115042686462, DF405_12=-0.00010087713599205017, DF405_13=-9.844452142715454e-05, DF405_14=0.00047875382006168365, DF405_15=0.00043664872646331787, DF405_16=-0.0003105681389570236, DF405_17=-0.00030865520238876343, DF406_01=0.00014193402603268623, DF406_02=0.00014339853078126907, DF406_03=0.00039040297269821167, DF406_04=0.00038743019104003906, DF406_05=-0.0004843934439122677, DF406_06=-0.00046825408935546875, DF406_07=0.0003473707474768162, DF406_08=0.00021758908405900002, DF406_09=0.00021597417071461678, DF406_10=-0.00018658116459846497, DF406_11=-0.00018350128084421158, DF406_12=-9.993184357881546e-05, DF406_13=-9.724870324134827e-05, DF406_14=0.0004128236323595047, DF406_15=0.0004355977289378643, DF406_16=-0.0003112703561782837, DF406_17=-0.00030898721888661385, DF407_01=341, DF407_02=341, DF407_03=341, DF407_04=341, DF407_05=341, DF407_06=341, DF407_07=341, DF407_08=341, DF407_09=341, DF407_10=341, DF407_11=341, DF407_12=341, DF407_13=341, DF407_14=295, DF407_15=341, DF407_16=341, DF407_17=341, DF420_01=0, DF420_02=0, DF420_03=0, DF420_04=0, DF420_05=0, DF420_06=0, DF420_07=0, DF420_08=0, DF420_09=0, DF420_10=0, DF420_11=0, DF420_12=0, DF420_13=0, DF420_14=0, DF420_15=0, DF420_16=0, DF420_17=0, DF408_01=45.0, DF408_02=38.0, DF408_03=43.0, DF408_04=39.0, DF408_05=39.0, DF408_06=37.0, DF408_07=45.0, DF408_08=46.0, DF408_09=46.0, DF408_10=39.0, DF408_11=34.0, DF408_12=45.0, DF408_13=38.0, DF408_14=31.0, DF408_15=45.0, DF408_16=46.0, DF408_17=41.0, DF404_01=-0.9231, DF404_02=-0.9194, DF404_03=-0.8321000000000001, DF404_04=-0.8326, DF404_05=-0.4107, DF404_06=-0.4072, DF404_07=0.2451, DF404_08=-0.0693, DF404_09=-0.0684, DF404_10=0.9390000000000001, DF404_11=0.9417000000000001, DF404_12=0.2384, DF404_13=0.2416, DF404_14=0.6636000000000001, DF404_15=-0.9556, DF404_16=-0.21480000000000002, DF404_17=-0.2174)>",
-            "<RTCM(1087, DF002=1087, DF003=0, DF416=2, DF034=42119001, DF393=1, DF409=0, DF001_7=0, DF411=0, DF412=0, DF417=0, DF418=0, DF394=4039168114821169152, NSat=7, DF395=1090519040, NSig=2, DF396=16382, NCell=13, PRN_01=003, PRN_02=004, PRN_03=005, PRN_04=013, PRN_05=014, PRN_06=015, PRN_07=023, DF397_01=69, DF397_02=64, DF397_03=73, DF397_04=76, DF397_05=66, DF397_06=70, DF397_07=78, DF419_01=12, DF419_02=13, DF419_03=8, DF419_04=5, DF419_05=0, DF419_06=7, DF419_07=10, DF398_01=0.6337890625, DF398_02=0.3427734375, DF398_03=0.25390625, DF398_04=0.310546875, DF398_05=0.5126953125, DF398_06=0.8271484375, DF398_07=0.8837890625, DF399_01=-665, DF399_02=29, DF399_03=672, DF399_04=-573, DF399_05=-211, DF399_06=312, DF399_07=317, CELLPRN_01=003, CELLSIG_01=1C, CELLPRN_02=003, CELLSIG_02=2C, CELLPRN_03=004, CELLSIG_03=1C, CELLPRN_04=004, CELLSIG_04=2C, CELLPRN_05=005, CELLSIG_05=1C, CELLPRN_06=005, CELLSIG_06=2C, CELLPRN_07=013, CELLSIG_07=1C, CELLPRN_08=013, CELLSIG_08=2C, CELLPRN_09=014, CELLSIG_09=1C, CELLPRN_10=014, CELLSIG_10=2C, CELLPRN_11=015, CELLSIG_11=1C, CELLPRN_12=015, CELLSIG_12=2C, CELLPRN_13=023, CELLSIG_13=1C, DF405_01=0.00024936161935329437, DF405_02=0.0002511627972126007, DF405_03=-4.678964614868164e-05, DF405_04=-5.141831934452057e-05, DF405_05=1.1144205927848816e-05, DF405_06=2.15042382478714e-05, DF405_07=0.00047079287469387054, DF405_08=0.0004794951528310776, DF405_09=-0.0003879182040691376, DF405_10=-0.00037603825330734253, DF405_11=0.0002771839499473572, DF405_12=0.0002871435135602951, DF405_13=-0.00023611821234226227, DF406_01=0.00024937279522418976, DF406_02=0.00025077443569898605, DF406_03=-4.834495484828949e-05, DF406_04=-5.1246024668216705e-05, DF406_05=1.1149328202009201e-05, DF406_06=2.1803192794322968e-05, DF406_07=0.00047026341781020164, DF406_08=0.0004848274402320385, DF406_09=-0.0003876127302646637, DF406_10=-0.0003757951781153679, DF406_11=0.0002778824418783188, DF406_12=0.0002880701795220375, DF406_13=-0.00023698341101408005, DF407_01=341, DF407_02=341, DF407_03=340, DF407_04=340, DF407_05=341, DF407_06=341, DF407_07=340, DF407_08=341, DF407_09=341, DF407_10=341, DF407_11=341, DF407_12=341, DF407_13=340, DF420_01=0, DF420_02=0, DF420_03=0, DF420_04=0, DF420_05=0, DF420_06=0, DF420_07=0, DF420_08=0, DF420_09=0, DF420_10=0, DF420_11=0, DF420_12=0, DF420_13=0, DF408_01=47.0, DF408_02=40.0, DF408_03=47.0, DF408_04=42.0, DF408_05=47.0, DF408_06=39.0, DF408_07=36.0, DF408_08=33.0, DF408_09=48.0, DF408_10=43.0, DF408_11=48.0, DF408_12=40.0, DF408_13=41.0, DF404_01=-0.8193, DF404_02=-0.8173, DF404_03=0.8539, DF404_04=0.8501000000000001, DF404_05=0.7333000000000001, DF404_06=0.7311000000000001, DF404_07=-0.24930000000000002, DF404_08=-0.2543, DF404_09=-0.21580000000000002, DF404_10=-0.21780000000000002, DF404_11=0.3924, DF404_12=0.3947, DF404_13=0.6146)>",
-            "<RTCM(1097, DF002=1097, DF003=0, DF248=204137001, DF393=1, DF409=0, DF001_7=0, DF411=0, DF412=0, DF417=0, DF418=0, DF394=216181732825628672, NSat=5, DF395=1073872896, NSig=2, DF396=1023, NCell=10, PRN_01=007, PRN_02=008, PRN_03=021, PRN_04=027, PRN_05=030, DF397_01=79, DF397_02=84, DF397_03=89, DF397_04=78, DF397_05=83, ExtSatInfo_01=0, ExtSatInfo_02=0, ExtSatInfo_03=0, ExtSatInfo_04=0, ExtSatInfo_05=0, DF398_01=0.15625, DF398_02=0.2509765625, DF398_03=0.3544921875, DF398_04=0.37109375, DF398_05=0.259765625, DF399_01=-198, DF399_02=-516, DF399_03=423, DF399_04=63, DF399_05=-384, CELLPRN_01=007, CELLSIG_01=1C, CELLPRN_02=007, CELLSIG_02=7Q, CELLPRN_03=008, CELLSIG_03=1C, CELLPRN_04=008, CELLSIG_04=7Q, CELLPRN_05=021, CELLSIG_05=1C, CELLPRN_06=021, CELLSIG_06=7Q, CELLPRN_07=027, CELLSIG_07=1C, CELLPRN_08=027, CELLSIG_08=7Q, CELLPRN_09=030, CELLSIG_09=1C, CELLPRN_10=030, CELLSIG_10=7Q, DF405_01=-4.5398250222206116e-05, DF405_02=-2.8252601623535156e-05, DF405_03=-0.00034597329795360565, DF405_04=-0.0003268253058195114, DF405_05=0.0004809703677892685, DF405_06=0.0005012489855289459, DF405_07=-0.00013696029782295227, DF405_08=-0.0001260414719581604, DF405_09=-1.8440186977386475e-05, DF405_10=-3.041699528694153e-06, DF406_01=-4.44464385509491e-05, DF406_02=-2.835458144545555e-05, DF406_03=-0.0003525479696691036, DF406_04=-0.0003263736143708229, DF406_05=0.00048203859478235245, DF406_06=0.0005008447915315628, DF406_07=-0.0001375703141093254, DF406_08=-0.00012635625898838043, DF406_09=-1.8037855625152588e-05, DF406_10=-3.2926909625530243e-06, DF407_01=341, DF407_02=341, DF407_03=341, DF407_04=341, DF407_05=341, DF407_06=341, DF407_07=341, DF407_08=341, DF407_09=341, DF407_10=341, DF420_01=0, DF420_02=0, DF420_03=0, DF420_04=0, DF420_05=0, DF420_06=0, DF420_07=0, DF420_08=0, DF420_09=0, DF420_10=0, DF408_01=46.0, DF408_02=49.0, DF408_03=41.0, DF408_04=43.0, DF408_05=43.0, DF408_06=43.0, DF408_07=45.0, DF408_08=49.0, DF408_09=43.0, DF408_10=47.0, DF404_01=-0.5806, DF404_02=-0.5831000000000001, DF404_03=-0.7947000000000001, DF404_04=-0.7943, DF404_05=0.7243, DF404_06=0.7174, DF404_07=0.5534, DF404_08=0.5545, DF404_09=-0.7726000000000001, DF404_10=-0.7733)>",
-            "<RTCM(1127, DF002=1127, DF003=0, DF427=204123001, DF393=0, DF409=0, DF001_7=0, DF411=0, DF412=0, DF417=0, DF418=0, DF394=198178247981137920, NSat=10, DF395=1074003968, NSig=2, DF396=387754, NCell=11, PRN_01=007, PRN_02=009, PRN_03=010, PRN_04=020, PRN_05=023, PRN_06=028, PRN_07=032, PRN_08=037, PRN_09=040, PRN_10=043, DF397_01=129, DF397_02=132, DF397_03=126, DF397_04=75, DF397_05=81, DF397_06=84, DF397_07=78, DF397_08=74, DF397_09=130, DF397_10=86, ExtSatInfo_01=0, ExtSatInfo_02=0, ExtSatInfo_03=0, ExtSatInfo_04=0, ExtSatInfo_05=0, ExtSatInfo_06=0, ExtSatInfo_07=0, ExtSatInfo_08=0, ExtSatInfo_09=0, ExtSatInfo_10=0, DF398_01=0.1171875, DF398_02=0.4814453125, DF398_03=0.3095703125, DF398_04=0.7255859375, DF398_05=0.41015625, DF398_06=0.5703125, DF398_07=0.5595703125, DF398_08=0.322265625, DF398_09=0.578125, DF398_10=0.673828125, DF399_01=-130, DF399_02=-58, DF399_03=-81, DF399_04=32, DF399_05=-398, DF399_06=436, DF399_07=-523, DF399_08=-65, DF399_09=-182, DF399_10=79, CELLPRN_01=007, CELLSIG_01=7I, CELLPRN_02=009, CELLSIG_02=7I, CELLPRN_03=010, CELLSIG_03=2I, CELLPRN_04=010, CELLSIG_04=7I, CELLPRN_05=020, CELLSIG_05=2I, CELLPRN_06=023, CELLSIG_06=2I, CELLPRN_07=028, CELLSIG_07=2I, CELLPRN_08=032, CELLSIG_08=2I, CELLPRN_09=037, CELLSIG_09=2I, CELLPRN_10=040, CELLSIG_10=2I, CELLPRN_11=043, CELLSIG_11=2I, DF405_01=-0.0003885403275489807, DF405_02=0.00022730417549610138, DF405_03=0.0004036612808704376, DF405_04=0.00039606913924217224, DF405_05=-0.00016684085130691528, DF405_06=-4.75514680147171e-05, DF405_07=0.0003674682229757309, DF405_08=0.00026629865169525146, DF405_09=-0.0002502594143152237, DF405_10=-0.00011803768575191498, DF405_11=-0.0002937670797109604, DF406_01=-0.0003882073797285557, DF406_02=0.0002264929935336113, DF406_03=0.0004031979478895664, DF406_04=0.0003964221104979515, DF406_05=-0.00016694329679012299, DF406_06=-4.848744720220566e-05, DF406_07=0.00036971503868699074, DF406_08=0.0002654106356203556, DF406_09=-0.00025115441530942917, DF406_10=-0.00011868216097354889, DF406_11=-0.00029495684430003166, DF407_01=341, DF407_02=341, DF407_03=341, DF407_04=341, DF407_05=341, DF407_06=341, DF407_07=341, DF407_08=341, DF407_09=341, DF407_10=341, DF407_11=341, DF420_01=0, DF420_02=0, DF420_03=0, DF420_04=0, DF420_05=0, DF420_06=0, DF420_07=0, DF420_08=0, DF420_09=0, DF420_10=0, DF420_11=0, DF408_01=45.0, DF408_02=41.0, DF408_03=42.0, DF408_04=45.0, DF408_05=48.0, DF408_06=46.0, DF408_07=42.0, DF408_08=47.0, DF408_09=48.0, DF408_10=44.0, DF408_11=43.0, DF404_01=-0.5674, DF404_02=-0.612, DF404_03=-0.1384, DF404_04=-0.1332, DF404_05=0.5992000000000001, DF404_06=-0.7312000000000001, DF404_07=0.17320000000000002, DF404_08=-0.4308, DF404_09=-0.5975, DF404_10=-0.6733, DF404_11=0.6122000000000001)>",
             "<RTCM(1230, DF002=1230, DF003=0, DF421=1, DF001_3=0, DF422_1=0, DF422_2=0, DF422_3=0, DF422_4=0)>",
             "<NMEA(GNRMC, time=08:41:59, status=A, lat=32.0658325, NS=N, lon=34.773819, EW=E, spd=0.0, cog=, date=2022-02-08, mv=, mvEW=, posMode=D, navStatus=V)>",
+            "<SBF(PVTGeodetic, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Latitude=0.9310293523340808, Longitude=-0.03921206770879602, Height=131.18596542546626, Undulation=48.477840423583984, Vn=0.0012262271484360099, Ve=-0.0007957226480357349, Vu=0.0004817131848540157, COG=-20000000000.0, RxClkBias=0.0693948459476198, RxClkDrift=0.1977977603673935, TimeSystem=0, Datum=0, NrSV=36, Corr_OrbClkUsed=1, Corr_RngUsed=1, Corr_IonoUsed=1, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=0, Reserved2=0, ReferenceID=123, MeanCorrAge=278, SignalInfo=1344405761, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=1, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=55, HAccuracy=102, VAccuracy=138, BaseARP=0, PhaseCtrOffset=0, Reserved5=8, ARPOffset=1)>",
+            "<SBF(PosLocal, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=17, Lat=-20000000000.0, Lon=-20000000000.0, Alt=-20000000000.0, Datum=255)>",
         )
         i = 0
-        with open(os.path.join(DIRNAME, "pygpsdata-MIXED-RTCM3.log"), "rb") as stream:
-            sbr = SBFReader(stream, protfilter=7, quitonerror=ERR_RAISE)
-            # stdout_saved = sys.stdout
-            # sys.stdout = open("output.txt", "w")
+        with open(os.path.join(DIRNAME, "pygpsdata_mixed.log"), "rb") as stream:
+            sbr = SBFReader(
+                stream,
+                protfilter=SBF_PROTOCOL | NMEA_PROTOCOL | RTCM3_PROTOCOL,
+                quitonerror=ERR_RAISE,
+            )
             for raw, parsed in sbr:
                 # print(f'"{parsed}",')
                 self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
                 i += 1
             self.assertEqual(i, len(EXPECTED_RESULTS))
-            # sys.stdout = stdout_saved
+
+    def testmixednmea(
+        self,
+    ):  # test mixed stream of NMEA, SBF & RTCM messages with protfilter = nmea only
+        EXPECTED_RESULTS = (
+            "<NMEA(GNGLL, lat=32.0658325, NS=N, lon=34.773819, EW=E, time=08:41:58, status=A, posMode=D)>",
+            "<NMEA(GNRMC, time=08:41:59, status=A, lat=32.0658325, NS=N, lon=34.773819, EW=E, spd=0.0, cog=, date=2022-02-08, mv=, mvEW=, posMode=D, navStatus=V)>",
+        )
+        i = 0
+        with open(os.path.join(DIRNAME, "pygpsdata_mixed.log"), "rb") as stream:
+            sbr = SBFReader(
+                stream,
+                protfilter=NMEA_PROTOCOL,
+                quitonerror=ERR_RAISE,
+            )
+            for raw, parsed in sbr:
+                # print(f'"{parsed}",')
+                self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
+                i += 1
+            self.assertEqual(i, len(EXPECTED_RESULTS))
+
+    def testmixedrtcm(
+        self,
+    ):  # test mixed stream of NMEA, SBF & RTCM messages with protfilter = rtcm3 only
+        EXPECTED_RESULTS = (
+            "<RTCM(1005, DF002=1005, DF003=0, DF021=0, DF022=1, DF023=1, DF024=1, DF141=0, DF025=4444030.802800001, DF142=1, DF001_1=0, DF026=3085671.2349, DF364=0, DF027=3366658.256)>",
+            "<RTCM(1230, DF002=1230, DF003=0, DF421=1, DF001_3=0, DF422_1=0, DF422_2=0, DF422_3=0, DF422_4=0)>",
+        )
+        i = 0
+        with open(os.path.join(DIRNAME, "pygpsdata_mixed.log"), "rb") as stream:
+            sbr = SBFReader(
+                stream,
+                protfilter=RTCM3_PROTOCOL,
+                quitonerror=ERR_RAISE,
+            )
+            for raw, parsed in sbr:
+                # print(f'"{parsed}",')
+                self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
+                i += 1
+            self.assertEqual(i, len(EXPECTED_RESULTS))
+
+    def testmixedsbfrtcm(
+        self,
+    ):  # test mixed stream of NMEA, SBF & RTCM messages with protfilter = 7
+        EXPECTED_RESULTS = (
+            "<RTCM(1005, DF002=1005, DF003=0, DF021=0, DF022=1, DF023=1, DF024=1, DF141=0, DF025=4444030.802800001, DF142=1, DF001_1=0, DF026=3085671.2349, DF364=0, DF027=3366658.256)>",
+            "<RTCM(1230, DF002=1230, DF003=0, DF421=1, DF001_3=0, DF422_1=0, DF422_2=0, DF422_3=0, DF422_4=0)>",
+            "<SBF(PVTGeodetic, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Latitude=0.9310293523340808, Longitude=-0.03921206770879602, Height=131.18596542546626, Undulation=48.477840423583984, Vn=0.0012262271484360099, Ve=-0.0007957226480357349, Vu=0.0004817131848540157, COG=-20000000000.0, RxClkBias=0.0693948459476198, RxClkDrift=0.1977977603673935, TimeSystem=0, Datum=0, NrSV=36, Corr_OrbClkUsed=1, Corr_RngUsed=1, Corr_IonoUsed=1, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=0, Reserved2=0, ReferenceID=123, MeanCorrAge=278, SignalInfo=1344405761, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=1, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=55, HAccuracy=102, VAccuracy=138, BaseARP=0, PhaseCtrOffset=0, Reserved5=8, ARPOffset=1)>",
+            "<SBF(PosLocal, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=17, Lat=-20000000000.0, Lon=-20000000000.0, Alt=-20000000000.0, Datum=255)>",
+        )
+        i = 0
+        with open(os.path.join(DIRNAME, "pygpsdata_mixed.log"), "rb") as stream:
+            sbr = SBFReader(
+                stream,
+                protfilter=SBF_PROTOCOL | RTCM3_PROTOCOL,
+                quitonerror=ERR_RAISE,
+            )
+            for raw, parsed in sbr:
+                # print(f'"{parsed}",')
+                self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
+                i += 1
+            self.assertEqual(i, len(EXPECTED_RESULTS))
+
+    def testmixedsbfrtcmraw(
+        self,
+    ):  # test mixed stream of NMEA, SBF & RTCM messages with protfilter = SBF + RTCM3 only
+        EXPECTED_RESULTS = (
+            b"\xd3\x00\x13>\xd0\x00\x03\x8aX\xd9I<\x87/4\x10\x9d\x07\xd6\xafH Z\xd7\xf7",
+            b"\xd3\x00\x04L\xe0\x00\x80\xed\xed\xd6",
+            b'$@q\x0e\xa7O`\x00\x18\xa9\xc7\x1c?\t\x06\x00\x91\x82|\x11\xfe\xca\xed?\r\xec\xd5\xa8\x9a\x13\xa4\xbf\x0f\x92\xc3m\xf3e`@O\xe9AB[\xb9\xa0:\x0b\x98P\xbas\x8e\xfc9\xf9\x02\x95\xd0\xd8!\xdbQ\xdc\xc3\xb1?\x7f\x8bJ>\x00\x00$\x07{\x00\x16\x01\x01\x01"P\x01\x01\x00\x007\x00f\x00\x8a\x00`\x00',
+            b"$@b\x81\xd4\x0f,\x00\x18\xa9\xc7\x1c?\t\x06\x11\x00\x00\x00 _\xa0\x12\xc2\x00\x00\x00 _\xa0\x12\xc2\x00\x00\x00 _\xa0\x12\xc2\xff\x00\x00\x00",
+        )
+        i = 0
+        with open(os.path.join(DIRNAME, "pygpsdata_mixed.log"), "rb") as stream:
+            sbr = SBFReader(
+                stream,
+                protfilter=SBF_PROTOCOL | RTCM3_PROTOCOL,
+                quitonerror=ERR_RAISE,
+                parsing=False,
+            )
+            for raw, parsed in sbr:
+                # print(f"{raw},")
+                self.assertEqual(parsed, None)
+                self.assertEqual(raw, EXPECTED_RESULTS[i])
+                i += 1
+            self.assertEqual(i, len(EXPECTED_RESULTS))
 
     def testmeasurements(self):  # test measurement message stream
         EXPECTED_RESULTS = (
@@ -71,6 +167,8 @@ class StreamTest(unittest.TestCase):
                 self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
                 i += 1
             self.assertEqual(i, len(EXPECTED_RESULTS))
+            # print(ubr.datastream)
+            self.assertIsInstance(ubr.datastream, BufferedReader)
 
     def testconstellations(self):  # test constellation message stream
         EXPECTED_RESULTS = (
@@ -129,7 +227,7 @@ class StreamTest(unittest.TestCase):
 
     def testpvtcart(self):  # test PVT cartesian message stream
         EXPECTED_RESULTS = (
-            "<SBF(PVTCartesian, TOW=14:03:23, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3813176.3935078024, Y=-149599.1631026641, Z=5093600.012439784, Undulation=48.477840423583984, Vx=-0.00013817181752528995, Vy=0.0006453946698457003, Vz=-0.0025749732740223408, COG=-20000000000.0, RxClkBias=0.02527270579840079, RxClkDrift=0.19080539047718048, TimeSystem=0, Datum=0, NrSV=36, WACorrInfo=7, ReferenceID=123, MeanCorrAge=300, SignalInfo=1344405761, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved2=0, NrBases=1, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=61, HAccuracy=102, VAccuracy=143, BaseARP=0, PhaseCtrOffset=0, Reserved4=8, ARPOffset=1)>",
+            "<SBF(PVTCartesian, TOW=14:03:23, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3813176.3935078024, Y=-149599.1631026641, Z=5093600.012439784, Undulation=48.477840423583984, Vx=-0.00013817181752528995, Vy=0.0006453946698457003, Vz=-0.0025749732740223408, COG=-20000000000.0, RxClkBias=0.02527270579840079, RxClkDrift=0.19080539047718048, TimeSystem=0, Datum=0, NrSV=36, Corr_OrbClkUsed=1, Corr_RngUsed=1, Corr_IonoUsed=1, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=0, Reserved2=0, ReferenceID=123, MeanCorrAge=300, SignalInfo=1344405761, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=1, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=61, HAccuracy=102, VAccuracy=143, BaseARP=0, PhaseCtrOffset=0, Reserved5=8, ARPOffset=1)>",
             "<SBF(PosCovCartesian, TOW=14:03:23, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Cov_xx=0.22255674004554749, Cov_yy=0.10354391485452652, Cov_zz=0.4468877613544464, Cov_bb=0.2734336853027344, Cov_xy=-0.05616738647222519, Cov_xz=0.1480366438627243, Cov_xb=0.17288260161876678, Cov_yz=-0.04950747638940811, Cov_yb=-0.06711780279874802, Cov_zb=0.3099549114704132)>",
             "<SBF(VelCovCartesian, TOW=14:03:23, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Cov_VxVx=3.1918079912429675e-05, Cov_VyVy=1.866238562797662e-05, Cov_VzVz=4.0098846511682495e-05, Cov_DtDt=3.695358464028686e-05, Cov_VxVy=-4.2343403947597835e-06, Cov_VxVz=9.274422154703643e-06, Cov_VxDt=1.858825453382451e-05, Cov_VyVz=-1.4702366115670884e-06, Cov_VyDt=-2.182556045227102e-06, Cov_VzDt=2.621921339596156e-05)>",
             "<SBF(BaseVectorCart, TOW=14:03:23, WNc=2367, N=0, SBLength=52)>",
@@ -145,7 +243,7 @@ class StreamTest(unittest.TestCase):
 
     def testpvtgeod(self):  # test PVT geodetic message stream
         EXPECTED_RESULTS = (
-            "<SBF(PVTGeodetic, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Latitude=0.9310293523340808, Longitude=-0.03921206770879602, Height=131.18596542546626, Undulation=48.477840423583984, Vn=0.0012262271484360099, Ve=-0.0007957226480357349, Vu=0.0004817131848540157, COG=-20000000000.0, RxClkBias=0.0693948459476198, RxClkDrift=0.1977977603673935, TimeSystem=0, Datum=0, NrSV=36, Corr_OrbClkUsed=1, Corr_RngUsed=1, Corr_IonoUsed=1, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=0, Reserved2=0, ReferenceID=123, MeanCorrAge=278, SignalInfo=1344405761, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, NrBases=1, PPPSeedAge=0, Reserved3=0, PPPSeedType=0, Latency=55, HAccuracy=102, VAccuracy=138, BaseARP=0, PhaseCtrOffset=0, Reserved4=8, ARPOffset=1)>",
+            "<SBF(PVTGeodetic, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Latitude=0.9310293523340808, Longitude=-0.03921206770879602, Height=131.18596542546626, Undulation=48.477840423583984, Vn=0.0012262271484360099, Ve=-0.0007957226480357349, Vu=0.0004817131848540157, COG=-20000000000.0, RxClkBias=0.0693948459476198, RxClkDrift=0.1977977603673935, TimeSystem=0, Datum=0, NrSV=36, Corr_OrbClkUsed=1, Corr_RngUsed=1, Corr_IonoUsed=1, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=0, Reserved2=0, ReferenceID=123, MeanCorrAge=278, SignalInfo=1344405761, RAIMIntegrity=1, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=1, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=55, HAccuracy=102, VAccuracy=138, BaseARP=0, PhaseCtrOffset=0, Reserved5=8, ARPOffset=1)>",
             "<SBF(PosCovGeodetic, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Cov_latlat=0.16179977357387543, Cov_lonlon=0.09827368706464767, Cov_hgthgt=0.47691863775253296, Cov_bb=0.2628936767578125, Cov_latlon=0.014659467153251171, Cov_lathgt=0.052513487637043, Cov_latb=0.03550632670521736, Cov_lonhgt=-0.0588376559317112, Cov_lonb=-0.053778938949108124, Cov_hb=0.3346599340438843)>",
             "<SBF(VelCovGeodetic, TOW=14:07:09, WNc=2367, Type=6, Reserved1=0, AutoSet=0, 2D=0, Error=0, Cov_VnVn=2.607271926535759e-05, Cov_VeVe=1.854929178080056e-05, Cov_VuVu=4.582880865200423e-05, Cov_DtDt=3.6877550883218646e-05, Cov_VnVe=2.313254071850679e-06, Cov_VnVu=1.2074295909769717e-06, Cov_VnDt=7.145455924728594e-07, Cov_VeVu=-2.9310365334822563e-06, Cov_VeDt=-1.1441543392720632e-06, Cov_VuDt=3.1944739021128044e-05)>",
             "<SBF(BaseVectorGeod, TOW=14:07:09, WNc=2367, N=0, SBLength=52)>",
@@ -154,6 +252,23 @@ class StreamTest(unittest.TestCase):
         i = 0
         with open(os.path.join(DIRNAME, "pygpsdata_x5_pvtgeod.log"), "rb") as stream:
             ubr = SBFReader(stream, protfilter=7, quitonerror=ERR_RAISE)
+            for raw, parsed in ubr:
+                # print(f'"{parsed}",')
+                self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
+                i += 1
+            self.assertEqual(i, len(EXPECTED_RESULTS))
+
+    def testpvtgeodnoparse(self):  # test PVT geodetic message stream
+        EXPECTED_RESULTS = (
+            "None",
+            "None",
+            "None",
+            "None",
+            "None",
+        )
+        i = 0
+        with open(os.path.join(DIRNAME, "pygpsdata_x5_pvtgeod.log"), "rb") as stream:
+            ubr = SBFReader(stream, protfilter=7, quitonerror=ERR_RAISE, parsing=False)
             for raw, parsed in ubr:
                 # print(f'"{parsed}",')
                 self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
@@ -255,6 +370,88 @@ class StreamTest(unittest.TestCase):
             for raw, parsed in ubr:
                 rtcm = RTCMReader.parse(parsed.RTCM3Message)
                 # print(f'"{rtcm}",')
+                self.assertEqual(parsed.identity, "DiffCorrIn")
                 self.assertEqual(str(rtcm), EXPECTED_RESULTS[i])
                 i += 1
             self.assertEqual(i, len(EXPECTED_RESULTS))
+
+    def testtruncatedraise(
+        self,
+    ):  # test truncated data stream, raise error
+        with self.assertRaisesRegex(
+            SBFStreamError,
+            "Serial stream terminated unexpectedly. 8 bytes requested, 6 bytes returned.",
+        ):
+            with open(
+                os.path.join(DIRNAME, "pygpsdata_x5_pvttruncated.log"), "rb"
+            ) as stream:
+                sbr = SBFReader(
+                    stream,
+                    quitonerror=ERR_RAISE,
+                )
+                for raw, parsed in sbr:
+                    pass
+
+    def testtruncatedlog(
+        self,
+    ):  # test truncated data stream, log error
+        STDERR = os.path.join(DIRNAME, "stderr.log")
+        stderr_saved = sys.stderr
+        sys.stderr = open(STDERR, "w")
+        stream_handler = logging.StreamHandler(sys.stderr)
+        self.logger.addHandler(stream_handler)
+        with open(
+            os.path.join(DIRNAME, "pygpsdata_x5_pvttruncated.log"), "rb"
+        ) as stream:
+            sbr = SBFReader(
+                stream,
+                quitonerror=ERR_LOG,
+            )
+            for raw, parsed in sbr:
+                pass
+        self.logger.removeHandler(stream_handler)
+        sys.stderr = stderr_saved
+        with open(STDERR, "r") as errlog:
+            el = errlog.readline()
+            self.assertEqual(
+                el,
+                "Serial stream terminated unexpectedly. 8 bytes requested, 6 bytes returned.\n",
+            )
+
+    def testtruncatedignore(
+        self,
+    ):  # test truncated data stream, ignore error
+        STDERR = os.path.join(DIRNAME, "stderr.log")
+        stderr_saved = sys.stderr
+        sys.stderr = open(STDERR, "w")
+        stream_handler = logging.StreamHandler(sys.stderr)
+        self.logger.addHandler(stream_handler)
+        with open(
+            os.path.join(DIRNAME, "pygpsdata_x5_pvttruncated.log"), "rb"
+        ) as stream:
+            sbr = SBFReader(
+                stream,
+                quitonerror=ERR_IGNORE,
+            )
+            for raw, parsed in sbr:
+                pass
+        self.logger.removeHandler(stream_handler)
+        sys.stderr = stderr_saved
+        with open(STDERR, "r") as errlog:
+            el = errlog.readline()
+            self.assertEqual(el, "")
+
+    def testnorelevantdata(
+        self,
+    ):  # test data stream with no SBF, NMEA or RTCM3 content
+        with self.assertRaisesRegex(
+            SBFParseError, "Unknown protocol header b'\\\\xd3\\\\x05'."
+        ):
+            with open(os.path.join(DIRNAME, "pygpsdata_ubx.log"), "rb") as stream:
+                sbr = SBFReader(
+                    stream,
+                    protfilter=SBF_PROTOCOL | NMEA_PROTOCOL | RTCM3_PROTOCOL,
+                    quitonerror=ERR_RAISE,
+                )
+                for raw, parsed in sbr:
+                    pass

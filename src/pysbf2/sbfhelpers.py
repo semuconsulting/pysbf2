@@ -153,7 +153,7 @@ def val2bytes(val, att: str) -> bytes:
     :param str att: attribute type e.g. 'U004'
     :return: attribute value as bytes
     :rtype: bytes
-    :raises: UBXTypeError
+    :raises: SBFTypeError
 
     """
 
@@ -188,7 +188,7 @@ def bytes2val(valb: bytes, att: str) -> object:
     :param str att: attribute type e.g. 'U004'
     :return: attribute value as int, float, str or bytes
     :rtype: object
-    :raises: UBXTypeError
+    :raises: SBFTypeError
 
     """
 
@@ -214,7 +214,7 @@ def nomval(att: str) -> object:
     :param str att: attribute type e.g. 'U004'
     :return: attribute value as int, float, str or bytes
     :rtype: object
-    :raises: UBXTypeError
+    :raises: SBFTypeError
 
     """
 

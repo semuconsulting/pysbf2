@@ -44,11 +44,6 @@ SCAL2 = 1e-2  # 0.01
 SCAL1 = 1e-1  # 0.1
 SCALROUND = 12  # number of dp to round scaled attributes to
 
-# derived group numerations
-RTCM2N = "_RTCM2N"
-CMRN = "_CMRN"
-RTCM3N = "_RTCM3N"
-RTCMVN = "_RTCMVN"
 PAD = "_Padding"
 VAR = "_VarLen"
 

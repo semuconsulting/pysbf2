@@ -12,7 +12,7 @@ Info sourced from mosaic-X5 Reference Guide v4.14.10 © 2000-2024 Septentrio NV/
 :license: BSD 3-Clause
 """
 
-SIGNAL_NUMBER = {
+SIGNAL_TYPE = {
     0: ("L1CA", "GPS", 1575.4, "1C"),
     1: ("L1P", "GPS", 1575.42, "1W"),
     2: ("L2P", "GPS", 1227.60, "2W"),
@@ -55,13 +55,12 @@ SIGNAL_NUMBER = {
     39: ("L5S", "QZSS", 1176.45, "5P"),
 }
 """
-Signal Numbering Decode
+Signal Type Decode, aka "SigIdxLo" or "SigIdxHi" with offset 32.
 
 Number: (Signal Code, Constellation, Base Frequency, RINEX Code)
 """
 
-# bits 0-3
-PVTCARTESIAN_MODE = {
+PVT_TYPE = {
     0: "No GNSS PVT available",
     1: "Stand-Alone PVT",
     2: "Differential PVT",
@@ -75,9 +74,9 @@ PVTCARTESIAN_MODE = {
     10: "Precise Point Positioning (PPP)",
     12: "Reserved",
 }
-"""Mode decode"""
+"""PVT Type (bits 0-3 of Mode) decode"""
 
-PVTCARTESIAN_ERROR = {
+PVT_ERROR = {
     0: "No Error",
     1: "Not enough measurements",
     2: "Not enough ephemerides available",
@@ -90,9 +89,9 @@ PVTCARTESIAN_ERROR = {
     9: "Base station coordinates unavailable",
     10: "Ambiguities not fixed and user requested to only output RTKfixed",
 }
-"""Error decode"""
+"""PVT Error decode"""
 
-PVTCARTESIAN_TIMESYSTEM = {
+PVT_TIMESYSTEM = {
     0: "GPS time",
     1: "Galileo time",
     3: "GLONASS time",
@@ -100,9 +99,9 @@ PVTCARTESIAN_TIMESYSTEM = {
     5: "QZSS time",
     100: "Fugro AtomiChron time",
 }
-"""Timesystem decode"""
+"""PVT Timesystem decode"""
 
-PVTCARTESIAN_DATUM = {
+PVT_DATUM = {
     0: "WGS84/ITRS",
     19: "Datum equal to that used by the DGNSS/RTK base station",
     30: "ETRS89 (ETRF2000 realization)",
@@ -115,4 +114,12 @@ PVTCARTESIAN_DATUM = {
     250: "First user-defined datum",
     251: "Second user-defined datum",
 }
-"""Datum decode"""
+"""PVT Datum decode"""
+
+PVT_RTK_TYPE = {
+    0: "unknown or not in differential positioning mode(DGNSS or RTK)",
+    1: "corrections from a physical base",
+    2: "corrections from a virtual base (VRS)",
+    3: "SSR corrections (RTK using SSR corrections is often referred to as RTK-SSR or PPP-RTK)",
+}
+"""PVT RTK Type from WACorrInfo aka Corr_RTKType"""

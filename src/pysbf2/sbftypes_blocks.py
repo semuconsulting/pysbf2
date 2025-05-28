@@ -1221,7 +1221,18 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "TimeSystem": U1,
         "Datum": U1,
         "NrSV": U1,
-        "WACorrInfo": U1,
+        "WACorrInfo": (
+            X1,
+            {
+                "Corr_OrbClkUsed": U1,
+                "Corr_RngUsed": U1,
+                "Corr_IonoUsed": U1,
+                "Corr_OrbAccUsed": U1,
+                "Corr_DO229Active": U1,
+                "Corr_RTKType": U2,
+                "Reserved2": U1,
+            },
+        ),
         "ReferenceID": U2,
         "MeanCorrAge": U2,
         "SignalInfo": U4,
@@ -1231,7 +1242,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "RAIMIntegrity": U2,
                 "GalHPCAFail": U1,
                 "GalIonStorm": U1,
-                "Reserved2": U4,
+                "Reserved3": U4,
             },
         ),
         "NrBases": U1,
@@ -1239,7 +1250,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             X2,
             {
                 "PPPSeedAge": U12,
-                "Reserved3": U1,
+                "Reserved4": U1,
                 "PPPSeedType": U3,
             },
         ),
@@ -1251,7 +1262,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             {
                 "BaseARP": U1,
                 "PhaseCtrOffset": U1,
-                "Reserved4": U4,
+                "Reserved5": U4,
                 "ARPOffset": U2,
             },
         ),
@@ -1303,7 +1314,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "RAIMIntegrity": U2,
                 "GalHPCAFail": U1,
                 "GalIonStorm": U1,
-                "Reserved2": U4,
+                "Reserved3": U4,
             },
         ),
         "NrBases": U1,  # Rev 1
@@ -1311,7 +1322,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             X2,
             {
                 "PPPSeedAge": U12,
-                "Reserved3": U1,
+                "Reserved4": U1,
                 "PPPSeedType": U3,
             },
         ),
@@ -1323,7 +1334,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             {
                 "BaseARP": U1,
                 "PhaseCtrOffset": U1,
-                "Reserved4": U4,
+                "Reserved5": U4,
                 "ARPOffset": U2,
             },
         ),
@@ -2409,6 +2420,7 @@ TESTING = {
     "TestOnly": {
         "TOW": U4,
         "WNc": U2,
+        "ScaledVal": [U4, 0.0001],
         "Mode": U1,
         "optionmode0": (  # present if Mode = 0
             ("Mode", 0),
@@ -2455,7 +2467,7 @@ TESTING = {
             },
         ),
         "optionmode1": (  # present if Mode = 1
-            ("Mode", 1),
+            ("Mode", [1, 2]),
             {
                 "VariableONE": V2,
             },

@@ -1,5 +1,16 @@
 # pysbf2 Release Notes
 
+### RELEASE 0.1.5
+
+ENHANCEMENTS:
+
+
+1. Fix `repr` function.
+1. PVTCartesian bitflags updated.
+1. Test coverage enhanced.
+1. Minor updates to docstrings.
+
+
 ### RELEASE 0.1.4
 
 FIXES:

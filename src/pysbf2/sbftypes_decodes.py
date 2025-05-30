@@ -117,9 +117,9 @@ PVT_DATUM = {
 """PVT Datum decode"""
 
 PVT_RTK_TYPE = {
-    0: "unknown or not in differential positioning mode(DGNSS or RTK)",
+    0: "unknown / not differential",
     1: "corrections from a physical base",
     2: "corrections from a virtual base (VRS)",
-    3: "SSR corrections (RTK using SSR corrections is often referred to as RTK-SSR or PPP-RTK)",
+    3: "SSR corrections (inc PPP-RTK)",
 }
 """PVT RTK Type from WACorrInfo aka Corr_RTKType"""

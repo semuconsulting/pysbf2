@@ -202,7 +202,7 @@ The message payload can be defined via keyword arguments in one of three ways:
 2. One or more keyword arguments corresponding to individual message attributes. Any attributes not explicitly provided as keyword arguments will be set to a nominal value according to their type.
 3. If no keyword arguments are passed, the payload is assumed to be null.
 
-Example - to generate a CFG-MSG command (*msgClass 0x06, msgID 0x01*) which sets the NAV-STATUS (*msgClass 0x01, msgID 0x03*) outbound message rate to 1 on the UART1 port, any of the following constructor formats will work:
+Example - to generate a PVTCartesian message, any of the following constructor formats will work:
 
 A. Pass entire payload as bytes:
 ```python

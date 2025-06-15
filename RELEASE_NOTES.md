@@ -3,6 +3,7 @@
 ### RELEASE 0.2.0
 
 1. ReceiverStatus bitflags added.
+1. Min pyrtcm version updated to 1.1.8.
 1. Development status updated to Beta.
 
 ### RELEASE 0.1.5

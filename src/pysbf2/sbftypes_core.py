@@ -76,6 +76,7 @@ U7 = "U007"  # Unsigned Int 7 bytes
 U8 = "U008"  # Unsigned Int 8 bytes
 U9 = "U009"  # Unsigned Int 9 bytes
 U12 = "U012"  # Unsigned Int 12 bytes
+U13 = "U013"  # Unsigned Int 13 bytes
 U16 = "U016"  # Unsigned Int 16 bytes
 U20 = "U020"  # Unsigned Int 20 bytes
 F4 = "F004"  # Float (IEEE 754) Single Precision 4 bytes

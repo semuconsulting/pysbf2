@@ -1,15 +1,19 @@
 # pysbf2 Release Notes
 
+### RELEASE 0.2.0
+
+1. ReceiverStatus bitflags added.
+1. Min pyrtcm version updated to 1.1.8.
+1. Development status updated to Beta.
+
 ### RELEASE 0.1.5
 
 ENHANCEMENTS:
-
 
 1. Fix `repr` function.
 1. PVTCartesian bitflags updated.
 1. Test coverage enhanced.
 1. Minor updates to docstrings.
-
 
 ### RELEASE 0.1.4
 

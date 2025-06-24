@@ -46,6 +46,7 @@ from pysbf2.sbftypes_core import (
     U8,
     U9,
     U12,
+    U13,
     U16,
     U20,
     V1,
@@ -53,6 +54,7 @@ from pysbf2.sbftypes_core import (
     V4,
     X1,
     X2,
+    X4,
 )
 
 SBF_MEASUREMENT_BLOCKS = {
@@ -1201,13 +1203,13 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "X": F8,
         "Y": F8,
         "Z": F8,
@@ -1218,8 +1220,8 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "COG": F4,
         "RxClkBias": F8,
         "RxClkDrift": F4,
-        "TimeSystem": U1,
-        "Datum": U1,
+        "TimeSystem": U1,  # decode PVT_TIMESYSTEM
+        "Datum": U1,  # decode PVT_DATUM
         "NrSV": U1,
         "WACorrInfo": (
             X1,
@@ -1229,7 +1231,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "Corr_IonoUsed": U1,
                 "Corr_OrbAccUsed": U1,
                 "Corr_DO229Active": U1,
-                "Corr_RTKType": U2,
+                "Corr_RTKType": U2,  # decode PVT_RTK_TYPE
                 "Reserved2": U1,
             },
         ),
@@ -1273,16 +1275,16 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Latitude": F8,  # radians
         "Longitude": F8,  # radians
-        "Height": F8,
+        "Height": F8,  # HAE
         "Undulation": F4,
         "Vn": F4,
         "Ve": F4,
@@ -1290,9 +1292,9 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "COG": F4,
         "RxClkBias": F8,
         "RxClkDrift": F4,
-        "TimeSystem": U1,
-        "Datum": U1,
-        "NrSV": U1,
+        "TimeSystem": U1,  # decode PVT_TIMESYSTEM
+        "Datum": U1,  # decode PVT_DATUM
+        "NrSV": U1,  # SIP
         "WACorrInfo": (
             X1,
             {
@@ -1301,7 +1303,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "Corr_IonoUsed": U1,
                 "Corr_OrbAccUsed": U1,
                 "Corr_DO229Active": U1,
-                "Corr_RTKType": U2,
+                "Corr_RTKType": U2,  # decode PVT_RTK_TYPE
                 "Reserved2": U1,
             },
         ),
@@ -1345,13 +1347,13 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Cov_xx": F4,
         "Cov_yy": F4,
         "Cov_zz": F4,
@@ -1369,13 +1371,13 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Cov_latlat": F4,
         "Cov_lonlon": F4,
         "Cov_hgthgt": F4,
@@ -1393,13 +1395,13 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Cov_VxVx": F4,
         "Cov_VyVy": F4,
         "Cov_VzVz": F4,
@@ -1417,13 +1419,13 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Cov_VnVn": F4,
         "Cov_VeVe": F4,
         "Cov_VuVu": F4,
@@ -1453,13 +1455,13 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "X": F8,
         "Y": F8,
         "Z": F8,
@@ -1486,7 +1488,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         ),
         "Reserved3": U1,
         "AlertFlag": U1,
-        "Datum": U1,
+        "Datum": U1,  # decode PVT_DATUM
         "NrSV": U1,
         "WACorrInfo": (
             X1,
@@ -1496,7 +1498,7 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
                 "Corr_IonoUsed": U1,
                 "Corr_OrbAccUsed": U1,
                 "Corr_DO229Active": U1,
-                "Corr_RTKType": U2,
+                "Corr_RTKType": U2,  # decode PVT_RTK_TYPE
                 "Reserved4": U1,
             },
         ),
@@ -1510,17 +1512,17 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Lat": F8,  # radians
         "Lon": F8,  # radians
         "Alt": F8,
-        "Datum": U1,
+        "Datum": U1,  # decode PVT_DATUM
     },
     "PosProjected": {
         "TOW": U4,
@@ -1528,17 +1530,17 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
         "Mode": (
             X1,
             {
-                "Type": U4,
+                "Type": U4,  # decode PVT_TYPE
                 "Reserved1": U2,
                 "AutoSet": U1,
                 "2D": U1,
             },
         ),
-        "Error": U1,
+        "Error": U1,  # decode PVT_ERROR
         "Northing": F8,
         "Easting": F8,
         "Alt": F8,
-        "Datum": U1,
+        "Datum": U1,  # decode PVT_DATUM
     },
     "BaseVectorCart": {
         "TOW": U4,
@@ -1549,11 +1551,11 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             "N",
             {
                 "nrSv": U1,
-                "Error": U1,
+                "Error": U1,  # decode PVT_ERROR
                 "Mode": (
                     X1,
                     {
-                        "Type": U4,
+                        "Type": U4,  # decode PVT_TYPE
                         "Reserved1": U2,
                         "AutoSet": U1,
                         "2D": U1,
@@ -1592,11 +1594,11 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
             "N",
             {
                 "NrSV": U1,
-                "Error": U1,
+                "Error": U1,  # decode PVT_ERROR
                 "Mode": (
                     X1,
                     {
-                        "Type": U4,
+                        "Type": U4,  # decode PVT_TYPE
                         "Reserved1": U2,
                         "AutoSet": U1,
                         "2D": U1,
@@ -2043,14 +2045,62 @@ SBF_STATUS_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "CPULoad": U1,
-        "ExtError": U1,
+        "ExtError": (
+            X1,
+            {
+                "SISError": U1,
+                "DiffCorrError": U1,
+                "ExtSensorError": U1,
+                "SetupError": U1,
+                "Reserved1": U4,
+            },
+        ),
         "UpTime": U4,
-        "RxState": U4,
-        "RxError": U4,
+        "RxState": (
+            X4,
+            {
+                "Reserved2": U1,
+                "ActiveAntenna": U1,
+                "ExtFreq": U1,
+                "ExtTime": U1,
+                "WnSer": U1,
+                "TowSet": U1,
+                "FineTime": U1,
+                "InternalDiskActivity": U1,
+                "InternalDiskFull": U1,
+                "InternalDiskMounted": U1,
+                "IntAnt": U1,
+                "RefoutLocked": U1,
+                "Reserved3": U1,
+                "ExternalDiskActivity": U1,
+                "ExternalDiskFull": U1,
+                "ExternalDiskMounted": U1,
+                "PpsInCal": U1,
+                "DiffCorrIn": U1,
+                "Internet": U1,
+                "Reserved4": U13,
+            },
+        ),
+        "RxError": (
+            X4,
+            {
+                "Reserved5": U3,
+                "SoftwareError": U1,
+                "WatchdogError": U1,
+                "AntennaError": U1,
+                "CongestionError": U1,
+                "Reserved6": U1,
+                "MissEventError": U1,
+                "CPUOverloadError": U1,
+                "InvalidConfigError": U1,
+                "OutOfGeofenceError": U1,
+                "Reserved7": U20,
+            },
+        ),
         "N": U1,
         "SBLength": U1,
         "CmdCount": U1,
-        "Temperature": U1,
+        "Temperature": U1,  # NB: subtract 100 for °C
         "group": (
             "N",
             {

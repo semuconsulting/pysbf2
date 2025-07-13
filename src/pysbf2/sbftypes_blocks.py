@@ -2464,66 +2464,65 @@ SBF_MISCELLANEOUS_BLOCKS = {
     },
 }
 
-# TODO REMOVE AFTER ALPHA
-TESTING = {
-    # Test Message - Do Not Use
-    "TestOnly": {
-        "TOW": U4,
-        "WNc": U2,
-        "ScaledVal": [U4, 0.0001],
-        "Mode": U1,
-        "optionmode0": (  # present if Mode = 0
-            ("Mode", 0),
-            {
-                "ModeZERO": U1,
-            },
-        ),
-        "optionmode1": (  # present if Mode = 1
-            ("Mode", 1),
-            {
-                "ModeONE": U1,
-            },
-        ),
-        "SB1Length": U1,
-        "SB2Length": U1,
-        "N1": U2,
-        "group1": (
-            "N1",
-            {
-                "test1": U1,
-                "test2": U2,
-                "N2": U2,
-                PAD: PD1,
-                "group2": (
-                    "N2+1",
-                    {
-                        "test3": U1,
-                        "test4": U2,
-                        PAD: PD2,
-                    },
-                ),
-            },
-        ),
-    },
-    # Variable Length Test Message - Do Not Use
-    "TestVariable": {
-        "TOW": U4,
-        "WNc": U2,
-        "Mode": U1,
-        "optionmode0": (  # present if Mode = 0
-            ("Mode", 0),
-            {
-                "VariableZERO": V4,
-            },
-        ),
-        "optionmode1": (  # present if Mode = 1
-            ("Mode", [1, 2]),
-            {
-                "VariableONE": V2,
-            },
-        ),
-    },
-}
+# TESTING = {
+#     # Test Message - Do Not Use
+#     "TestOnly": {
+#         "TOW": U4,
+#         "WNc": U2,
+#         "ScaledVal": [U4, 0.0001],
+#         "Mode": U1,
+#         "optionmode0": (  # present if Mode = 0
+#             ("Mode", 0),
+#             {
+#                 "ModeZERO": U1,
+#             },
+#         ),
+#         "optionmode1": (  # present if Mode = 1
+#             ("Mode", 1),
+#             {
+#                 "ModeONE": U1,
+#             },
+#         ),
+#         "SB1Length": U1,
+#         "SB2Length": U1,
+#         "N1": U2,
+#         "group1": (
+#             "N1",
+#             {
+#                 "test1": U1,
+#                 "test2": U2,
+#                 "N2": U2,
+#                 PAD: PD1,
+#                 "group2": (
+#                     "N2+1",
+#                     {
+#                         "test3": U1,
+#                         "test4": U2,
+#                         PAD: PD2,
+#                     },
+#                 ),
+#             },
+#         ),
+#     },
+#     # Variable Length Test Message - Do Not Use
+#     "TestVariable": {
+#         "TOW": U4,
+#         "WNc": U2,
+#         "Mode": U1,
+#         "optionmode0": (  # present if Mode = 0
+#             ("Mode", 0),
+#             {
+#                 "VariableZERO": V4,
+#             },
+#         ),
+#         "optionmode1": (  # present if Mode = 1
+#             ("Mode", [1, 2]),
+#             {
+#                 "VariableONE": V2,
+#             },
+#         ),
+#     },
+# }
 
 SBF_BLOCKS = {
     **SBF_MEASUREMENT_BLOCKS,
@@ -2542,5 +2541,5 @@ SBF_BLOCKS = {
     **SBF_LBAND_DEMODULATOR_BLOCKS,
     **SBF_STATUS_BLOCKS,
     **SBF_MISCELLANEOUS_BLOCKS,
-    **TESTING,
+    # **TESTING,
 }

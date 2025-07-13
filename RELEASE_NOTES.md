@@ -1,5 +1,9 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.0
+
+1. Development status updated to Production/Stable.
+
 ### RELEASE 0.2.0
 
 1. ReceiverStatus bitflags added.

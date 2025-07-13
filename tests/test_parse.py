@@ -33,74 +33,74 @@ class ParseTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testTestConstruct(self):
-        EXPECTED_RESULT = "<SBF(TestOnly, TOW=05:47:15.056000, WNc=2397, ScaledVal=1.278, Mode=1, ModeONE=0, SB1Length=8, SB2Length=4, N1=3, test1_01=1, test2_01=11, N2_01=2, test3_01_01=0, test4_01_01=0, test3_01_02=5, test4_01_02=0, test1_02=2, test2_02=22, N2_02=2, test3_02_01=0, test4_02_01=0, test3_02_02=6, test4_02_02=0, test1_03=3, test2_03=33, N2_03=3, test3_03_01=0, test4_03_01=0, test3_03_02=0, test4_03_02=0, test3_03_03=0, test4_03_03=7)>"
-        EXPECTED_BYTES = b"\x24\x40\x03\x25\xd2\x04\x4c\x00\x40\x31\x3e\x01\x5d\x09\xec\x31\x00\x00\x01\x00\x08\x04\x03\x00\x01\x0b\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x02\x16\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x03\x21\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07\x00\x00"
-        msg1 = SBFMessage(
-            "TestOnly",
-            TOW=20853056,
-            WNc=2397,
-            ScaledVal=1.278,
-            Mode=1,
-            SB1Length=8,
-            SB2Length=4,
-            N1=3,
-            test1_01=1,
-            test1_02=2,
-            test1_03=3,
-            test2_01=11,
-            test2_02=22,
-            test2_03=33,
-            N2_01=2,
-            N2_02=2,
-            N2_03=3,
-            test3_01_02=5,
-            test3_02_02=6,
-            test4_03_03=7,
-        )
-        # print(f'"{msg1}"')
-        # print(escapeall(msg1.serialize()))
-        self.assertEqual(str(msg1), EXPECTED_RESULT)
-        self.assertEqual(msg1.serialize(), EXPECTED_BYTES)
-        msg2 = SBFReader.parse(msg1.serialize())
-        self.assertEqual(str(msg2), EXPECTED_RESULT)
-        print(escapeall(msg2.serialize()))
-        self.assertEqual(msg2.serialize(), EXPECTED_BYTES)
-        stream = BytesIO(msg2.serialize())
-        sbr = SBFReader(stream, quitonerror=ERR_RAISE)
-        for raw, parsed in sbr:
-            self.assertEqual(str(parsed), EXPECTED_RESULT)
-            self.assertEqual(raw, EXPECTED_BYTES)
+    # def testTestConstruct(self):
+    #     EXPECTED_RESULT = "<SBF(TestOnly, TOW=05:47:15.056000, WNc=2397, ScaledVal=1.278, Mode=1, ModeONE=0, SB1Length=8, SB2Length=4, N1=3, test1_01=1, test2_01=11, N2_01=2, test3_01_01=0, test4_01_01=0, test3_01_02=5, test4_01_02=0, test1_02=2, test2_02=22, N2_02=2, test3_02_01=0, test4_02_01=0, test3_02_02=6, test4_02_02=0, test1_03=3, test2_03=33, N2_03=3, test3_03_01=0, test4_03_01=0, test3_03_02=0, test4_03_02=0, test3_03_03=0, test4_03_03=7)>"
+    #     EXPECTED_BYTES = b"\x24\x40\x03\x25\xd2\x04\x4c\x00\x40\x31\x3e\x01\x5d\x09\xec\x31\x00\x00\x01\x00\x08\x04\x03\x00\x01\x0b\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x02\x16\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x03\x21\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07\x00\x00"
+    #     msg1 = SBFMessage(
+    #         "TestOnly",
+    #         TOW=20853056,
+    #         WNc=2397,
+    #         ScaledVal=1.278,
+    #         Mode=1,
+    #         SB1Length=8,
+    #         SB2Length=4,
+    #         N1=3,
+    #         test1_01=1,
+    #         test1_02=2,
+    #         test1_03=3,
+    #         test2_01=11,
+    #         test2_02=22,
+    #         test2_03=33,
+    #         N2_01=2,
+    #         N2_02=2,
+    #         N2_03=3,
+    #         test3_01_02=5,
+    #         test3_02_02=6,
+    #         test4_03_03=7,
+    #     )
+    #     # print(f'"{msg1}"')
+    #     # print(escapeall(msg1.serialize()))
+    #     self.assertEqual(str(msg1), EXPECTED_RESULT)
+    #     self.assertEqual(msg1.serialize(), EXPECTED_BYTES)
+    #     msg2 = SBFReader.parse(msg1.serialize())
+    #     self.assertEqual(str(msg2), EXPECTED_RESULT)
+    #     print(escapeall(msg2.serialize()))
+    #     self.assertEqual(msg2.serialize(), EXPECTED_BYTES)
+    #     stream = BytesIO(msg2.serialize())
+    #     sbr = SBFReader(stream, quitonerror=ERR_RAISE)
+    #     for raw, parsed in sbr:
+    #         self.assertEqual(str(parsed), EXPECTED_RESULT)
+    #         self.assertEqual(raw, EXPECTED_BYTES)
 
-    def testTestConstructOptional(self):
-        EXPECTED_RESULT1 = "<SBF(TestVariable, TOW=05:47:15.056000, WNc=2397, Mode=1, VariableONE=b'\\x00x\\x01x\\x02')>"
-        EXPECTED_BYTES1 = b"\x24\x40\x99\x42\xd3\x04\x15\x00\x40\x31\x3e\x01\x5d\x09\x01\x00\x78\x01\x78\x02\x01"
-        EXPECTED_RESULT2 = "<SBF(TestVariable, TOW=05:47:15.056000, WNc=2397, Mode=0, VariableZERO=b'\\x03x\\x04x\\x05')>"
-        EXPECTED_BYTES2 = b"\x24\x40\xca\x11\xd3\x04\x15\x00\x40\x31\x3e\x01\x5d\x09\x00\x03\x78\x04\x78\x05\x01"
-        msg1 = SBFMessage(
-            "TestVariable",
-            TOW=20853056,
-            WNc=2397,
-            ScaledVal=1.278,
-            Mode=1,
-            VariableONE=b"\x00x\01x\02",
-        )
-        msg2 = SBFMessage(
-            "TestVariable",
-            TOW=20853056,
-            WNc=2397,
-            ScaledVal=1.278,
-            Mode=0,
-            VariableZERO=b"\x03x\04x\05",
-        )
-        # print(f'"{msg1}"')
-        # print(escapeall(msg1.serialize()))
-        # print(f'"{msg2}"')
-        # print(escapeall(msg2.serialize()))
-        self.assertEqual(str(msg1), EXPECTED_RESULT1)
-        self.assertEqual(msg1.serialize(), EXPECTED_BYTES1)
-        self.assertEqual(str(msg2), EXPECTED_RESULT2)
-        self.assertEqual(msg2.serialize(), EXPECTED_BYTES2)
+    # def testTestConstructOptional(self):
+    #     EXPECTED_RESULT1 = "<SBF(TestVariable, TOW=05:47:15.056000, WNc=2397, Mode=1, VariableONE=b'\\x00x\\x01x\\x02')>"
+    #     EXPECTED_BYTES1 = b"\x24\x40\x99\x42\xd3\x04\x15\x00\x40\x31\x3e\x01\x5d\x09\x01\x00\x78\x01\x78\x02\x01"
+    #     EXPECTED_RESULT2 = "<SBF(TestVariable, TOW=05:47:15.056000, WNc=2397, Mode=0, VariableZERO=b'\\x03x\\x04x\\x05')>"
+    #     EXPECTED_BYTES2 = b"\x24\x40\xca\x11\xd3\x04\x15\x00\x40\x31\x3e\x01\x5d\x09\x00\x03\x78\x04\x78\x05\x01"
+    #     msg1 = SBFMessage(
+    #         "TestVariable",
+    #         TOW=20853056,
+    #         WNc=2397,
+    #         ScaledVal=1.278,
+    #         Mode=1,
+    #         VariableONE=b"\x00x\01x\02",
+    #     )
+    #     msg2 = SBFMessage(
+    #         "TestVariable",
+    #         TOW=20853056,
+    #         WNc=2397,
+    #         ScaledVal=1.278,
+    #         Mode=0,
+    #         VariableZERO=b"\x03x\04x\05",
+    #     )
+    #     # print(f'"{msg1}"')
+    #     # print(escapeall(msg1.serialize()))
+    #     # print(f'"{msg2}"')
+    #     # print(escapeall(msg2.serialize()))
+    #     self.assertEqual(str(msg1), EXPECTED_RESULT1)
+    #     self.assertEqual(msg1.serialize(), EXPECTED_BYTES1)
+    #     self.assertEqual(str(msg2), EXPECTED_RESULT2)
+    #     self.assertEqual(msg2.serialize(), EXPECTED_BYTES2)
 
     def testConstruct(self):
         EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
@@ -228,23 +228,23 @@ class ParseTest(unittest.TestCase):
         # print(f'"{parsed}"')
         self.assertEqual(str(parsed), EXPECTED_RESULT)
 
-    def testConstructVariable(self):  # TODO REMOVE AFTER ALPHA
-        EXPECTED_RESULTS = (
-            "<SBF(TestVariable, TOW=13:40:35.455000, WNc=2397, Mode=0, VariableZERO=b'\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x01')>",
-            "<SBF(TestVariable, TOW=13:40:35.455000, WNc=2397, Mode=1, VariableONE=b'\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\t\\n\\x0b\\x0c\\r\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x01\\x02\\x03')>",
-        )
-        BYTES = (
-            b"\x24\x40\x43\x63\xd3\x04\x18\x00\x4f\x8c\xef\x02\x5d\x09\x00\x01\x02\x03\x04\x05\x06\x07\x08\x01",
-            b"\x24\x40\xbf\x3c\xd3\x04\x29\x00\x4f\x8c\xef\x02\x5d\x09\x01\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x01\x02\x03",
-        )
-        stream = BytesIO(BYTES[0] + BYTES[1])
-        sbr = SBFReader(stream)
-        i = 0
-        for raw, parsed in sbr:
-            # print(f'"{parsed}"')
-            self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
-            i += 1
-        self.assertEqual(i, len(EXPECTED_RESULTS))
+    # def testConstructVariable(self):
+    #     EXPECTED_RESULTS = (
+    #         "<SBF(TestVariable, TOW=13:40:35.455000, WNc=2397, Mode=0, VariableZERO=b'\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x01')>",
+    #         "<SBF(TestVariable, TOW=13:40:35.455000, WNc=2397, Mode=1, VariableONE=b'\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\t\\n\\x0b\\x0c\\r\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x01\\x02\\x03')>",
+    #     )
+    #     BYTES = (
+    #         b"\x24\x40\x43\x63\xd3\x04\x18\x00\x4f\x8c\xef\x02\x5d\x09\x00\x01\x02\x03\x04\x05\x06\x07\x08\x01",
+    #         b"\x24\x40\xbf\x3c\xd3\x04\x29\x00\x4f\x8c\xef\x02\x5d\x09\x01\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x01\x02\x03",
+    #     )
+    #     stream = BytesIO(BYTES[0] + BYTES[1])
+    #     sbr = SBFReader(stream)
+    #     i = 0
+    #     for raw, parsed in sbr:
+    #         # print(f'"{parsed}"')
+    #         self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
+    #         i += 1
+    #     self.assertEqual(i, len(EXPECTED_RESULTS))
 
     def testConstructInvalidType(self):
         with self.assertRaisesRegex(

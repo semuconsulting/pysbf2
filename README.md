@@ -162,13 +162,22 @@ PVTCartesian
 3803640.1823747293, -148797.3625715144, 5100642.783697508
 ```
 
-Decodes for various coded attributes (e.g. PVT `Type`) are provided in [`sbftypes_decodes.py`](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_decodes.py):
+Decodes for various coded attributes (e.g. PVT `Type` or MeasEpoch `SigIdxLo`) are provided in [`sbftypes_decodes.py`](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_decodes.py):
 ```python
 from pysbf2 import PVT_TYPE
 print(PVT_TYPE[msg.Type]) # msg.Type = 4
 ```
 ```
 "RTK with fixed ambiguities"
+```
+```python
+from pysbf2 import SIGNAL_TYPE
+sigtype = SIGNAL_TYPE[msg.SigIdxLo_02] # msg.SigIdxLo_02 = 2
+print(f"Frequency = {sigtype[2]} MHz, RINEX Code = {sigtype[3]}") 
+
+```
+```
+Frequency = 1227.6 MHz, RINEX Code = 2W
 ```
 
 The `payload` attribute always contains the raw payload as bytes. Attributes within repeating groups are parsed with a two-digit suffix (PRNMaskNo_01, PRNMaskNo_02, etc.).

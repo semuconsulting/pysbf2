@@ -2,6 +2,7 @@
 
 ### RELEASE 1.0.0
 
+1. bit flag definitions enhanced in measEpoch and rawNav message types.
 1. Development status updated to Production/Stable.
 
 ### RELEASE 0.2.0

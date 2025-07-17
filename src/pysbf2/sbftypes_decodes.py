@@ -55,7 +55,7 @@ SIGNAL_TYPE = {
     39: ("L5S", "QZSS", 1176.45, "5P"),
 }
 """
-Signal Type Decode, aka "SigIdxLo" or "SigIdxHi" with offset 32.
+Signal Type Decode, aka "SigIdx", "SigIdxLo" or "SigIdxHi" with offset 32.
 
 Number: (Signal Code, Constellation, Base Frequency, RINEX Code)
 """

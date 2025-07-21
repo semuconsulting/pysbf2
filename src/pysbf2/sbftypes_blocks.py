@@ -15,7 +15,7 @@ Info sourced from mosaic-X5 Reference Guide v4.14.10 © 2000-2024 Septentrio NV/
 :license: BSD 3-Clause
 """
 
-# pylint: disable=too-many-lines, fixme
+# pylint: disable=too-many-lines
 
 from pysbf2.sbftypes_core import (
     C1,
@@ -64,6 +64,14 @@ SBF_MEASUREMENT_BLOCKS = {
     "Meas3PP": {},  # definition not in public domain
     "Meas3Ranges": {},  # definition not in public domain
     "MeasEpoch": {
+        # PRtype1 [m] = (CodeMSB*4294967296+CodeLSB)*0.001
+        # Dtype1 [Hz] = Doppler*0.0001
+        # Ltype1 [cycles] = PRtype1/λ+(CarrierMSB*65536+CarrierLSB)*0.001
+        # where λ = carrier frequency
+        # PRtype2 [m] = PRtype1+(CodeOffsetMSB*65536+CodeOffsetLSB)*0.001
+        # Ltype2 [cycles] = PRtype2/λ+(CarrierMSB*65536+CarrierLSB)*0.001
+        # Dtype2 [Hz] = Dtype1*α+(DopplerOffsetMSB*65536+DopplerOffsetLSB)*1e-4,
+        # where α = ratio of type 1 and type 2 carrier frequencies
         "TOW": U4,
         "WNc": U2,
         "N1": U1,
@@ -82,9 +90,9 @@ SBF_MEASUREMENT_BLOCKS = {
                 "Scrambling": U1,
             },
         ),
-        "CumClkJumps": U1,
-        "Reserved": U1,
-        "group1": (
+        "CumClkJumps": U1,  # Rev 1
+        "Reserved2": U1,
+        "MeasEpochChannelType1": (
             "N1",
             {
                 "RxChannel": U1,
@@ -93,17 +101,31 @@ SBF_MEASUREMENT_BLOCKS = {
                     {"SigIdxLo": U5, "AntennaID": U3},
                 ),
                 "SVID": U1,
-                "Misc": U1,
+                "Misc": (
+                    X1,
+                    {
+                        "CodeMSB": U4,
+                        "Reserved3": U4,
+                    },
+                ),
                 "CodeLSB": U4,
                 "Doppler": I4,
                 "CarrierLSB": U2,
                 "CarrierMSB": I1,
                 "CN0": U1,
                 "LockTime": U2,
-                "ObsInfo": U1,
+                "ObsInfo": (
+                    X1,
+                    {
+                        "PRSmoothed": U1,
+                        "Reserved4": U1,
+                        "HalfCycleAmbiguity": U1,
+                        "SigIdxHi": U5,
+                    },
+                ),
                 "N2": U1,
                 PAD: PD1,
-                "group2": (
+                "MeasEpochChannelType2": (
                     "N2+1",
                     {
                         "Type": (
@@ -112,9 +134,23 @@ SBF_MEASUREMENT_BLOCKS = {
                         ),
                         "LockTime": U1,
                         "CN0": U1,
-                        "OffsetsMSB": U1,
+                        "OffsetsMSB": (
+                            X1,
+                            {
+                                "CodeOffsetMSB": U3,
+                                "DopplerOffsetMSB": U5,
+                            },
+                        ),
                         "CarrierMSB": I1,
-                        "ObsInfo": U1,
+                        "ObsInfo": (
+                            X1,
+                            {
+                                "PRSmoothed": U1,
+                                "Reserved6": U1,
+                                "HalfCycleAmbiguity": U1,
+                                "SigIdxHi": U5,
+                            },
+                        ),
                         "CodeOffsetLSB": U2,
                         "CarrierLSB": U2,
                         "DopplerOffsetLSB": U2,
@@ -167,7 +203,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -183,7 +225,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -199,7 +247,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -215,7 +269,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -231,7 +291,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -247,7 +313,14 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "L1BCFlag": U1,
+                "Reserved1": U2,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -263,7 +336,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "group": (
             16,
@@ -278,7 +357,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -294,7 +379,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "FreqNr": U1,
         "RxChannel": U1,
         "group": (
@@ -310,7 +401,12 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
         "Reserved": U1,
         "RxChannel": U1,
         "group": (
@@ -326,7 +422,12 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCSF2": U1,
         "CRCSF3": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
         "Reserved": U1,
         "RxChannel": U1,
         "group": (
@@ -342,7 +443,12 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
         "Reserved": U1,
         "RxChannel": U1,
         "group": (
@@ -358,7 +464,12 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "Reserved1": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
         "Reserved2": U1,
         "RxChannel": U1,
         "group": (
@@ -374,7 +485,12 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "Reserved": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
         "Reserved2": U1,
         "RxChannel": U1,
         "group": (
@@ -390,7 +506,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "Reserved": U1,
         "RxChannel": U1,
         "group": (
@@ -406,7 +528,13 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U5,
+                "Reserved1": U3,
+            },
+        ),
         "Reserved": U1,
         "RxChannel": U1,
         "group": (
@@ -422,7 +550,12 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         "SVID": U1,
         "CRCPassed": U1,
         "ViterbiCnt": U1,
-        "Source": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
         "Reserved": U1,
         "RxChannel": U1,
         "group": (
@@ -2464,66 +2597,65 @@ SBF_MISCELLANEOUS_BLOCKS = {
     },
 }
 
-# TODO REMOVE AFTER ALPHA
-TESTING = {
-    # Test Message - Do Not Use
-    "TestOnly": {
-        "TOW": U4,
-        "WNc": U2,
-        "ScaledVal": [U4, 0.0001],
-        "Mode": U1,
-        "optionmode0": (  # present if Mode = 0
-            ("Mode", 0),
-            {
-                "ModeZERO": U1,
-            },
-        ),
-        "optionmode1": (  # present if Mode = 1
-            ("Mode", 1),
-            {
-                "ModeONE": U1,
-            },
-        ),
-        "SB1Length": U1,
-        "SB2Length": U1,
-        "N1": U2,
-        "group1": (
-            "N1",
-            {
-                "test1": U1,
-                "test2": U2,
-                "N2": U2,
-                PAD: PD1,
-                "group2": (
-                    "N2+1",
-                    {
-                        "test3": U1,
-                        "test4": U2,
-                        PAD: PD2,
-                    },
-                ),
-            },
-        ),
-    },
-    # Variable Length Test Message - Do Not Use
-    "TestVariable": {
-        "TOW": U4,
-        "WNc": U2,
-        "Mode": U1,
-        "optionmode0": (  # present if Mode = 0
-            ("Mode", 0),
-            {
-                "VariableZERO": V4,
-            },
-        ),
-        "optionmode1": (  # present if Mode = 1
-            ("Mode", [1, 2]),
-            {
-                "VariableONE": V2,
-            },
-        ),
-    },
-}
+# TESTING = {
+#     # Test Message - Do Not Use
+#     "TestOnly": {
+#         "TOW": U4,
+#         "WNc": U2,
+#         "ScaledVal": [U4, 0.0001],
+#         "Mode": U1,
+#         "optionmode0": (  # present if Mode = 0
+#             ("Mode", 0),
+#             {
+#                 "ModeZERO": U1,
+#             },
+#         ),
+#         "optionmode1": (  # present if Mode = 1
+#             ("Mode", 1),
+#             {
+#                 "ModeONE": U1,
+#             },
+#         ),
+#         "SB1Length": U1,
+#         "SB2Length": U1,
+#         "N1": U2,
+#         "group1": (
+#             "N1",
+#             {
+#                 "test1": U1,
+#                 "test2": U2,
+#                 "N2": U2,
+#                 PAD: PD1,
+#                 "group2": (
+#                     "N2+1",
+#                     {
+#                         "test3": U1,
+#                         "test4": U2,
+#                         PAD: PD2,
+#                     },
+#                 ),
+#             },
+#         ),
+#     },
+#     # Variable Length Test Message - Do Not Use
+#     "TestVariable": {
+#         "TOW": U4,
+#         "WNc": U2,
+#         "Mode": U1,
+#         "optionmode0": (  # present if Mode = 0
+#             ("Mode", 0),
+#             {
+#                 "VariableZERO": V4,
+#             },
+#         ),
+#         "optionmode1": (  # present if Mode = 1
+#             ("Mode", [1, 2]),
+#             {
+#                 "VariableONE": V2,
+#             },
+#         ),
+#     },
+# }
 
 SBF_BLOCKS = {
     **SBF_MEASUREMENT_BLOCKS,
@@ -2542,5 +2674,5 @@ SBF_BLOCKS = {
     **SBF_LBAND_DEMODULATOR_BLOCKS,
     **SBF_STATUS_BLOCKS,
     **SBF_MISCELLANEOUS_BLOCKS,
-    **TESTING,
+    # **TESTING,
 }

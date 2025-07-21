@@ -247,7 +247,6 @@ SBF_MSGIDS = {
     5907: ("VelCovCartesian", "Velocity covariance matrix (X, Y, Z)"),
     5908: ("VelCovGeodetic", "Velocity covariance matrix (North, East, Up)"),
     5911: ("xPPSOffset", "Offset of the xPPS pulse with respect to GNSS time"),
-    # TODO REMOVE AFTER ALPHA...
-    1234: ("TestOnly", "Test Message - Do Not Use"),
-    1235: ("TestVariable", "Variable Length Test Message - Do Not Use"),
+    # 1234: ("TestOnly", "Test Message - Do Not Use"),
+    # 1235: ("TestVariable", "Variable Length Test Message - Do Not Use"),
 }

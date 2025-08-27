@@ -246,8 +246,6 @@ print(msg3)
 
 The `SBFMessage` class implements a `serialize()` method to convert a `SBFMessage` object to a bytes array suitable for writing to an output stream.
 
-e.g. to create and send a `CFG-MSG` command which sets the NMEA GLL (*msgClass 0xf0, msgID 0x01*) message rate to 1 on the receiver's UART1 and USB ports:
-
 ```python
 from serial import Serial
 from pysbf2 import SBFMessage
@@ -295,7 +293,7 @@ An SBF message's content (payload) is uniquely defined by its ID (message ID and
 ---
 ## <a name="knownissues">Known Issues</a>
 
-1. The following SBF message types are not yet implemented (mainly because definitions are not currently in the public domain or are unresolved):
+1. The following SBF message types are not yet implemented (mainly because definitions are not currently in the public domain):
     1. Meas3CN0HiRes
     1. Meas3Doppler
     1. Meas3MP

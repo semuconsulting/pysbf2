@@ -38,6 +38,8 @@ Contributions welcome - please refer to [CONTRIBUTING.MD](https://github.com/sem
 
 [Bug reports](https://github.com/semuconsulting/pysbf2/blob/master/.github/ISSUE_TEMPLATE/bug_report.md) and [Feature requests](https://github.com/semuconsulting/pysbf2/blob/master/.github/ISSUE_TEMPLATE/feature_request.md) - please use the templates provided. For general queries and advice, post a message to one of the [pysbf2 Discussions](https://github.com/semuconsulting/pysbf2/discussions) channels.
 
+![No Copilot](https://github.com/semuconsulting/PyGPSClient/blob/master/images/nocopilot100.png?raw=true)
+
 ---
 ## <a name="installation">Installation</a>
 
@@ -45,7 +47,7 @@ Contributions welcome - please refer to [CONTRIBUTING.MD](https://github.com/sem
 [![PyPI version](https://img.shields.io/pypi/v/pysbf2.svg?style=flat)](https://pypi.org/project/pysbf2/)
 [![PyPI downloads](https://github.com/semuconsulting/pygpsclient/blob/master/images/clickpy_icon.svg?raw=true)](https://clickpy.clickhouse.com/dashboard/pysbf2)
 
-`pysbf2` is compatible with Python 3.9 - 3.13. In the following, `python3` & `pip` refer to the Python 3 executables. You may need to substitute `python` for `python3`, depending on your particular environment (*on Windows it's generally `python`*).
+`pysbf2` is compatible with Python >= 3.9. In the following, `python3` & `pip` refer to the Python 3 executables. You may need to substitute `python` for `python3`, depending on your particular environment (*on Windows it's generally `python`*).
 
 The recommended way to install the latest version of `pysbf2` is with [pip](http://pypi.python.org/pypi/pip/):
 
@@ -314,4 +316,4 @@ semuadmin@semuconsulting.com
 
 [![Sponsor](https://github.com/semuconsulting/pyubx2/blob/master/images/sponsor.png?raw=true)](https://buymeacoffee.com/semuconsulting)
 
-[![Freedom for Ukraine](https://github.com/semuadmin/sandpit/blob/main/src/sandpit/resources/ukraine200.jpg?raw=true)](https://u24.gov.ua/)
+[![Freedom for Ukraine](https://github.com/semuadmin/sandpit/blob/main/src/semuadmin_sandpit/resources/ukraine200.jpg?raw=true)](https://u24.gov.ua/)

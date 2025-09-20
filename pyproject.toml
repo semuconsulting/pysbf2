@@ -8,7 +8,8 @@ dynamic = ["version"]
 authors = [{ name = "Steve Smith", email = "semuadmin@semuconsulting.com" }]
 maintainers = [{ name = "Steve Smith", email = "semuadmin@semuconsulting.com" }]
 description = "SBF protocol parser and generator"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -33,7 +34,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 
-dependencies = ["pynmeagps >= 1.0.50", "pyrtcm >= 1.1.8"]
+dependencies = ["pynmeagps >= 1.0.53", "pyrtcm >= 1.1.9"]
 
 [project.urls]
 homepage = "https://github.com/semuconsulting/pysbf2"
@@ -88,8 +89,6 @@ fail-on = "E,F"
 clear-cache-post-run = "y"
 good-names = "i,j,x,y"
 disable = """
-    unused-import,
-    unused-variable,
     raw-checker-failed,
     bad-inline-option,
     locally-disabled,
@@ -108,3 +107,13 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 source = ["src"]
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.report]
+fail_under = 98
+
+[tool.coverage.html]
+directory = "htmlcov"
+

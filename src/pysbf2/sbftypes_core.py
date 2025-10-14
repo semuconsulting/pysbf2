@@ -113,6 +113,10 @@ SBF_MSGIDS = {
     4075: ("ASCIIIn", "ASCII input from external sensor"),
     5939: ("AttCovEuler", "Covariance matrix of attitude"),
     5938: ("AttEuler", "GNSS attitude expressed as Euler angles"),
+    5942: (
+        "AuxAntPositions",
+        "Relative positions and velocities of auxiliary antennas",
+    ),
     5949: ("BaseStation", "Base station coordinates"),
     4043: (
         "BaseVectorCart",

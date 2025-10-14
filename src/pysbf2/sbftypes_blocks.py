@@ -1330,6 +1330,28 @@ SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS = {
 }
 
 SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
+    "AuxAntPositions": {
+        "TOW": U4,
+        "WNc": U2,
+        "N": U1,
+        "SBLength": U1,
+        "group": (
+            "N",
+            {
+                "NrSV": U1,
+                "Error": U1,
+                "AmbiguityType": U1,
+                "AuxAntID": U1,
+                "DeltaEast": F8,
+                "DeltaNorth": F8,
+                "DeltaUp": F8,
+                "EastVel": F8,
+                "NorthVel": F8,
+                "UpVel": F8,
+                PAD: PD,
+            },
+        ),
+    },
     "PVTCartesian": {
         "TOW": U4,
         "WNc": U2,

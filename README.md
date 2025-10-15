@@ -47,7 +47,7 @@ Contributions welcome - please refer to [CONTRIBUTING.MD](https://github.com/sem
 [![PyPI version](https://img.shields.io/pypi/v/pysbf2.svg?style=flat)](https://pypi.org/project/pysbf2/)
 [![PyPI downloads](https://github.com/semuconsulting/pygpsclient/blob/master/images/clickpy_top25.svg?raw=true)](https://clickpy.clickhouse.com/dashboard/pysbf2)
 
-`pysbf2` is compatible with Python >= 3.9. In the following, `python3` & `pip` refer to the Python 3 executables. You may need to substitute `python` for `python3`, depending on your particular environment (*on Windows it's generally `python`*).
+`pysbf2` is compatible with Python >= 3.10. In the following, `python3` & `pip` refer to the Python 3 executables. You may need to substitute `python` for `python3`, depending on your particular environment (*on Windows it's generally `python`*).
 
 The recommended way to install the latest version of `pysbf2` is with [pip](http://pypi.python.org/pypi/pip/):
 

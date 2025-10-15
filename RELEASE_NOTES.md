@@ -1,5 +1,10 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.1
+
+1. Minimum actively supported Python version updated to 3.10 (3.9 EOL 31 October 2025). 3.14rc2 added to actions.
+1. Added Mosaic H `AuxAntPositions` message definition - thanks to @inuex35 for contribution.
+
 ### RELEASE 1.0.0
 
 1. bit flag definitions enhanced in measEpoch and rawNav message types.

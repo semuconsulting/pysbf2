@@ -1796,6 +1796,28 @@ SBF_GNSS_ATTITUDE_BLOCKS = {
         "Cov_HeadRoll": F4,
         "Cov_PitchRoll": F4,
     },
+    "AuxAntPositions": {
+        "TOW": U4,
+        "WNc": U2,
+        "N": U1,
+        "SBLength": U1,
+        "group": (
+            "N",
+            {
+                "NrSV": U1,
+                "Error": U1,
+                "AmbiguityType": U1,
+                "AuxAntID": U1,
+                "DeltaEast": F8,
+                "DeltaNorth": F8,
+                "DeltaUp": F8,
+                "EastVel": F8,
+                "NorthVel": F8,
+                "UpVel": F8,
+                PAD: PD,
+            },
+        ),
+    },
     "EndOfAtt": {
         "TOW": U4,
         "WNc": U2,

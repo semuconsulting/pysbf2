@@ -197,6 +197,40 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(str(res), EXPECTED_RES)
         self.assertEqual(str(repr(res)), EXPECTED_REPR)
 
+    def testAuxAntPositionsConstructParse(self):
+        EXPECTED_STR = (
+            "<SBF(AuxAntPositions, TOW=10:01:25, WNc=2367, N=1, SBLength=52, "
+            "NrSV_01=7, Error_01=0, AmbiguityType_01=0, AuxAntID_01=2, "
+            "DeltaEast_01=1.0, DeltaNorth_01=-2.0, DeltaUp_01=3.0, "
+            "EastVel_01=0.5, NorthVel_01=-0.25, UpVel_01=0.125)>"
+        )
+        msg = SBFMessage(
+            "AuxAntPositions",
+            TOW=208903000,
+            WNc=2367,
+            N=1,
+            SBLength=52,
+            NrSV_01=7,
+            Error_01=0,
+            AmbiguityType_01=0,
+            AuxAntID_01=2,
+            DeltaEast_01=1.0,
+            DeltaNorth_01=-2.0,
+            DeltaUp_01=3.0,
+            EastVel_01=0.5,
+            NorthVel_01=-0.25,
+            UpVel_01=0.125,
+        )
+        self.assertEqual(str(msg), EXPECTED_STR)
+        self.assertEqual(len(msg.payload), 60)
+        serial = msg.serialize()
+        parsed = SBFReader.parse(serial)
+        self.assertEqual(str(parsed), EXPECTED_STR)
+        self.assertEqual(parsed.N, 1)
+        self.assertEqual(parsed.SBLength, 52)
+        self.assertEqual(parsed.NrSV_01, 7)
+        self.assertAlmostEqual(parsed.UpVel_01, 0.125)
+
     def testConstructParse(self):
         EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
         BYTES = b"$@\xb7Y\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\x8f\x02\r\t2P\x00\x00\x00\x00+\x00z\x00\x88\x00\x00\x01"

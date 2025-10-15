@@ -169,6 +169,7 @@ class StaticTest(unittest.TestCase):
 
     def testmsgid2bytes(self):
         self.assertEqual(msgid2bytes("PVTCartesian"), b"\xa6\x0f")
+        self.assertEqual(msgid2bytes("AuxAntPositions"), b"\x36\x17")
         with self.assertRaisesRegex(
             SBFMessageError, "No SBF ID found for message NotExist"
         ):

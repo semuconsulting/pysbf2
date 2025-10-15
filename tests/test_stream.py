@@ -345,6 +345,21 @@ class StreamTest(unittest.TestCase):
                 i += 1
             self.assertEqual(i, len(EXPECTED_RESULTS))
 
+    def testattitudeH(self):  # test attitude message stream
+        EXPECTED_RESULTS = (
+            "<SBF(AuxAntPositions, TOW=10:01:25, WNc=2367, N=1, SBLength=52, NrSV_01=7, Error_01=0, AmbiguityType_01=0, AuxAntID_01=2, DeltaEast_01=1.0, DeltaNorth_01=-2.0, DeltaUp_01=3.0, EastVel_01=0.5, NorthVel_01=-0.25, UpVel_01=0.125)>",
+        )
+        i = 0
+        with open(
+            os.path.join(DIRNAME, "pygpsdata_mosaicH_attitude.log"), "rb"
+        ) as stream:
+            ubr = SBFReader(stream, protfilter=7, quitonerror=ERR_RAISE)
+            for raw, parsed in ubr:
+                # print(f'"{parsed}",')
+                self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
+                i += 1
+            self.assertEqual(i, len(EXPECTED_RESULTS))
+
     def testdiffcorn1(self):  # test differential correction message stream
         EXPECTED_RESULTS = (
             "<SBF(BaseStation, TOW=14:20:18.700000, WNc=2367, BaseStationID=25, BaseType=255, Source=8, Datum=19, Reserved=0, X=3811965.6701, Y=-175800.07080000002, Z=5093615.5606)>",

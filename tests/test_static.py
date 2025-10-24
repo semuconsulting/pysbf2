@@ -20,6 +20,8 @@ from pysbf2 import (
     I4,
     U2,
     X2,
+    SBF_MSGIDS,
+    SBF_BLOCKS,
     SBFMessageError,
     SBFTypeError,
     attsiz,
@@ -43,6 +45,12 @@ class StaticTest(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def testDefinitions(self):  # test block dictionaries are intact and consistent
+        for key, (val, desc) in SBF_MSGIDS.items():
+            self.assertIn(val, SBF_BLOCKS)
+        for key in SBF_BLOCKS:
+            self.assertIn(key, str(SBF_MSGIDS.values()))
 
     def testGetpadding(self):
         pad = getpadding(2)

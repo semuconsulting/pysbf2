@@ -1,5 +1,11 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.3
+
+FIXES:
+
+1. Fix typo in keys for BDSCNav1, BDSCNav2 & BDSCNav3
+
 ### RELEASE 1.0.2
 
 1. Added Mosaic G5 P3(H) message definitions

@@ -30,6 +30,7 @@ from pysbf2.sbfhelpers import (
 )
 from pysbf2.sbftypes_blocks import SBF_BLOCKS
 from pysbf2.sbftypes_core import (
+    CHSTR,
     PAD,
     PD,
     PD1,
@@ -482,6 +483,8 @@ class SBFMessage:
                 val = self.__dict__[att]
                 if att == "TOW":  # attribute is a GPS Time of Week
                     val = itow2utc(val)  # show time in UTC format
+                if isinstance(val, bytes) and att not in CHSTR:
+                    val = escapeall(val)
                 stg += att + "=" + str(val)
                 if i < len(self.__dict__) - 1:
                     stg += ", "

@@ -1,5 +1,22 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.2
+
+1. Added Mosaic G5 P3(H) message definitions
+   (https://www.septentrio.com/resources/mosaic-G5+P3/mosaic-G5+Firmware+v1.0.0+Reference+Guide.pdf):
+    - 4251: BDSCNAV1
+    - 4252: BDSCNAV2
+    - 4253: BDSCNAV3
+    - 4221: GPSRawL1C
+    - 4272: NavCart
+    - 4254: NavICLNav
+    - 4227: QZSRawL1C
+    - 4228: QZSRawL1S
+    - 4246: QZSRawL5S
+    - 4270: QZSRawL6D
+    - 4271: QZSRawL6E
+1. `NavBits` attribute in `SBF_NAVIGATION_PAGE_BLOCKS` rendered as single byte array rather than group of bytes.
+
 ### RELEASE 1.0.1
 
 1. Minimum actively supported Python version updated to 3.10 (3.9 EOL 31 October 2025). 3.14rc2 added to actions.

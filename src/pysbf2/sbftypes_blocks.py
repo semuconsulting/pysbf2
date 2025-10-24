@@ -55,6 +55,14 @@ from pysbf2.sbftypes_core import (
     X1,
     X2,
     X4,
+    X12,
+    X32,
+    X40,
+    X64,
+    X72,
+    X124,
+    X228,
+    X252,
 )
 
 SBF_MEASUREMENT_BLOCKS = {
@@ -212,12 +220,23 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            10,
+        "NavBits": X40,  # U4 * 10
+    },
+    "GPSRawL1C": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "CRCSF2": U1,
+        "CRCSF3": U1,
+        "Source": (
+            X1,
             {
-                "NavBits": U4,
+                "SigIdx": U8,
             },
         ),
+        "Reserved1": U1,
+        "RxChannel": U1,
+        "NAVBits": X228,  # U4 * 57
     },
     "GPSRawL2C": {
         "TOW": U4,
@@ -234,12 +253,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            10,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X40,  # U4 * 10
     },
     "GPSRawL5": {
         "TOW": U4,
@@ -256,12 +270,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            10,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X40,  # U4 * 10
     },
     "GLORawCA": {
         "TOW": U4,
@@ -278,12 +287,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            3,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X12,  # U4 * 3
     },
     "GALRawFNAV": {
         "TOW": U4,
@@ -300,12 +304,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            8,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X32,  # U4 * 8
     },
     "GALRawINAV": {
         "TOW": U4,
@@ -323,12 +322,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            8,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X32,  # U4 * 8
     },
     "GALRawCNAV": {
         "TOW": U4,
@@ -344,12 +338,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
             },
         ),
         "FreqNr": U1,
-        "group": (
-            16,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X64,  # U4 * 16
     },
     "GEORawL1": {
         "TOW": U4,
@@ -366,12 +355,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            8,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X32,  # U4 * 8
     },
     "GEORawL5": {
         "TOW": U4,
@@ -388,12 +372,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "FreqNr": U1,
         "RxChannel": U1,
-        "group": (
-            8,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X32,  # U4 * 8
     },
     "BDSRaw": {
         "TOW": U4,
@@ -409,12 +388,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved": U1,
         "RxChannel": U1,
-        "group": (
-            10,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X40,  # U4 * 10
     },
     "BDSRawB1C": {
         "TOW": U4,
@@ -430,12 +404,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved": U1,
         "RxChannel": U1,
-        "group": (
-            57,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X228,  # U4 * 57
     },
     "BDSRawB2a": {
         "TOW": U4,
@@ -451,12 +420,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved": U1,
         "RxChannel": U1,
-        "group": (
-            18,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X72,  # U4 * 18
     },
     "BDSRawB2b": {
         "TOW": U4,
@@ -472,12 +436,39 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved2": U1,
         "RxChannel": U1,
-        "group": (
-            31,
+        "NavBits": X124,  # U4 * 31
+    },
+    "QZSRawL1C": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "CRCSF2": U1,
+        "CRCSF3": U1,
+        "Source": (
+            X1,
             {
-                "NavBits": U4,
+                "SigIdx": U8,
             },
         ),
+        "Reserved1": U1,
+        "RxChannel": U1,
+        "NAVBits": X228,  # U4 * 57
+    },
+    "QZSRawL1S": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "CRCPassed": U1,
+        "ViterbiCnt": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
+        "FreqNr": U1,
+        "RxChannel": U1,
+        "NAVBits": X32,  # U4 * 8
     },
     "QZSRawL1CA": {
         "TOW": U4,
@@ -493,12 +484,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved2": U1,
         "RxChannel": U1,
-        "group": (
-            10,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X40,  # U4 * 10
     },
     "QZSRawL2C": {
         "TOW": U4,
@@ -515,12 +501,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved": U1,
         "RxChannel": U1,
-        "group": (
-            10,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X40,  # U4 * 10
     },
     "QZSRawL5": {
         "TOW": U4,
@@ -537,12 +518,55 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved": U1,
         "RxChannel": U1,
-        "group": (
-            10,
+        "NavBits": X40,  # U4 * 10
+    },
+    "QZSRawL5S": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "CRCPassed": U1,
+        "ViterbiCnt": U1,
+        "Source": (
+            X1,
             {
-                "NavBits": U4,
+                "SigIdx": U8,
             },
         ),
+        "FreqNr": U1,
+        "RxChannel": U1,
+        "NAVBits": X32,  # U4 * 8
+    },
+    "QZSRawL6D": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "Parity": U1,
+        "RSCnt": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
+        "Reserved1": U1,
+        "RxChannel": U1,
+        "NAVBits": X252,  # U4 * 63
+    },
+    "QZSRawL6E": {
+        "TOW": U4,
+        "WNc": U2,
+        "SVID": U1,
+        "Parity": U1,
+        "RSCnt": U1,
+        "Source": (
+            X1,
+            {
+                "SigIdx": U8,
+            },
+        ),
+        "Reserved1": U1,
+        "RxChannel": U1,
+        "NAVBits": X252,  # U4 * 63
     },
     "NAVICRaw": {
         "TOW": U4,
@@ -558,12 +582,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
         ),
         "Reserved": U1,
         "RxChannel": U1,
-        "group": (
-            10,
-            {
-                "NavBits": U4,
-            },
-        ),
+        "NavBits": X40,  # U4 * 10
     },
 }
 
@@ -921,6 +940,188 @@ SBF_GALILEO_DECODED_MESSAGE_BLOCKS = {
 }
 
 SBF_BEIDOU_DECODED_MESSAGE_BLOCKS = {
+    "BDSCNav1": {
+        "TOW": U4,
+        "WNc": U2,
+        "PRNidx": U1,
+        "Flags": (
+            X1,
+            {
+                "Orbit": U2,  # 1: GEO, 2: IGSO, 3: MEO
+                "Reserved1": U6,
+            },
+        ),
+        "t_oe": U4,
+        "A": F8,
+        "A_DOT": F8,
+        "DELTA_n0": F4,
+        "DELTA_n0_DOT": F4,
+        "M_0": F8,
+        "e": F8,
+        "omega": F8,
+        "OMEGA_0": F8,
+        "OMEGADOT": F4,
+        "i_0": F8,
+        "IDOT": F4,
+        "C_is": F4,
+        "C_ic": F4,
+        "C_rs": F4,
+        "C_rc": F4,
+        "C_us": F4,
+        "C_uc": F4,
+        "t_oc": U4,
+        "a_2": F4,
+        "a_1": F4,
+        "a_0": F8,
+        "t_op": U4,
+        "SISAI_ocb": U1,
+        "SISAI_oc12": (
+            X1,
+            {
+                "SISAI_oc2": U3,
+                "SISAI_oc1": U3,
+                "Reserved2": U2,
+            },
+        ),
+        "SISAI_oe": U1,
+        "SISMAI": U1,
+        "HealthIF": (
+            X1,
+            {
+                "AIF_B1C": U1,
+                "SIF_B1C": U1,
+                "DIF_B1C": U1,
+                "Reserved3": U3,
+                "SatHealth": U2,
+            },
+        ),
+        "IODE": U1,
+        "IODC": U2,
+        "ISC_B1Cd": F4,
+        "T_GDB1Cp": F4,
+        "T_GDB2ap": F4,
+    },
+    "BDSCNav2": {
+        "TOW": U4,
+        "WNc": U2,
+        "PRNidx": U1,
+        "Flags": (
+            X1,
+            {
+                "Orbit": U2,  # 1: GEO, 2: IGSO, 3: MEO
+                "Reserved1": U6,
+            },
+        ),
+        "t_oe": U4,
+        "A": F8,
+        "A_DOT": F8,
+        "DELTA_n0": F4,
+        "DELTA_n0_DOT": F4,
+        "M_0": F8,
+        "e": F8,
+        "omega": F8,
+        "OMEGA_0": F8,
+        "OMEGADOT": F4,
+        "i_0": F8,
+        "IDOT": F4,
+        "C_is": F4,
+        "C_ic": F4,
+        "C_rs": F4,
+        "C_rc": F4,
+        "C_us": F4,
+        "C_uc": F4,
+        "t_oc": U4,
+        "a_2": F4,
+        "a_1": F4,
+        "a_0": F8,
+        "t_op": U4,
+        "SISAI_ocb": U1,
+        "SISAI_oc12": (
+            X1,
+            {
+                "SISAI_oc2": U3,
+                "SISAI_oc1": U3,
+                "Reserved2": U2,
+            },
+        ),
+        "SISAI_oe": U1,
+        "SISMAI": U1,
+        "HealthIF": (
+            X1,
+            {
+                "AIF_B1C": U1,
+                "SIF_B1C": U1,
+                "DIF_B1C": U1,
+                "AIF_B2a": U1,
+                "SIF_B2a": U1,
+                "DIF_B2a": U1,
+                "SatHealth": U2,
+            },
+        ),
+        "IODE": U1,
+        "IODC": U2,
+        "ISC_B2ad": F4,
+        "T_GDB2ap": F4,
+        "T_GDB1Cp": F4,
+    },
+    "BDSCNav3": {
+        "TOW": U4,
+        "WNc": U2,
+        "PRNidx": U1,
+        "Flags": (
+            X1,
+            {
+                "Orbit": U2,  # 1: GEO, 2: IGSO, 3: MEO
+                "Reserved1": U6,
+            },
+        ),
+        "t_oe": U4,
+        "A": F8,
+        "A_DOT": F8,
+        "DELTA_n0": F4,
+        "DELTA_n0_DOT": F4,
+        "M_0": F8,
+        "e": F8,
+        "omega": F8,
+        "OMEGA_0": F8,
+        "OMEGADOT": F4,
+        "i_0": F8,
+        "IDOT": F4,
+        "C_is": F4,
+        "C_ic": F4,
+        "C_rs": F4,
+        "C_rc": F4,
+        "C_us": F4,
+        "C_uc": F4,
+        "t_oc": U4,
+        "a_2": F4,
+        "a_1": F4,
+        "a_0": F8,
+        "t_op": U4,
+        "SISAI_ocb": U1,
+        "SISAI_oc12": (
+            X1,
+            {
+                "SISAI_oc2": U3,
+                "SISAI_oc1": U3,
+                "Reserved2": U2,
+            },
+        ),
+        "SISAI_oe": U1,
+        "SISMAI": U1,
+        "HealthIF": (
+            X1,
+            {
+                "AIF_I": U1,
+                "SIF_I": U1,
+                "DIF_I": U1,
+                "Reserved3": U3,
+                "SatHealth": U2,
+            },
+        ),
+        "Reserved": U3,
+        "T_GDB2bI": F4,
+    },
     "BDSNav": {
         "TOW": U4,
         "WNc": U2,
@@ -1000,6 +1201,47 @@ SBF_BEIDOU_DECODED_MESSAGE_BLOCKS = {
         "WN_LSF": U1,
         "DN": U1,
         "DEL_t_LSF": I1,
+    },
+}
+
+SBF_NAVIC_DECODED_MESSAGE_BLOCKS = {
+    "NavICLNav": {
+        "TOW": U4,
+        "WNc": U2,
+        "PRNidx": U1,
+        "IODEC": U1,
+        "t_oe": U4,
+        "SQRT_A": F8,
+        "DELTA_N": F4,
+        "M_0": F8,
+        "e": F8,
+        "omega": F8,
+        "OMEGA_0": F8,
+        "OMEGADOT": F4,
+        "i_0": F8,
+        "IDOT": F4,
+        "C_is": F4,
+        "C_ic": F4,
+        "C_rs": F4,
+        "C_rc": F4,
+        "C_us": F4,
+        "C_uc": F4,
+        "t_oc": U4,
+        "a_f0": F4,
+        "a_f1": F4,
+        "a_f2": F4,
+        "T_GD": F4,
+        "Flags": (
+            X1,
+            {
+                "S-SPS": U1,
+                "L5-SPS": U1,
+                "Alert": U1,
+                "AutoNav": U1,
+                "Reserved1": U4,
+            },
+        ),
+        "URA": U1,
     },
 }
 
@@ -1766,6 +2008,63 @@ SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS = {
     "EndOfPVT": {
         "TOW": U4,
         "WNc": U2,
+    },
+    "NavCart": {
+        "TOW": U4,
+        "WNc": U2,
+        "Mode": (
+            X1,
+            {
+                "Type": U4,  # decode PVT_TYPE
+                "Reserved1": U2,
+                "AutoSet": U1,
+                "2D": U1,
+            },
+        ),
+        "Error": U1,  # decode PVT_ERROR
+        "X": F8,
+        "Y": F8,
+        "Z": F8,
+        "Undulation": F4,
+        "Vx": F4,
+        "Vy": F4,
+        "Vz": F4,
+        "COG": F4,
+        "RxClkBias": F8,
+        "RxClkDrift": F4,
+        "TimeSystem": U1,  # decode PVT_TIMESYSTEM
+        "Datum": U1,  # decode PVT_DATUM
+        "NrSV": U1,
+        "WACorrInfo": U1,
+        "ReferenceID": U2,
+        "MeanCorrAge": U2,
+        "SignalInfo": U8,
+        "AlertFlag": U1,
+        "NrBases": U1,
+        "PPPInfo": U2,
+        "Latency": U2,
+        "PosHAcc": U2,
+        "PosVAcc": U2,
+        "VelHAcc": U2,
+        "VelVAcc": U2,
+        "Misc": U1,
+        "Reserved2": U1,
+        "ModeAtt": U2,
+        "ErrorAtt": U1,
+        "NrSVAtt": U1,
+        "Heading": F4,
+        "Pitch": F4,
+        "Roll": F4,
+        "HeadingAcc": U2,
+        "PitchAcc": U2,
+        "RollAcc": U2,
+        "PDOP": U2,
+        "UTCHour": I1,
+        "UTCMin": I1,
+        "UTCmsec": U2,
+        "UTCYear": I1,
+        "UTCMonth": I1,
+        "UTCDay": I1,
     },
 }
 
@@ -2686,6 +2985,7 @@ SBF_BLOCKS = {
     **SBF_GLONASS_DECODED_MESSAGE_BLOCKS,
     **SBF_GALILEO_DECODED_MESSAGE_BLOCKS,
     **SBF_BEIDOU_DECODED_MESSAGE_BLOCKS,
+    **SBF_NAVIC_DECODED_MESSAGE_BLOCKS,
     **SBF_QZSS_DECODED_MESSAGE_BLOCKS,
     **SBF_SBAS_L1_DECODED_MESSAGE_BLOCKS,
     **SBF_GNSS_POSITION_VELOCITY_TIME_BLOCKS,

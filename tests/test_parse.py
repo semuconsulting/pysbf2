@@ -239,7 +239,7 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(str(res), EXPECTED_RESULT)
 
     def testConstructParseNoBitField(self):
-        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=b'\\x04', Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=b'@', ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=b'\\x00', NrBases=0, PPPInfo=b'\\x00\\x00', Latency=43, HAccuracy=122, VAccuracy=136, Misc=b'\\x00')>"
+        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=b'\\x04', Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=b'\\x40', ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=b'\\x00', NrBases=0, PPPInfo=b'\\x00\\x00', Latency=43, HAccuracy=122, VAccuracy=136, Misc=b'\\x00')>"
         BYTES = b"$@\xb7Y\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\x8f\x02\r\t2P\x00\x00\x00\x00+\x00z\x00\x88\x00\x00\x01"
         res = SBFReader.parse(BYTES, parsebitfield=False)
         # print(f'"{res}"')

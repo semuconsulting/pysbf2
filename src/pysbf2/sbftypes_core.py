@@ -86,7 +86,15 @@ X2 = "X002"  # Bitfield 2 bytes
 X4 = "X004"  # Bitfield 4 bytes
 X6 = "X006"  # Bitfield 6 bytes
 X8 = "X008"  # Bitfield 8 bytes
-X24 = "X024"  # Bitfield 24 bytes
+X12 = "X012"  # 12 bytes
+X24 = "X024"  # 24 bytes
+X32 = "X032"  # 32 bytes
+X40 = "X040"  # 40 bytes
+X64 = "X064"  # 64 bytes
+X72 = "X072"  # 72 bytes
+X124 = "X124"  # 124 bytes
+X228 = "X228"  # 228 bytes
+X252 = "X252"  # 252 bytes
 V1 = "V001"  # variable number of U1
 V2 = "V002"  # variable number of U2
 V4 = "V004"  #  variable number of U4
@@ -104,6 +112,9 @@ ATTTYPE = {
     "X": type(b"0"),
 }
 """Permissible attribute types"""
+
+CHSTR = ()
+"""Bytes representing encoded character strings"""
 
 # ********************************************************************
 # THESE ARE THE SBF PROTOCOL CORE MESSAGE IDENTITIES
@@ -129,6 +140,9 @@ SBF_MSGIDS = {
     4040: ("BBSamples", "Baseband samples"),
     4119: ("BDSAlm", "Almanac data for a BeiDou satellite"),
     4120: ("BDSIon", "BeiDou Ionospheric delay model parameters"),
+    4251: ("BDSCNAV1", "BeiDou B-CNAV1 ephemeris data for one satellite"),
+    4252: ("BDSCNAV2", "BeiDou B-CNAV2 ephemeris data for one satellite"),
+    4253: ("BDSCNAV3", "BeiDou B-CNAV3 ephemeris data for one satellite"),
     4081: ("BDSNav", "BeiDou ephemeris and clock"),
     4047: ("BDSRaw", "BeiDou navigation page"),
     4218: ("BDSRawB1C", "BeiDou B1C navigation frame"),
@@ -194,6 +208,7 @@ SBF_MSGIDS = {
     5893: ("GPSIon", "Ionosphere data from the GPS subframe 5"),
     5891: ("GPSNav", "GPS ephemeris and clock"),
     4017: ("GPSRawCA", "GPS CA navigation subframe"),
+    4221: ("GPSRawL1C", "GPS L1C navigation frame"),
     4018: ("GPSRawL2C", "GPS L2C navigation frame"),
     4019: ("GPSRawL5", "GPS L5 navigation frame"),
     5894: ("GPSUtc", "GPS-UTC data from GPS subframe 5"),
@@ -218,6 +233,8 @@ SBF_MSGIDS = {
     4109: ("Meas3Ranges", "Code, phase and CN0 measurements"),
     4027: ("MeasEpoch", "Measurement set of one epoch"),
     4000: ("MeasExtra", "Additional info such as observable variance"),
+    4272: ("NavCart", "Position, velocity, attitude, DOP and UTC time in Cartesian"),
+    4254: ("NavICLNav", "NavIC/IRNSS ephemeris and clock"),
     4093: ("NAVICRaw", "NavIC/IRNSS subframe"),
     4053: ("NTRIPClientStatus", "NTRIP client connection status"),
     4122: ("NTRIPServerStatus", "NTRIP server connection status"),
@@ -238,9 +255,14 @@ SBF_MSGIDS = {
     4082: ("QualityInd", "Quality indicators"),
     4116: ("QZSAlm", "Almanac data for a QZSS satellite"),
     4095: ("QZSNav", "QZSS ephemeris and clock"),
+    4227: ("QZSRawL1C", "QZSS L1C navigation frame"),
     4066: ("QZSRawL1CA", "QZSS L1C/A or L1C/B navigation frame"),
+    4228: ("QZSRawL1S", "QZSS L1S navigation message"),
     4067: ("QZSRawL2C", "QZSS L2C navigation frame"),
     4068: ("QZSRawL5", "QZSS L5 navigation frame"),
+    4246: ("QZSRawL5S", "QZSS L5S navigation message"),
+    4270: ("QZSRawL6D", "QZSS L6D navigation message"),
+    4271: ("QZSRawL6E", "QZSS L6E navigation message"),
     5902: ("ReceiverSetup", "General information about the receiver installation"),
     4014: ("ReceiverStatus", "Overall status information of the receiver"),
     5914: ("ReceiverTime", "Current receiver and UTC time"),

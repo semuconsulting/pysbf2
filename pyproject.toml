@@ -33,7 +33,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 
-dependencies = ["pynmeagps >= 1.0.54", "pyrtcm >= 1.1.9"]
+dependencies = ["pynmeagps >= 1.1.2", "pyrtcm >= 1.1.10"]
 
 [project.urls]
 homepage = "https://github.com/semuconsulting/pysbf2"
@@ -62,6 +62,7 @@ test = [
     "Sphinx",
     "sphinx-rtd-theme",
 ]
+optional = []
 deploy = [{ include-group = "build" }, { include-group = "test" }]
 
 [tool.setuptools.dynamic]
@@ -116,4 +117,3 @@ fail_under = 98
 
 [tool.coverage.html]
 directory = "htmlcov"
-

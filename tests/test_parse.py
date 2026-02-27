@@ -18,8 +18,8 @@ from pysbf2 import (
     ERR_RAISE,
     SBFMessage,
     SBFMessageError,
-    SBFTypeError,
     SBFReader,
+    SBFTypeError,
     escapeall,
 )
 

@@ -10,23 +10,26 @@ Created on 19 May 2025
 
 # pylint: disable=line-too-long, invalid-name, missing-docstring, no-member
 
+import logging
 import os
 import sys
-import logging
-from io import BufferedReader
 import unittest
+from io import BufferedReader
+from math import degrees
 
 from pyrtcm import RTCMReader
+
 from pysbf2 import (
-    ERR_RAISE,
-    ERR_LOG,
     ERR_IGNORE,
-    SBFReader,
-    SBF_PROTOCOL,
+    ERR_LOG,
+    ERR_RAISE,
     NMEA_PROTOCOL,
     RTCM3_PROTOCOL,
-    SBFStreamError,
+    SBF_PROTOCOL,
     SBFParseError,
+    SBFReader,
+    SBFStreamError,
+    ecef2llh,
 )
 
 DIRNAME = os.path.dirname(__file__)
@@ -236,6 +239,11 @@ class StreamTest(unittest.TestCase):
         with open(os.path.join(DIRNAME, "pygpsdata_x5_pvtcart.log"), "rb") as stream:
             ubr = SBFReader(stream, protfilter=7, quitonerror=ERR_RAISE)
             for raw, parsed in ubr:
+                if parsed.identity == "PVTCartesian":
+                    lat, lon, height = ecef2llh(parsed.X, parsed.Y, parsed.Z)
+                    self.assertAlmostEqual(lat, 53.34405234, 8)
+                    self.assertAlmostEqual(lon, -2.24668524, 8)
+                    self.assertAlmostEqual(height, 131.27735860, 8)
                 # print(f'"{parsed}",')
                 self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
                 i += 1
@@ -253,6 +261,9 @@ class StreamTest(unittest.TestCase):
         with open(os.path.join(DIRNAME, "pygpsdata_x5_pvtgeod.log"), "rb") as stream:
             ubr = SBFReader(stream, protfilter=7, quitonerror=ERR_RAISE)
             for raw, parsed in ubr:
+                if parsed.identity == "PVTGeodetic":
+                    self.assertAlmostEqual(degrees(parsed.Latitude), 53.34405249, 8)
+                    self.assertAlmostEqual(degrees(parsed.Longitude), -2.24668599, 8)
                 # print(f'"{parsed}",')
                 self.assertEqual(str(parsed), EXPECTED_RESULTS[i])
                 i += 1

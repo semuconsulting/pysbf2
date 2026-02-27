@@ -130,7 +130,7 @@ class SBFReader:
 
         """
 
-        (raw_data, parsed_data) = self.read()
+        raw_data, parsed_data = self.read()
         if raw_data is None and parsed_data is None:
             raise StopIteration
         return (raw_data, parsed_data)
@@ -163,7 +163,7 @@ class SBFReader:
 
                 # if it's a SBF message (b'\x24\x40')
                 if bytehdr == SBF_HDR:
-                    (raw_data, parsed_data) = self._parse_sbf(bytehdr)
+                    raw_data, parsed_data = self._parse_sbf(bytehdr)
                     # if protocol filter passes SBF, return message,
                     # otherwise discard and continue
                     if self._protfilter & SBF_PROTOCOL:
@@ -172,7 +172,7 @@ class SBFReader:
                         continue
                 # if it's an NMEA message (b'\x24\x..)
                 elif bytehdr in NMEA_HDR:
-                    (raw_data, parsed_data) = self._parse_nmea(bytehdr)
+                    raw_data, parsed_data = self._parse_nmea(bytehdr)
                     # if protocol filter passes NMEA, return message,
                     # otherwise discard and continue
                     if self._protfilter & NMEA_PROTOCOL:
@@ -182,7 +182,7 @@ class SBFReader:
                 # if it's a RTCM3 message
                 # (byte1 = 0xd3; byte2 = 0b000000**)
                 elif byte1 == b"\xd3" and (byte2[0] & ~0x03) == 0:
-                    (raw_data, parsed_data) = self._parse_rtcm3(bytehdr)
+                    raw_data, parsed_data = self._parse_rtcm3(bytehdr)
                     # if protocol filter passes RTCM, return message,
                     # otherwise discard and continue
                     if self._protfilter & RTCM3_PROTOCOL:

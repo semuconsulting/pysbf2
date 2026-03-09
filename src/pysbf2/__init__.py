@@ -8,6 +8,7 @@ Created on 19 May 2025
 
 from pynmeagps import (
     SocketWrapper,
+    area,
     bearing,
     ecef2llh,
     haversine,
@@ -16,6 +17,8 @@ from pynmeagps import (
     llh2ecef,
     llh2iso6709,
     planar,
+    utc2wnotow,
+    wnotow2utc,
 )
 
 from pysbf2._version import __version__

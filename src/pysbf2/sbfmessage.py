@@ -127,7 +127,7 @@ class SBFMessage:
                 if pdict == {}:
                     self._nyi = True
                 for anam in pdict:  # process each attribute in dict
-                    (offset, index) = self._set_attribute(
+                    offset, index = self._set_attribute(
                         anam, pdict, offset, index, **kwargs
                     )
 
@@ -180,7 +180,7 @@ class SBFMessage:
             numr, _ = adef
             if numr in (X1, X2, X4, X6, X8, X24):  # bitfield
                 if self._parsebf:  # if we're parsing bitfields
-                    (offset, index) = self._set_attribute_bitfield(
+                    offset, index = self._set_attribute_bitfield(
                         adef, offset, index, **kwargs
                     )
                 else:  # treat bitfield as a single byte array
@@ -188,13 +188,11 @@ class SBFMessage:
                         anam, numr, offset, index, **kwargs
                     )
             elif isinstance(numr, tuple):  # conditional group of attributes
-                (offset, index) = self._set_attribute_optional(
+                offset, index = self._set_attribute_optional(
                     adef, offset, index, **kwargs
                 )
             else:
-                (offset, index) = self._set_attribute_group(
-                    adef, offset, index, **kwargs
-                )
+                offset, index = self._set_attribute_group(adef, offset, index, **kwargs)
         # single attribute
         else:
             offset = self._set_attribute_single(anam, adef, offset, index, **kwargs)
@@ -245,7 +243,7 @@ class SBFMessage:
                     if gdict[PAD] in (PD, PD1, PD2):
                         sblen = getattr(self, gdict[PAD])
                         gdict[PAD] = f"P{(sblen - sbcum):03d}"
-                (offset, index) = self._set_attribute(
+                offset, index = self._set_attribute(
                     key1, gdict, offset, index, **kwargs
                 )
                 # calculate cumulative sub block length
@@ -287,7 +285,7 @@ class SBFMessage:
             # recursively process each group attribute,
             # incrementing the payload offset as we go
             for anami in gdict:
-                (offset, index) = self._set_attribute(
+                offset, index = self._set_attribute(
                     anami, gdict, offset, index, **kwargs
                 )
 
@@ -384,7 +382,7 @@ class SBFMessage:
 
         # process each flag in bitfield
         for key, keyt in bdict.items():
-            (bitfield, bfoffset) = self._set_attribute_bits(
+            bitfield, bfoffset = self._set_attribute_bits(
                 bitfield, bfoffset, key, keyt, index, **kwargs
             )
 

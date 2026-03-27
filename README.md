@@ -34,9 +34,9 @@ The library implements a comprehensive set of messages for Septentrio Mosaic G, 
 
 Sphinx API Documentation in HTML format is available at [https://www.semuconsulting.com/pysbf2/](https://www.semuconsulting.com/pysbf2/).
 
-Contributions welcome - please refer to [CONTRIBUTING.MD](https://github.com/semuconsulting/pysbf2/blob/master/CONTRIBUTING.md). Feel free to discuss any proposed changes beforehand in the [Discussion Channel](https://github.com/semuconsulting/pysbf2/discussions/categories/ideas).
+Contributions welcome - please refer to [CONTRIBUTING.MD](https://github.com/semuconsulting/pysbf2/blob/main/CONTRIBUTING.md). Feel free to discuss any proposed changes beforehand in the [Discussion Channel](https://github.com/semuconsulting/pysbf2/discussions/categories/ideas).
 
-[Bug reports](https://github.com/semuconsulting/pysbf2/blob/master/.github/ISSUE_TEMPLATE/bug_report.md) and [Feature requests](https://github.com/semuconsulting/pysbf2/blob/master/.github/ISSUE_TEMPLATE/feature_request.md) - please use the templates provided. For general queries and advice, post a message to one of the [pysbf2 Discussions](https://github.com/semuconsulting/pysbf2/discussions) channels.
+[Bug reports](https://github.com/semuconsulting/pysbf2/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) and [Feature requests](https://github.com/semuconsulting/pysbf2/blob/main/.github/ISSUE_TEMPLATE/feature_request.md) - please use the templates provided. For general queries and advice, post a message to one of the [pysbf2 Discussions](https://github.com/semuconsulting/pysbf2/discussions) channels.
 
 ![No Copilot](https://github.com/semuconsulting/PyGPSClient/blob/master/images/nocopilot100.png?raw=true)
 

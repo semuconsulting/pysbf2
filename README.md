@@ -24,7 +24,7 @@ This is an independent project and we have no affiliation whatsoever with Septen
 ![Status](https://img.shields.io/pypi/status/pysbf2)
 ![Release](https://img.shields.io/github/v/release/semuconsulting/pysbf2?include_prereleases)
 ![Build](https://img.shields.io/github/actions/workflow/status/semuconsulting/pysbf2/main.yml?branch=main)
-![Codecov](https://img.shields.io/codecov/c/github/semuconsulting/pysbf2)
+![Coverage](https://github.com/semuconsulting/pysbf2/blob/main/images/coverage.svg?raw=true)
 ![Release Date](https://img.shields.io/github/release-date-pre/semuconsulting/pysbf2)
 ![Last Commit](https://img.shields.io/github/last-commit/semuconsulting/pysbf2)
 ![Contributors](https://img.shields.io/github/contributors/semuconsulting/pysbf2.svg)

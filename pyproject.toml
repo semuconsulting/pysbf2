@@ -33,7 +33,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: GIS",
 ]
 
-dependencies = ["pynmeagps >= 1.1.2", "pyrtcm >= 1.1.12"]
+dependencies = ["pynmeagps >= 1.1.7", "pyrtcm >= 1.2.0"]
 
 [project.urls]
 homepage = "https://github.com/semuconsulting/pysbf2"

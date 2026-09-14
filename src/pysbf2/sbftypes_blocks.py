@@ -338,6 +338,7 @@ SBF_NAVIGATION_PAGE_BLOCKS = {
             },
         ),
         "FreqNr": U1,
+        "RxChannel": U1,
         "NavBits": X64,  # U4 * 16
     },
     "GEORawL1": {

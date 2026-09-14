@@ -218,6 +218,7 @@ class StreamTest(unittest.TestCase):
             "<SBF(GALRawFNAV, TOW=14:00:02, WNc=2367, SVID=106, CRCPassed=1, ViterbiCnt=0, SigIdx=20, Reserved1=0, FreqNr=0, RxChannel=14, NavBits=b'\\xbf\\x31\\x28\\x08\\xc5\\xff\\x64\\x9f\\x5a\\x1f\\x00\\x31\\xd9\\x04\\xaa\\x69\\x79\\xd0\\x52\\x71\\x4f\\xf5\\xef\\xd7\\x06\\xa9\\x71\\xdd\\x00\\x00\\x24\\xe5')>",
             "<SBF(NAVICRaw, TOW=14:00:06, WNc=2367, SVID=217, CRCPassed=1, ViterbiCnt=0, SigIdx=15, Reserved=0, RxChannel=52, NavBits=b'\\x0a\\x85\\x4e\\x8b\\x65\\x7b\\x3a\\xb8\\xd9\\x03\\x18\\xd7\\xac\\x2b\\x07\\xc6\\x45\\x45\\x3e\\xf5\\xfc\\x03\\x52\\x2b\\x52\\xff\\x5f\\x30\\x8d\\xfc\\x4a\\xe1\\xd8\\xfe\\xdb\\x71\\x00\\x00\\x00\\x00')>",
             "<SBF(GPSRawL2C, TOW=14:00:06, WNc=2367, SVID=1, CRCPassed=1, ViterbiCnt=0, SigIdx=3, Reserved1=0, FreqNr=0, RxChannel=47, NavBits=b'\\xd0\\xb9\\x04\\x8b\\x92\\x28\\x2d\\xa3\\xc5\\x89\\x6e\\xa2\\x08\\xc0\\x63\\x86\\x08\\xc0\\x2a\\xff\\xf6\\xdf\\xfb\\xdf\\x67\\x1a\\xa0\\x23\\xff\\x1f\\x24\\xc0\\x25\\x02\\x40\\x76\\x00\\x00\\xf0\\x71')>",
+            "<SBF(GALRawCNAV, TOW=14:01:22, WNc=2367, SVID=128, CRCPassed=1, ViterbiCnt=0, SigIdx=24, Reserved1=0, FreqNr=0, RxChannel=30, NavBits=b'\\xc4\\xff\\x12\\xc6\\xff\\x03\\x00\\x00\\x00\\x00\\xe8\\xff\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\xad\\xbb\\x03\\x00\\x00\\x00\\x80\\x7b\\x80\\x29\\xc5\\x0d')>",
         )
         i = 0
         with open(os.path.join(DIRNAME, "pygpsdata_x5_rawnav.log"), "rb") as stream:

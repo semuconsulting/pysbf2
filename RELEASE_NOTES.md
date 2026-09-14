@@ -1,5 +1,9 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.5
+
+1. Fix GALRawCNAV definition - fixes #12
+
 ### RELEASE 1.0.4
 
 1. Update vscode workflows.

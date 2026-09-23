@@ -30,7 +30,7 @@ This is an independent project and we have no affiliation whatsoever with Septen
 ![Contributors](https://img.shields.io/github/contributors/semuconsulting/pysbf2.svg)
 ![Open Issues](https://img.shields.io/github/issues-raw/semuconsulting/pysbf2)
 
-The library implements a comprehensive set of messages for Septentrio Mosaic G, H and X Series devices, but is readily [extensible](#extensibility). Refer to `SBF_MSGIDS` in [sbftypes_core.py](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_core.py#L111) for the complete dictionary of messages currently supported. SBF protocol information sourced from mosaic-X5 Reference Guide v4.14.10.
+The library implements a comprehensive set of messages for Septentrio Mosaic G, H and X Series devices, but is readily [extensible](#extensibility). Refer to `SBF_MSGIDS` in [sbftypes_core.py](https://github.com/semuconsulting/pysbf2/blob/main/src/pysbf2/sbftypes_core.py#L123) for the complete dictionary of messages currently supported. SBF protocol information sourced from Septentrio Reference Guides for Mosaic X5 & G5(P3).
 
 Sphinx API Documentation in HTML format is available at [https://www.semuconsulting.com/pysbf2/](https://www.semuconsulting.com/pysbf2/).
 
@@ -38,7 +38,7 @@ Contributions _**from human beings**_ welcome - please refer to [CONTRIBUTING.MD
 
 [Bug reports](https://github.com/semuconsulting/pysbf2/blob/main/.github/ISSUE_TEMPLATE/bug_report.md) and [Feature requests](https://github.com/semuconsulting/pysbf2/blob/main/.github/ISSUE_TEMPLATE/feature_request.md) - please use the templates provided. For general queries and advice, post a message to one of the [pysbf2 Discussions](https://github.com/semuconsulting/pysbf2/discussions) channels.
 
-![No Copilot](https://github.com/semuconsulting/PyGPSClient/blob/master/images/nocopilot100.png?raw=true)
+![No Copilot](https://github.com/semuconsulting/PyGPSClient/blob/main/images/nocopilot100.png?raw=true)
 
 ---
 ## <a name="installation">Installation</a>

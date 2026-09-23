@@ -23,7 +23,7 @@ If you're adding or amending SBF payload definitions or configuration database k
 * We use and recommend [Visual Studio Code](https://code.visualstudio.com/) with the [Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) for development and testing.
 * Code should be documented in accordance with [Sphinx](https://www.sphinx-doc.org/en/master/) docstring conventions.
 * Code should formatted using [black](https://pypi.org/project/black/).
-* We use and recommend [pylint](https://pypi.org/project/pylint/)for code analysis.
+* We use and recommend [pylint](https://pypi.org/project/pylint/) for code analysis.
 * We use and recommend [bandit](https://pypi.org/project/bandit/)for security vulnerability analysis.
 * Commits must be [signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
 

@@ -1,5 +1,10 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.6
+
+1. Update for Mosaic G5 firmware 1.1.0
+   - 4275: NavGeod
+
 ### RELEASE 1.0.5
 
 1. Fix GALRawCNAV definition - fixes #12

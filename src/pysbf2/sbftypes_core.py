@@ -234,6 +234,7 @@ SBF_MSGIDS = {
     4027: ("MeasEpoch", "Measurement set of one epoch"),
     4000: ("MeasExtra", "Additional info such as observable variance"),
     4272: ("NavCart", "Position, velocity, attitude, DOP and UTC time in Cartesian"),
+    4275: ("NavGeod", "Position, velocity, attitude, DOP and UTC time in Geodetic"),
     4254: ("NavICLNav", "NavIC/IRNSS ephemeris and clock"),
     4093: ("NAVICRaw", "NavIC/IRNSS subframe"),
     4053: ("NTRIPClientStatus", "NTRIP client connection status"),

@@ -17,10 +17,12 @@ SBF message bit format (little-endian):
 +--------+---------+---------+---------+---------+------------+-----------+
 
 Returns both the raw binary data (as bytes) and the parsed data
-(as an SBFMessage or NMEAMessage object).
+(as an SBFMessage, NMEAMessage or RTCMMessage object).
 
 - 'protfilter' governs which protocols (NMEA, SBF, RTCM) are processed
 - 'quitonerror' governs how errors are handled
+- 'scaling` governs whether documented scaling factors ('Units' or 'resolution')
+  are applied to individual SBF message attributes (default is True)
 
 Created on 19 May 2025
 
@@ -29,13 +31,16 @@ Created on 19 May 2025
 :license: BSD 3-Clause
 """
 
-# pylint: disable=too-many-positional-arguments
+# pylint: disable=too-many-instance-attributes, too-many-positional-arguments
 
 from logging import getLogger
 from socket import socket
+from types import NoneType
+from typing import Any, Callable
 
 from pynmeagps import (
     NMEA_HDR,
+    NMEAMessage,
     NMEAMessageError,
     NMEAParseError,
     NMEAReader,
@@ -44,6 +49,7 @@ from pynmeagps import (
     SocketWrapper,
 )
 from pyrtcm import (
+    RTCMMessage,
     RTCMMessageError,
     RTCMParseError,
     RTCMReader,
@@ -57,7 +63,7 @@ from pysbf2.exceptions import (
     SBFStreamError,
     SBFTypeError,
 )
-from pysbf2.sbfhelpers import bytes2id, crc2bytes, escapeall
+from pysbf2.sbfhelpers import block2idrev, crc2bytes, escapeall
 from pysbf2.sbfmessage import SBFMessage
 from pysbf2.sbftypes_core import (
     ERR_LOG,
@@ -81,10 +87,11 @@ class SBFReader:
         validate: int = VALCKSUM,
         protfilter: int = NMEA_PROTOCOL | SBF_PROTOCOL | RTCM3_PROTOCOL,
         quitonerror: int = ERR_LOG,
-        parsebitfield: bool = True,
+        parsebitfield: int = 1,
         bufsize: int = 4096,
         parsing: bool = True,
-        errorhandler: object = None,
+        errorhandler: Callable | NoneType = None,
+        scaling: bool = True,
     ):
         """Constructor.
 
@@ -95,10 +102,11 @@ class SBFReader:
             RTCM3_PROTOCOL (4), Can be OR'd (7)
         :param int quitonerror: ERR_IGNORE (0) = ignore errors,  ERR_LOG (1) = log continue,
             ERR_RAISE (2) = (re)raise (1)
-        :param bool parsebitfield: 1 = parse bitfields, 0 = leave as bytes (1)
+        :param int parsebitfield: 0 = leave as bytes; 1 = parse bitfields; 2 = bytes and parsed (1)
         :param int bufsize: socket recv buffer size (4096)
         :param bool parsing: True = parse data, False = don't parse data (output raw only) (True)
-        :param object errorhandler: error handling object or function (None)
+        :param Callable | NoneType errorhandler: error handling callable (None)
+        :param bool scaling: True=apply scaling factors, False = don't apply scaling factors
         :raises: SBFStreamError (if mode is invalid)
         """
         # pylint: disable=too-many-arguments
@@ -113,6 +121,7 @@ class SBFReader:
         self._protfilter = protfilter
         self._validate = validate
         self._parsing = parsing
+        self._scaling = scaling
         self._logger = getLogger(__name__)
 
     def __iter__(self):
@@ -120,12 +129,14 @@ class SBFReader:
 
         return self
 
-    def __next__(self) -> tuple:
+    def __next__(
+        self,
+    ) -> tuple[bytes | NoneType, SBFMessage | NMEAMessage | RTCMMessage | NoneType]:
         """
         Return next item in iteration.
 
-        :return: tuple of (raw_data as bytes, parsed_data as SBFMessage)
-        :rtype: tuple
+        :return: tuple of (raw_data, parsed_data)
+        :rtype: tuple[bytes | NoneType, SBFMessage | NMEAMessage | RTCMMessage | NoneType]
         :raises: StopIteration
 
         """
@@ -148,8 +159,9 @@ class SBFReader:
         :raises: Exception (if invalid or unrecognised protocol in data stream)
         """
 
-        parsing = True
-        while parsing:  # loop until end of valid message or EOF
+        raw_data = None
+        parsed_data = None
+        while True:  # loop until end of valid message or EOF
             try:
 
                 raw_data = None
@@ -167,31 +179,27 @@ class SBFReader:
                     # if protocol filter passes SBF, return message,
                     # otherwise discard and continue
                     if self._protfilter & SBF_PROTOCOL:
-                        parsing = False
-                    else:
-                        continue
+                        break
+                    continue
                 # if it's an NMEA message (b'\x24\x..)
-                elif bytehdr in NMEA_HDR:
+                if bytehdr in NMEA_HDR:
                     raw_data, parsed_data = self._parse_nmea(bytehdr)
                     # if protocol filter passes NMEA, return message,
                     # otherwise discard and continue
                     if self._protfilter & NMEA_PROTOCOL:
-                        parsing = False
-                    else:
-                        continue
+                        break
+                    continue
                 # if it's a RTCM3 message
                 # (byte1 = 0xd3; byte2 = 0b000000**)
-                elif byte1 == b"\xd3" and (byte2[0] & ~0x03) == 0:
+                if byte1 == b"\xd3" and (byte2[0] & ~0x03) == 0:
                     raw_data, parsed_data = self._parse_rtcm3(bytehdr)
                     # if protocol filter passes RTCM, return message,
                     # otherwise discard and continue
                     if self._protfilter & RTCM3_PROTOCOL:
-                        parsing = False
-                    else:
-                        continue
+                        break
+                    continue
                 # unrecognised protocol header
-                else:
-                    raise SBFParseError(f"Unknown protocol header {bytehdr}.")
+                raise SBFParseError(f"Unknown protocol header {bytehdr}.")
 
             except EOFError:
                 return (None, None)
@@ -215,13 +223,13 @@ class SBFReader:
 
         return (raw_data, parsed_data)
 
-    def _parse_sbf(self, hdr: bytes) -> tuple:
+    def _parse_sbf(self, hdr: bytes) -> tuple[bytes, SBFMessage | NoneType]:
         """
         Parse remainder of SBF message.
 
         :param bytes hdr: SBF header (b'\\x24\\x40')
-        :return: tuple of (raw_data as bytes, parsed_data as SBFMessage or None)
-        :rtype: tuple
+        :return: tuple of (raw_data, parsed_data)
+        :rtype: tuple[bytes, SBFMessage | NoneType]
         """
 
         # read the rest of the SBF message from the buffer
@@ -239,12 +247,13 @@ class SBFReader:
                 raw_data,
                 validate=self._validate,
                 parsebitfield=self._parsebf,
+                scaling=self._scaling,
             )
         else:
             parsed_data = None
         return (raw_data, parsed_data)
 
-    def _parse_nmea(self, hdr: bytes) -> tuple:
+    def _parse_nmea(self, hdr: bytes) -> tuple[bytes, NMEAMessage | NoneType]:
         """
         Parse remainder of NMEA message (using pynmeagps library).
 
@@ -267,7 +276,7 @@ class SBFReader:
             parsed_data = None
         return (raw_data, parsed_data)
 
-    def _parse_rtcm3(self, hdr: bytes) -> tuple:
+    def _parse_rtcm3(self, hdr: bytes) -> tuple[bytes, RTCMMessage | NoneType]:
         """
         Parse any RTCM3 data in the stream (using pyrtcm library).
 
@@ -351,12 +360,12 @@ class SBFReader:
                 self._errorhandler(err)
 
     @property
-    def datastream(self) -> object:
+    def datastream(self) -> Any:
         """
         Getter for stream.
 
         :return: data stream
-        :rtype: object
+        :rtype: Any
         """
 
         return self._stream
@@ -365,15 +374,16 @@ class SBFReader:
     def parse(
         message: bytes,
         validate: int = VALCKSUM,
-        parsebitfield: bool = True,
-    ) -> object:
+        parsebitfield: int = 1,
+        scaling: bool = True,
+    ) -> SBFMessage:
         """
         Parse SBF byte stream to SBFMessage object.
 
         :param bytes message: binary message to parse
         :param int validate: VALCKSUM (1) = Validate checksum,
             VALNONE (0) = ignore invalid checksum (1)
-        :param bool parsebitfield: 1 = parse bitfields, 0 = leave as bytes (1)
+        :param int parsebitfield: 0 = leave as bytes; 1 = parse bitfields; 2 = bytes and parsed (1)
         :return: SBFMessage object
         :rtype: SBFMessage
         :raises: SBFMessageError (if data stream contains invalid CRC)
@@ -386,10 +396,16 @@ class SBFReader:
             raise SBFMessageError(
                 f"Invalid CRC {escapeall(crc)} - should be {escapeall(crccheck)}"
             )
-        msgid, revno = bytes2id(message[4:6])
+        msgid, revno = block2idrev(message[4:6])
         length = int.from_bytes(message[6:8], "little")
         plb = message[8:]
 
         return SBFMessage(
-            msgid, revno, crc, length, payload=plb, parsebitfield=parsebitfield
+            msgid,
+            revno,
+            crc,
+            length,
+            payload=plb,
+            parsebitfield=parsebitfield,
+            scaling=scaling,
         )

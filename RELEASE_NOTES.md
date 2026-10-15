@@ -1,5 +1,10 @@
 # pysbf2 Release Notes
 
+### RELEASE 1.0.7
+
+1. Add boolean `scaling` argument to enable or disable attribute scaling. Default is `True`, set to `False` for backwards compatibility.
+1. Add new Revision payload attributes for Mosaic G5 firmware 1.1.0 and X5 firmware 4.15.1.
+
 ### RELEASE 1.0.6
 
 1. Update for Mosaic G5 firmware 1.1.0

@@ -12,7 +12,8 @@ Created on 19 May 2025
 """
 
 import struct
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
+from typing import Any
 
 from pysbf2.exceptions import SBFMessageError, SBFTypeError
 from pysbf2.sbftypes_core import ATTTYPE, SBF_MSGIDS
@@ -37,19 +38,22 @@ def getpadding(length: int) -> bytes:
     return pad
 
 
-def bytes2id(msgid: bytes) -> tuple:
+def block2idrev(block: bytes | int) -> tuple[int, int]:
     """
     Get message id and revision number from block ID.
 
-    :param bytes msgid: ID as bytes
-    :return: tuple of (msgid, revno)
-    :rtype: tuple
+    :param bytes | int block: block ID as bytes or int
+    :return: msgid, revision number
+    :rtype: tuple[int,int]
     """
 
-    mid = int.from_bytes(msgid, "little")
-    msgid = mid & 0b0001111111111111
+    if isinstance(block, bytes):
+        mid = int.from_bytes(block, "little")
+    else:
+        mid = block
+    mid = mid & 0b0001111111111111
     revno = (mid & 0b1110000000000000) >> 13
-    return msgid, revno
+    return mid, revno
 
 
 def calc_crc(message: bytes) -> int:
@@ -101,7 +105,7 @@ def escapeall(val: bytes) -> str:
     return "b'{}'".format("".join(f"\\x{b:02x}" for b in val))
 
 
-def msgid2bytes(msgid: str) -> int:
+def msgid2bytes(msgid: str) -> bytes:
     """
     Convert integer SBF message str to bytes.
 
@@ -109,10 +113,8 @@ def msgid2bytes(msgid: str) -> int:
     :return: message id as bytes e.g. b'\xa6\x0f' (4006)
     :rtype: bytes
     :raises: SBFMessageError
-
     """
 
-    key = None
     for key, (mid, _) in SBF_MSGIDS.items():
         if msgid == mid:
             return int.to_bytes(key, 2, "little")
@@ -173,21 +175,17 @@ def val2bytes(val, att: str) -> bytes:
         valb = val.to_bytes(attsiz(att), byteorder="little", signed=atttyp(att) == "I")
     elif atttyp(att) == "F":  # floating point
         valb = struct.pack("<f" if attsiz(att) == 4 else "<d", float(val))
-    # elif atttyp(att) == "A":  # array of unsigned integers
-    #     valb = b""
-    #     for i in range(attsiz(att)):
-    #         valb += val[i].to_bytes(1, byteorder="little", signed=False)
     return valb
 
 
-def bytes2val(valb: bytes, att: str) -> object:
+def bytes2val(valb: bytes, att: str) -> Any:
     """
     Convert bytes to value for given SBF attribute type.
 
     :param bytes valb: attribute value in byte format e.g. b'\\\\x19\\\\x00\\\\x00\\\\x00'
     :param str att: attribute type e.g. 'U004'
     :return: attribute value as int, float, str or bytes
-    :rtype: object
+    :rtype: Any
     :raises: SBFTypeError
 
     """
@@ -198,22 +196,18 @@ def bytes2val(valb: bytes, att: str) -> object:
         val = int.from_bytes(valb, byteorder="little", signed=atttyp(att) == "I")
     elif atttyp(att) == "F":  # floating point
         val = struct.unpack("<f" if attsiz(att) == 4 else "<d", valb)[0]
-    # elif atttyp(att) == "A":  # array of unsigned integers
-    #     val = []
-    #     for i in range(attsiz(att)):
-    #         val.append(valb[i])
     else:
         raise SBFTypeError(f"Unknown attribute type {att}")
     return val
 
 
-def nomval(att: str) -> object:
+def nomval(att: str) -> Any:
     """
     Get nominal value for given SBF attribute type.
 
     :param str att: attribute type e.g. 'U004'
     :return: attribute value as int, float, str or bytes
-    :rtype: object
+    :rtype: Any
     :raises: SBFTypeError
 
     """
@@ -224,14 +218,12 @@ def nomval(att: str) -> object:
         val = 0.0
     elif atttyp(att) in ("I", "U"):
         val = 0
-    # elif atttyp(att) == "A":  # array of unsigned integers
-    #     val = [0] * attsiz(att)
     else:
         raise SBFTypeError(f"Unknown attribute type {att}")
     return val
 
 
-def itow2utc(itow: int) -> datetime.time:
+def itow2utc(itow: int) -> time:
     """
     Convert GPS Time Of Week to UTC time
 
@@ -245,13 +237,13 @@ def itow2utc(itow: int) -> datetime.time:
     return utc.time()
 
 
-def utc2itow(utc: datetime) -> tuple:
+def utc2itow(utc: datetime) -> tuple[int, int]:
     """
     Convert UTC datetime to GPS Week Number, Time Of Week
 
     :param datetime utc: datetime
     :return: GPS Week Number, Time of Week in milliseconds
-    :rtype: tuple
+    :rtype: tuple[int,int]
 
     """
 

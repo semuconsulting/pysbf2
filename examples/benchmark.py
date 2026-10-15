@@ -13,12 +13,22 @@ Created on 19 May 2025
 # pylint: disable=line-too-long
 
 from io import BytesIO
-from sys import argv
+import os
+import sys
 from time import process_time_ns
 from platform import version as osver, python_version
 from pysbf2.sbfreader import SBFReader
 from pysbf2._version import __version__ as sbfver
 
+# get path to site-packages (source) folder within venv
+pypath = (
+    f"{os.path.expanduser('~')}/pygpsclient/lib/python"
+    f"{sys.version_info.major}.{sys.version_info.minor}/site-packages"
+)
+sys.path.insert(0, os.path.abspath(pypath))
+
+CYAN = "\033[1m\033[36m"
+NORM = "\033[0m"
 SBFMESSAGES = [
     b"$@\xd0\xd1\xa3\x0f@\x00\xf0PV\x18?\tM\x02\x00\x00\xa09\xb0+\x06\x00\x00\x00\x8a\xbb\x00\x00\x00\xb1\x00\x00\x90<\x00T0\xbf\x00\xc0l\xbe\x00\x1az\xbf\x00\x00\x80,\x00\x10\x9f;\x03K\t\x00\x02\x00\x01\x00",
     b"$@\x1b\x12\xc0\x0f \x00 \xc6V\x18?\tM\x02\x00\x00\xd0'\x00\x00P0\x80\x97\x06\x00?\x00\x00\xb1",
@@ -77,7 +87,7 @@ for msg in SBFMESSAGES:
 SBFBYTES = msgb
 
 
-def progbar(i: int, lim: int, inc: int = 20):
+def progbar(i: int, lim: int, inc: int = 50):
     """
     Display progress bar on console.
 
@@ -95,13 +105,13 @@ def progbar(i: int, lim: int, inc: int = 20):
         )
 
 
-def benchmark(**kwargs) -> float:
+def benchmark(**kwargs) -> tuple[float,float]:
     """
     pyrtcm Performance benchmark test.
 
     :param int cycles: (kwarg) number of test cycles (10,000)
     :returns: benchmark as transactions/second
-    :rtype: float
+    :rtype: tuple[float,float]
     :raises: SBFStreamError
     """
 
@@ -110,11 +120,12 @@ def benchmark(**kwargs) -> float:
     txnt = txnc * cyc
 
     print(
-        f"\nOperating system: {osver()}",
-        f"\nPython version: {python_version()}",
-        f"\npysbf2 version: {sbfver}",
-        f"\nTest cycles: {cyc:,}",
-        f"\nTxn per cycle: {txnc:,}",
+        f"\nAbsolute path: {CYAN}{pypath}{NORM}",
+        f"\nOperating system: {CYAN}{osver()}{NORM}",
+        f"\nPython version: {CYAN}{python_version()}{NORM}",
+        f"\npyunigps version: {CYAN}{sbfver}{NORM}",
+        f"\nTest cycles: {CYAN}{cyc:,}{NORM}",
+        f"\nTxn per cycle: {CYAN}{txnc:,}{NORM}",
     )
 
     start = process_time_ns()
@@ -133,7 +144,8 @@ def benchmark(**kwargs) -> float:
     kbs = round(msglen * 1e9 / duration / 2**10, 2)
 
     print(
-        f"\n{txnt:,} messages processed in {duration/1e9:,.3f} seconds = {txs:,.2f} txns/second, {kbs:,.2f} kB/second.\n"
+        f"\n{txnt:,} messages processed in {duration/1e9:,.3f} seconds = "
+        f"{CYAN}{txs:,.2f}{NORM} txns/second, {CYAN}{kbs:,.2f}{NORM} kB/second ({CYAN}{kbs*8000:,.0f}{NORM} baud).\n"
     )
 
     return txs, kbs
@@ -146,7 +158,7 @@ def main():
     args as benchmark() method
     """
 
-    benchmark(**dict(arg.split("=") for arg in argv[1:]))
+    benchmark(**dict(arg.split("=") for arg in sys.argv[1:]))
 
 
 if __name__ == "__main__":

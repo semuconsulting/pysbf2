@@ -103,10 +103,10 @@ class ParseTest(unittest.TestCase):
     #     self.assertEqual(msg2.serialize(), EXPECTED_BYTES2)
 
     def testConstruct(self):
-        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
-        EXPECTED_BYTES = b"$@\xb7Y\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\x8f\x02\r\t2P\x00\x00\x00\x00+\x00z\x00\x88\x00\x00\x01"
-        EXPECTED_PAYLOAD = b"\x58\x9b\x73\x0c\x3f\x09\x04\x00\x1d\x0e\x58\x17\xfc\x04\x4d\x41\xe6\xe4\x8b\xe6\xea\x29\x02\xc1\x98\x19\x28\xb2\x18\x75\x53\x41\xa6\xdd\x41\x42\x51\x90\x01\x38\xb4\x86\x71\x3a\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6\x6e\x4b\x6c\xde\x3f\x03\xe0\x56\x3e\x00\x00\x10\x40\x8f\x02\x8f\x02\x0d\x09\x32\x50\x00\x00\x00\x00\x2b\x00\x7a\x00\x88\x00\x00\x01"
-        EXPECTED_REPR = "SBFMessage(\"PVTCartesian\", payload=b'X\\x9bs\\x0c?\\t\\x04\\x00\\x1d\\x0eX\\x17\\xfc\\x04MA\\xe6\\xe4\\x8b\\xe6\\xea)\\x02\\xc1\\x98\\x19(\\xb2\\x18uSA\\xa6\\xddABQ\\x90\\x018\\xb4\\x86q:\\xc0\\x93\\x85\\xbb\\xf9\\x02\\x95\\xd0\\xe3\\xaf\\xe6nKl\\xde?\\x03\\xe0V>\\x00\\x00\\x10@\\x8f\\x02\\x8f\\x02\\r\\t2P\\x00\\x00\\x00\\x00+\\x00z\\x00\\x88\\x00\\x00\\x01')"
+        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655.0, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, SigAuth=0, NavMsgAuth=0, Reserved6=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=0.0429, HAccuracy=1.22, VAccuracy=1.36, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
+        EXPECTED_BYTES = b'$@\xfb\xeb\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\xdc\xff\r\t2P\x00\x00\x00\x00\xad\x01z\x00\x88\x00\x00\x01'
+        EXPECTED_PAYLOAD = b'\x58\x9b\x73\x0c\x3f\x09\x04\x00\x1d\x0e\x58\x17\xfc\x04\x4d\x41\xe6\xe4\x8b\xe6\xea\x29\x02\xc1\x98\x19\x28\xb2\x18\x75\x53\x41\xa6\xdd\x41\x42\x51\x90\x01\x38\xb4\x86\x71\x3a\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6\x6e\x4b\x6c\xde\x3f\x03\xe0\x56\x3e\x00\x00\x10\x40\x8f\x02\xdc\xff\x0d\x09\x32\x50\x00\x00\x00\x00\xad\x01\x7a\x00\x88\x00\x00\x01'
+        EXPECTED_REPR = "SBFMessage(\"PVTCartesian\", payload=b'X\\x9bs\\x0c?\\t\\x04\\x00\\x1d\\x0eX\\x17\\xfc\\x04MA\\xe6\\xe4\\x8b\\xe6\\xea)\\x02\\xc1\\x98\\x19(\\xb2\\x18uSA\\xa6\\xddABQ\\x90\\x018\\xb4\\x86q:\\xc0\\x93\\x85\\xbb\\xf9\\x02\\x95\\xd0\\xe3\\xaf\\xe6nKl\\xde?\\x03\\xe0V>\\x00\\x00\\x10@\\x8f\\x02\\xdc\\xff\\r\\t2P\\x00\\x00\\x00\\x00\\xad\\x01z\\x00\\x88\\x00\\x00\\x01')"
         res = SBFMessage(
             "PVTCartesian",
             TOW=208903000,
@@ -128,13 +128,13 @@ class ParseTest(unittest.TestCase):
             NrSV=16,
             Corr_RTKType=2,
             ReferenceID=655,
-            MeanCorrAge=655,
+            MeanCorrAge=655.0,
             SignalInfo=1345456397,
             NrBases=0,
             PPPInfo=0,
-            Latency=43,
-            HAccuracy=122,
-            VAccuracy=136,
+            Latency=.0429,
+            HAccuracy=1.22,
+            VAccuracy=1.36,
             Misc=96,
         )
         # print(f'"{res}"')
@@ -150,7 +150,7 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(str(res2), EXPECTED_RESULT)
 
     def testConstructByteID(self):
-        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
+        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655.0, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, SigAuth=0, NavMsgAuth=0, Reserved6=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=0.0429, HAccuracy=1.22, VAccuracy=1.36, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
         res = SBFMessage(
             b"\xa6\x0f",
             TOW=208903000,
@@ -172,13 +172,13 @@ class ParseTest(unittest.TestCase):
             NrSV=16,
             Corr_RTKType=2,
             ReferenceID=655,
-            MeanCorrAge=655,
+            MeanCorrAge=655.0,
             SignalInfo=1345456397,
             NrBases=0,
             PPPInfo=0,
-            Latency=43,
-            HAccuracy=122,
-            VAccuracy=136,
+            Latency=0.0429,
+            HAccuracy=1.22,
+            VAccuracy=1.36,
             Misc=96,
         )
         # print(f'"{res}"')
@@ -232,15 +232,15 @@ class ParseTest(unittest.TestCase):
         self.assertAlmostEqual(parsed.UpVel_01, 0.125)
 
     def testConstructParse(self):
-        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
-        BYTES = b"$@\xb7Y\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\x8f\x02\r\t2P\x00\x00\x00\x00+\x00z\x00\x88\x00\x00\x01"
+        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655.0, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, SigAuth=0, NavMsgAuth=0, Reserved6=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=0.0429, HAccuracy=1.22, VAccuracy=1.36, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
+        BYTES = b'$@\xfb\xeb\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\xdc\xff\r\t2P\x00\x00\x00\x00\xad\x01z\x00\x88\x00\x00\x01' 
         res = SBFReader.parse(BYTES)
         # print(f'"{res}"')
         self.assertEqual(str(res), EXPECTED_RESULT)
 
     def testConstructParseNoBitField(self):
-        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=b'\\x04', Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=b'\\x40', ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, AlertFlag=b'\\x00', NrBases=0, PPPInfo=b'\\x00\\x00', Latency=43, HAccuracy=122, VAccuracy=136, Misc=b'\\x00')>"
-        BYTES = b"$@\xb7Y\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\x8f\x02\r\t2P\x00\x00\x00\x00+\x00z\x00\x88\x00\x00\x01"
+        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Mode=b'\\x04', Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, WACorrInfo=b'\\x40', ReferenceID=655, MeanCorrAge=655.0, SignalInfo=1345456397, AlertFlag=b'\\x00', NrBases=0, PPPInfo=b'\\x00\\x00', Latency=0.0429, HAccuracy=1.22, VAccuracy=1.36, Misc=b'\\x00')>"
+        BYTES = b'$@\xfb\xeb\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\xdc\xff\r\t2P\x00\x00\x00\x00\xad\x01z\x00\x88\x00\x00\x01' 
         res = SBFReader.parse(BYTES, parsebitfield=False)
         # print(f'"{res}"')
         self.assertEqual(str(res), EXPECTED_RESULT)
@@ -254,8 +254,7 @@ class ParseTest(unittest.TestCase):
             res = SBFReader.parse(BYTES)
 
     def testConstructStream(self):  # TODO REMOVE AFTER ALPHA
-        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=43, HAccuracy=122, VAccuracy=136, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
-        BYTES = b"$@\xb7Y\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\x8f\x02\r\t2P\x00\x00\x00\x00+\x00z\x00\x88\x00\x00\x01"
+        EXPECTED_RESULT = "<SBF(PVTCartesian, TOW=10:01:25, WNc=2367, Type=4, Reserved1=0, AutoSet=0, 2D=0, Error=0, X=3803640.1823747293, Y=-148797.3625715144, Z=5100642.783697508, Undulation=48.466453552246094, Vx=3.0890401831129566e-05, Vy=0.000921349273994565, Vz=-0.004076451063156128, COG=-20000000000.0, RxClkBias=0.47535978155315045, RxClkDrift=0.20983891189098358, TimeSystem=0, Datum=0, NrSV=16, Corr_OrbClkUsed=0, Corr_RngUsed=0, Corr_IonoUsed=0, Corr_OrbAccUsed=0, Corr_DO229Active=0, Corr_RTKType=2, Reserved2=0, ReferenceID=655, MeanCorrAge=655.0, SignalInfo=1345456397, RAIMIntegrity=0, GalHPCAFail=0, GalIonStorm=0, Reserved3=0, SigAuth=0, NavMsgAuth=0, Reserved6=0, NrBases=0, PPPSeedAge=0, Reserved4=0, PPPSeedType=0, Latency=0.0429, HAccuracy=1.22, VAccuracy=1.36, BaseARP=0, PhaseCtrOffset=0, Reserved5=0, ARPOffset=0)>"
         stream = BytesIO(BYTES)
         sbr = SBFReader(stream)
         raw, parsed = sbr.read()
@@ -283,7 +282,7 @@ class ParseTest(unittest.TestCase):
     def testConstructInvalidType(self):
         with self.assertRaisesRegex(
             SBFTypeError,
-            "Incorrect type for attribute 'Mode' in message class PVTCartesian",
+            "Incorrect type for attribute 'Mode_bit' in message class PVTCartesian",
         ):
             res = SBFMessage(
                 "PVTCartesian",
@@ -335,3 +334,5 @@ class ParseTest(unittest.TestCase):
                 NrSV=4,
             )
             res.NrSV = 6
+BYTES = b'$@\xfb\xeb\xa6\x0f`\x00X\x9bs\x0c?\t\x04\x00\x1d\x0eX\x17\xfc\x04MA\xe6\xe4\x8b\xe6\xea)\x02\xc1\x98\x19(\xb2\x18uSA\xa6\xddABQ\x90\x018\xb4\x86q:\xc0\x93\x85\xbb\xf9\x02\x95\xd0\xe3\xaf\xe6nKl\xde?\x03\xe0V>\x00\x00\x10@\x8f\x02\xdc\xff\r\t2P\x00\x00\x00\x00\xad\x01z\x00\x88\x00\x00\x01' 
+        

@@ -389,9 +389,10 @@ class SBFMessage:
                 val = round(val * ares, SCALROUND)
         else:
             val = kwargs.get(keyr, 0)
+            val2 = val
             if ares != 1 and self._scaling:
-                val = round(val / ares, SCALROUND)
-            bitfield = bitfield | (val << bfoffset)
+                val2 = int(val2 / ares)
+            bitfield = bitfield | (val2 << bfoffset)
 
         if key[0:8] != "reserved":  # don't bother to set reserved bits
             setattr(self, keyr, val)

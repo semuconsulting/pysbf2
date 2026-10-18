@@ -125,8 +125,8 @@ class SBFMessage:
                 pdict = self._get_dict(**kwargs)  # get appropriate payload dict
                 if pdict == {}:
                     self._nyi = True
-                for anam in pdict:  # process each attribute in dict
-                    self._set_attribute(anam, pdict, **kwargs)
+                for anam, adef in pdict.items():  # process each attribute in dict
+                    self._set_attribute(anam, adef, **kwargs)
 
             # if message is being constructed rather than parsed from stream,
             # pad to nearest multiple of 4 bytes and calculate crc and length
@@ -154,16 +154,15 @@ class SBFMessage:
                 )
             ) from err
 
-    def _set_attribute(self, anam: str, pdict: dict, **kwargs):
+    def _set_attribute(self, anam: str, adef: str | tuple[str, dict], **kwargs):
         """
         Recursive routine to set individual or grouped payload attributes.
 
         :param str anam: attribute name
-        :param dict pdict: dict representing payload definition
+        :param str | tuple[str, dict] adef: attribute definition
         :param kwargs: optional payload key/value pairs
         """
 
-        adef = pdict[anam]  # get attribute definition
         anamsfx = anam[-4:]
         if anamsfx == BITFIELD:  # 'X' type bitfield
             sdef, _ = adef
@@ -210,26 +209,26 @@ class SBFMessage:
             sbcum = 0  # cumulative sub block length
             sboff = self._offset  # starting sub block payload offset
             self._index[-1] = i + 1
-            for key1 in gdict:
-                if key1 == PAD:  # sub block padding marker
+            for anam1, adef1 in gdict.items():
+                if anam1 == PAD:  # sub block padding marker
                     # get sub block length from preceding SBLength attribute
                     # and derive length of sub block padding bytes
-                    if gdict[PAD] in (PD, PD1, PD2):
-                        sblen = getattr(self, gdict[PAD])
-                        gdict[PAD] = f"P{(sblen - sbcum):03d}"
-                self._set_attribute(key1, gdict, **kwargs)
+                    if adef1 in (PD, PD1, PD2):
+                        sblen = getattr(self, adef1)
+                        adef1 = f"P{(sblen - sbcum):03d}"
+                self._set_attribute(anam1, adef1, **kwargs)
                 # calculate cumulative sub block length
                 sbcum = self._offset - sboff
 
         self._index.pop()  # remove this (nested) group index
 
-    def _set_attribute_optional(self, adef: tuple, **kwargs):
+    def _set_attribute_optional(self, adef: tuple[tuple[str, str], dict], **kwargs):
         """
         Process optional group of attributes, subject to condition being met:
         a) group is present if attribute value = specific value, otherwise absent
         b) group is present if attribute value is in specific range, otherwise absent
 
-        :param tuple adef: attribute definition - tuple of ((attribute name, condition), group dict)
+        :param tuple[tuple[str, str], dict] adef: attribute definition
         """
 
         pres = False
@@ -248,8 +247,8 @@ class SBFMessage:
         if pres:  # if the conditional element is present...
             # recursively process each group attribute,
             # incrementing the payload offset as we go
-            for anami in gdict:
-                self._set_attribute(anami, gdict, **kwargs)
+            for anam1, adef1 in gdict.items():
+                self._set_attribute(anam1, adef1, **kwargs)
 
     def _set_attribute_single(
         self,

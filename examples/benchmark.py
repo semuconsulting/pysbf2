@@ -17,8 +17,8 @@ import os
 import sys
 from time import process_time_ns
 from platform import version as osver, python_version
-from pysbf2.sbfreader import SBFReader
-from pysbf2._version import __version__ as sbfver
+from pysbf2.sbfreader import SBFReader as reader
+from pysbf2._version import __version__ as pgmver
 
 # get path to site-packages (source) folder within venv
 pypath = (
@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.abspath(pypath))
 
 CYAN = "\033[1m\033[36m"
 NORM = "\033[0m"
-SBFMESSAGES = [
+TESTDATA = [
     b"$@\xd0\xd1\xa3\x0f@\x00\xf0PV\x18?\tM\x02\x00\x00\xa09\xb0+\x06\x00\x00\x00\x8a\xbb\x00\x00\x00\xb1\x00\x00\x90<\x00T0\xbf\x00\xc0l\xbe\x00\x1az\xbf\x00\x00\x80,\x00\x10\x9f;\x03K\t\x00\x02\x00\x01\x00",
     b"$@\x1b\x12\xc0\x0f \x00 \xc6V\x18?\tM\x02\x00\x00\xd0'\x00\x00P0\x80\x97\x06\x00?\x00\x00\xb1",
     b"$@\x14\x80\x18\x100\x000\xedV\x18?\t\xac\x00\x00\x00\x003\x00\x00\xd03\x00\x00\x98\xb5\x00\x00\xf85\x00\x00\xe4G\x00\x00\xa0\xc7\x00\x00\xf0I\x00\x00\xe8\xc9",
@@ -82,9 +82,9 @@ SBFMESSAGES = [
     b"$@\x05\xd6\x95\x104\x00\xa0\xc8\xe3\x17?\t\x008\xf9\x02\x95\xd0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00",
 ]
 msgb = b""
-for msg in SBFMESSAGES:
+for msg in TESTDATA:
     msgb += msg
-SBFBYTES = msgb
+BYTESTREAM = msgb
 
 
 def progbar(i: int, lim: int, inc: int = 50):
@@ -116,30 +116,31 @@ def benchmark(**kwargs) -> tuple[float,float]:
     """
 
     cyc = int(kwargs.get("cycles", 5000))
-    txnc = len(SBFMESSAGES)
+    txnc = len(TESTDATA)
     txnt = txnc * cyc
 
     print(
         f"\nAbsolute path: {CYAN}{pypath}{NORM}",
         f"\nOperating system: {CYAN}{osver()}{NORM}",
         f"\nPython version: {CYAN}{python_version()}{NORM}",
-        f"\npyunigps version: {CYAN}{sbfver}{NORM}",
+        f"\nProgram version: {CYAN}{pgmver}{NORM}",
         f"\nTest cycles: {CYAN}{cyc:,}{NORM}",
         f"\nTxn per cycle: {CYAN}{txnc:,}{NORM}",
     )
 
     start = process_time_ns()
+    bar = 50
     print(f"\nBenchmark test started at {start}")
     for i in range(cyc):
-        progbar(i, cyc)
-        stream = BytesIO(SBFBYTES)
-        sbr = SBFReader(stream, parsing=True)
+        progbar(i, cyc, bar)
+        stream = BytesIO(BYTESTREAM)
+        sbr = reader(stream, parsing=True)
         for _, _ in sbr:
             pass
     end = process_time_ns()
-    print(f"Benchmark test ended at {end}.")
+    print(f"Benchmark test ended at {end}{' ' * (bar-20)}")
     duration = end - start
-    msglen = len(SBFBYTES) * cyc
+    msglen = len(BYTESTREAM) * cyc
     txs = round(txnt * 1e9 / duration, 2)
     kbs = round(msglen * 1e9 / duration / 2**10, 2)
 

@@ -666,7 +666,13 @@ SBF_GPS_DECODED_MESSAGE_BLOCKS = {
         "TOW": U4,
         "WNc": U2,
         "PRN": U1,
-        "Reserved": U1,
+        "Type_bit": (
+            X1,
+            {
+                "sigtype": U4,  # GPSIONSIGTYPE decode
+                "reserved1": U4,
+            },
+        ),
         "alpha_0": F4,
         "alpha_1": F4,
         "alpha_2": F4,

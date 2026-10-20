@@ -33,15 +33,19 @@ VALCKSUM = 1
 """Validate checksum"""
 
 # scaling factor constants
-SCAL9 = 1e-9  # 0.000000001
-SCAL8 = 1e-8  # 0.00000001
-SCAL7 = 1e-7  # 0.0000001
-SCAL6 = 1e-6  # 0.000001
-SCAL5 = 1e-5  # 0.00001
-SCAL4 = 1e-4  # 0.0001
-SCAL3 = 1e-3  # 0.001
-SCAL2 = 1e-2  # 0.01
-SCAL1 = 1e-1  # 0.1
+E1_P3 = 1000
+E1_P9 = 1000000000
+E1_N1 = 1e-1  # 0.1
+E1_N2 = 1e-2  # 0.01
+E1_N3 = 1e-3  # 0.001
+E1_N4 = 1e-4  # 0.0001
+E1_N5 = 1e-5  # 0.00001
+E1_N6 = 1e-6  # 0.000001
+E1_N7 = 1e-7  # 0.0000001
+E1_N8 = 1e-8  # 0.00000001
+E1_N9 = 1e-9  # 0.000000001
+E1_N22 = 1e-22
+P2_N5 = 0.03125  # 2**-5
 SCALROUND = 12  # number of dp to round scaled attributes to
 
 PAD = "_Padding"
@@ -115,6 +119,12 @@ ATTTYPE = {
 
 CHSTR = ()
 """Bytes representing encoded character strings"""
+
+ALT = "_alt"
+BITFIELD = "_bit"
+GROUP = "_grp"
+"""group attribute designators"""
+
 
 # ********************************************************************
 # THESE ARE THE SBF PROTOCOL CORE MESSAGE IDENTITIES

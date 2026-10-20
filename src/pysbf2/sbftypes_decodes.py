@@ -123,3 +123,12 @@ PVT_RTK_TYPE = {
     3: "SSR corrections (inc PPP-RTK)",
 }
 """PVT RTK Type from WACorrInfo aka Corr_RTKType"""
+
+GPSIONSIGTYPE = {
+    0: "Unknown",
+    1: "L1CA",
+    2: "L2C",
+    3: "L5",
+    4: "L1C",
+}
+"""GPSIon sigtype"""

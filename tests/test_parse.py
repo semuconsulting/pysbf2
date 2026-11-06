@@ -146,7 +146,7 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(ser, EXPECTED_BYTES)
         # print(str(repr(res)))
         self.assertEqual(str(repr(res)), EXPECTED_REPR)
-        res2 = eval(repr(res))
+        res2 = eval(repr(res))  #nosec
         self.assertEqual(str(res2), EXPECTED_RESULT)
 
     def testConstructByteID(self):
